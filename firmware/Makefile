@@ -51,7 +51,7 @@ TARGET = firmware
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = main.c file.c
+SRC = main.c signal.c
 
 
 # List Assembler source files here.
@@ -319,9 +319,9 @@ gccversion :
 
 # Program the device.  
 program: $(TARGET).hex $(TARGET).eep
-	scp $(TARGET).hex pi@pi:~/programmer/
-	scp $(TARGET).eep pi@pi:~/programmer/
-	ssh pi@pi sudo $(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)
+	scp $(TARGET).hex pi@169.254.0.2:~/programmer/
+	scp $(TARGET).eep pi@169.254.0.2:~/programmer/
+	ssh pi@169.254.0.2 sudo $(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)
 
 
 
