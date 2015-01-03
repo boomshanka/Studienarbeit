@@ -41,98 +41,72 @@
 #define TWI_BUS_ERROR				0x00  // Bus error due to an illegal START or STOP condition
 
 
-// Bitrate 100kHz oder 200kHz. 400kHz ist zu hoch!
-#define TWI_BITRATE		100000UL
 
-
-#include "twi.h"
+#include "twi_slave.h"
 #include <util/twi.h>
 
 
 
-void twi_init()
+void twis_init(uint8_t address, uint32_t bitrate)
 {
 	// Vorteiler auf 1 stellen (00), Statusregister löschen
 	TWSR = 0x00;
 	
 	// Bitrate einstellen
-	TWBR = ((F_CPU/TWI_BITRATE)-16)/2;
+	TWBR = ((F_CPU/bitrate)-16)/2;
+	
+	// Adresse setzen
+	TWAR = (address << 1);
+	
+	// TWI aktivieren
+	TWCR = (1<<TWEN)|(1<<TWEA);
 }
 
 
-uint8_t twi_start(uint8_t address, uint8_t type_rw)
+
+void twis_stop(void)
 {
-	// Start senden und warten, bis Vorgang abgeschlossen ist
-    TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
-	while (!(TWCR & (1<<TWINT)));
-	
-    // Status mit Maske prüfen
-	uint8_t status = TWSR & 0xF8;
-	if ((status != TWI_START) && (status != TWI_REP_START))
-		return 0;
-		
-	// Adresse senden, warten
-	TWDR = (address<<1) + type_rw;
-	TWCR = (1<<TWINT)|(1<<TWEN);
-	while (!(TWCR & (1<<TWINT)));
-	
-	// Status prüfen und zurückgeben
-    status = TWSR & 0xF8;
-	return ((status == TWI_START) || (status == TWI_REP_START));
-}
-
-
-void twi_stop(void)
-{
-	// Stop senden und warten
-	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);
-	while (TWCR & (1<<TWINT));
+	// Stop senden
+	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO)|(1<<TWEA);
 }
 	
 
 
-uint8_t twi_write(uint8_t data)
+void twis_write(uint8_t data)
 {
 	// Daten senden und warten
     TWDR = data;
-    TWCR = (1<<TWINT)|(1<<TWEN);
+    TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA);
     while (!(TWCR & (1<<TWINT)));
-    
-    // Status mit Maske prüfen und zurückgeben
-    uint8_t status = TWSR & 0xF8;
-	return (status == TWI_MTX_DATA_ACK);
 }
 
 
 
-uint8_t twi_read_ack(void)
+uint8_t twis_read_ack(void)
 {
 	// Daten anfordern
 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA); // ACK
-	while ((TWCR & (1<<TWINT)) == 0);
+	while (!(TWCR & (1<<TWINT)));
 	
 	return TWDR;
 }
 
 
-uint8_t twi_read_nack(void)
+uint8_t twis_read_nack(void)
 {
 	// Daten anfordern
 	TWCR = (1<<TWINT)|(1<<TWEN); // NACK
-	while ((TWCR & (1<<TWINT)) == 0);
+	while (!(TWCR & (1<<TWINT)));
 	
 	return TWDR;
 }
 
 
-uint8_t twi_status(void)
+
+uint8_t	twis_response_required(uint8_t *response_type)
 {
-	 // Status mit Maske prüfen und zurückgeben
-    uint8_t status = TWSR & 0xF8;
-	return (status == TWI_MTX_DATA_ACK);
+	*response_type = TWSR;
+	// True = Response required, False = not required
+	return TWCR & (1<<TWINT);
 }
-
-
-
-
 
