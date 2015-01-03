@@ -1,0 +1,8 @@
+1:
+(Übersteuertes) Signal nach Hochpassfilter mit Verstärkungsfaktor 100
+
+2:
+Signal nach Tiefpassfilter mit Störungen (sollten eigentlich rausgefiltert werden)
+
+3:
+Störungen auch ohne Signal: Möglicherweise durch Belastung der Spannungsquelle (durch Signalerzeugung)
