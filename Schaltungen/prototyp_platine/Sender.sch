@@ -1,0 +1,200 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:prototyp_platine-cache
+EELAYER 27 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 3 4
+Title ""
+Date "9 jan 2015"
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Text HLabel 2100 2200 0    60   Input ~ 0
+40kHz PWM
+$Comp
+L SPEAKER S
+U 1 1 54AF9401
+P 4100 2300
+F 0 "S" H 4000 2550 70  0000 C CNN
+F 1 "2,55n" H 4000 2050 70  0000 C CNN
+F 2 "~" H 4100 2300 60  0000 C CNN
+F 3 "~" H 4100 2300 60  0000 C CNN
+	1    4100 2300
+	1    0    0    -1  
+$EndComp
+Text Notes 850  5850 0    60   ~ 0
+Verstärkung mit "Gegentakt-Ausgangsstufe" (totem-pole, auch Push-Pull)\n\nTransistoren:\n-I_C = 500mA (max) -> I_B = 50mA\n-U_BE = 0,7V\n
+$Comp
+L R R_B1
+U 1 1 54AFAB0D
+P 2650 1800
+F 0 "R_B1" V 2730 1800 40  0000 C CNN
+F 1 "1k" V 2657 1801 40  0000 C CNN
+F 2 "~" V 2580 1800 30  0000 C CNN
+F 3 "~" H 2650 1800 30  0000 C CNN
+	1    2650 1800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L BC237 T1
+U 1 1 54AFB412
+P 3100 1800
+F 0 "T1" H 3300 1700 50  0000 C CNN
+F 1 "BC337" H 3350 1950 50  0000 C CNN
+F 2 "TO92-EBC" H 3290 1800 30  0001 C CNN
+F 3 "~" H 3100 1800 60  0000 C CNN
+	1    3100 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L BC307 T2
+U 1 1 54AFB467
+P 3100 2600
+F 0 "T2" H 3300 2500 50  0000 C CNN
+F 1 "BC327" H 3350 2750 50  0000 C CNN
+F 2 "~" H 3100 2600 60  0000 C CNN
+F 3 "~" H 3100 2600 60  0000 C CNN
+	1    3100 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R_B2
+U 1 1 54AFB4CC
+P 2650 2600
+F 0 "R_B2" V 2730 2600 40  0000 C CNN
+F 1 "1k" V 2657 2601 40  0000 C CNN
+F 2 "~" V 2580 2600 30  0000 C CNN
+F 3 "~" H 2650 2600 30  0000 C CNN
+	1    2650 2600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L ZENERSMALL Z1
+U 1 1 54AFB54F
+P 3200 1500
+F 0 "Z1" H 3200 1600 40  0000 C CNN
+F 1 "4V" H 3200 1400 30  0000 C CNN
+F 2 "~" H 3200 1500 60  0000 C CNN
+F 3 "~" H 3200 1500 60  0000 C CNN
+	1    3200 1500
+	0    -1   -1   0   
+$EndComp
+$Comp
+L ZENERSMALL Z2
+U 1 1 54AFB55E
+P 2400 2500
+F 0 "Z2" H 2400 2600 40  0000 C CNN
+F 1 "12V" H 2400 2400 30  0000 C CNN
+F 2 "~" H 2400 2500 60  0000 C CNN
+F 3 "~" H 2400 2500 60  0000 C CNN
+	1    2400 2500
+	0    -1   -1   0   
+$EndComp
+$Comp
+L +12V #PWR?
+U 1 1 54AFB699
+P 3200 1300
+F 0 "#PWR?" H 3200 1250 20  0001 C CNN
+F 1 "+12V" H 3200 1400 30  0000 C CNN
+F 2 "" H 3200 1300 60  0000 C CNN
+F 3 "" H 3200 1300 60  0000 C CNN
+	1    3200 1300
+	1    0    0    -1  
+$EndComp
+$Comp
+L -12V #PWR?
+U 1 1 54AFB6B7
+P 3200 2900
+F 0 "#PWR?" H 3200 3030 20  0001 C CNN
+F 1 "-12V" H 3200 3000 30  0000 C CNN
+F 2 "" H 3200 2900 60  0000 C CNN
+F 3 "" H 3200 2900 60  0000 C CNN
+	1    3200 2900
+	-1   0    0    1   
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 54AFB6D0
+P 3750 2950
+F 0 "#PWR?" H 3750 2950 30  0001 C CNN
+F 1 "GND" H 3750 2880 30  0001 C CNN
+F 2 "" H 3750 2950 60  0000 C CNN
+F 3 "" H 3750 2950 60  0000 C CNN
+	1    3750 2950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3200 2000 3200 2400
+Wire Wire Line
+	3200 2200 3800 2200
+Connection ~ 3200 2200
+Wire Wire Line
+	3200 2800 3200 2900
+Wire Wire Line
+	3200 1400 3200 1300
+$Comp
+L C C1
+U 1 1 54AFB851
+P 3650 1800
+F 0 "C1" H 3650 1900 40  0000 L CNN
+F 1 "100n" H 3656 1715 40  0000 L CNN
+F 2 "~" H 3688 1650 30  0000 C CNN
+F 3 "~" H 3650 1800 60  0000 C CNN
+	1    3650 1800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3200 1350 3650 1350
+Wire Wire Line
+	3650 1350 3650 1600
+Connection ~ 3200 1350
+Wire Wire Line
+	3650 2000 3650 2850
+Wire Wire Line
+	3650 2850 3200 2850
+Connection ~ 3200 2850
+Wire Wire Line
+	2400 2400 2400 1800
+Wire Wire Line
+	2100 2200 2400 2200
+Connection ~ 2400 2200
+Wire Wire Line
+	3750 2950 3750 2400
+Wire Wire Line
+	3750 2400 3800 2400
+$EndSCHEMATC
