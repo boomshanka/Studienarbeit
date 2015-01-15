@@ -1,14 +1,9 @@
 #include "signal.h"
 
-#include <avr/io.h>
-
 
 
 void signal_init(void)
 {
-	// Pins PB1 und PB2 als Ausgang konfigurieren
-	DDRB = (1<<PB1);
-	
 	// COM1A0 & COM1A1: Ausgangspins bei Vergleichswert setzen, bei Überlauf löschen
 	// WGM11 & WGM12 & WGM13: FastPWM-Modus
 	TCCR1A = (1<<COM1A1) | (1<<COM1A0) | (1<<WGM11);
