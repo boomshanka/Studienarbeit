@@ -5,5 +5,26 @@
 
 
 \chapter{Sender}
+Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte dabei möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Es wird empfohlen, den Sender mit einem Rechtecksignal anzusteuern. Durch sein sehr schmales Spektrum/Frequenz (FIXME) schwingt er dennoch sinusförmig ohne Oberwellen zu erzeugen und nimmt dabei am meisten Energie auf. (FIXME bei gleichbleibender Amplitude im vgl zu anderen Signalen/Sinus)
+
+
+\section{Signalerzeugung}
+Das Rechtecksignal soll von dem Mikrocontroller erzeugt werden. Er besitzt einen Hardwarezähler, der mit einem Ausgangspin verbunden werden kann. Damit lässt sich ein präzises Signal erzeugen, ohne die Rechenleistung des Controllers einzuschränken.\\
+Der Sender hat eine maximale Spitze-Spitze-Spannung von $U_{SS} = 20V$, das ausgegebene Signal des Mikrocontrollers wechselt jedoch nur zwischen $0V$ und $5V$. Die Sendeleistung wäre zu schwach, außerdem sollte der Ausgang des Mikrocontrollers nicht direkt belastet werden. Aus diesen Gründen wurden mehrere Sendeschaltungen entwickelt und untersucht, ob sie geeignet sind.
+
+
+
+\section{Erste Schaltung: Verstärkung mit Operationsverstärker}
+
+
+\section{Zweite Schaltung: Verstärkung mit Transistor}
+
+
+\section{Dritte Schaltung: Wechselsignal}
+
+
+\section{Vierte Schaltung: Gegentaktausgangsstufe, Push/Pull}
+
+
 
 
