@@ -7,6 +7,9 @@
 \chapter{Sender}
 Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte dabei möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Es wird empfohlen, den Sender mit einem Rechtecksignal anzusteuern. Durch sein sehr schmales Spektrum/Frequenz (FIXME) schwingt er dennoch sinusförmig ohne Oberwellen zu erzeugen und nimmt dabei am meisten Energie auf. (FIXME bei gleichbleibender Amplitude im vgl zu anderen Signalen/Sinus). Weiter mit Kapazität des Senders
 
+%Aus alter Übersicht:
+Der Ultraschallsender ist ein Lautsprecher, der mit einer Frequenz von $40kHz$ angeregt werden kann. Er hat einen sehr schmalen Frequenzgang (FIXME), weshalb er auch mit einem gepulsten Signal angeregt werden kann, ohne Oberwellen zu erzeugen. Die einfachste Möglichkeit zum Erzeugen eines $40kHz$-Signals ist mit einem \ac{PWM}-Singal, erzeugt mithilfe des Timers MIKROCONTROLLER BLA
+
 
 \section{Signalerzeugung}
 Das Rechtecksignal wird von dem Mikrocontroller erzeugt. Er besitzt einen Hardwarezähler, der mit einem Ausgangspin verbunden werden kann. Damit lässt sich ein präzises Signal erzeugen, ohne die Rechenleistung des Controllers einzuschränken.\\
@@ -15,7 +18,7 @@ Der Sender hat eine maximale Spitze-Spitze-Spannung von $U_{SS} = 20V$, das ausg
 
 
 \section{Erste Schaltung: Verstärkung mit Operationsverstärker}
-\subsection{Idee}
+\subsection{Idee} % FIXME Differenzverstärker
 Mithilfe eines Operationsverstärkers lassen sich einfach Spannungen verstärken. Mit der Komparatorschaltung kann das $0/5V$-Signal auf $-10/+10V$ umgesetzt werden. Gewählt wurde der Operationsverstärker \textit{LM258}, da seine Spannungsversorgung sehr hoch gewählt werden kann und er eine Bandweite von $1.1MHz$ hat, was für diese Zwecke ausreichen sollte.
 % FIXME Bild
 
@@ -24,7 +27,7 @@ Bereits bei der Planung der Schaltung wurde befürchtet, dass der maximale Strom
 \begin{equation}
 t=\frac{Q}{I}=\frac{C*U}{I}=\frac{2.55nF*20V}{30mA}=1.7\mu s
 \end{equation}
-Im Vergleich zur Pulsdauer von $12.5\mu s$ ist dieser Wert relativ hoch, zumal nur ein idealer Operationsverstärker einen $0V$-Ausgangswiderstand besitzt und die Zeit in Wirklichkeit größer sein wird. Deshalb wurde erwartet, dass die Flanken etwas abgeflacht werden.\\
+Im Vergleich zur Pulsdauer von $12.5\mu s$ ist dieser Wert relativ hoch, zumal nur ein idealer Operationsverstärker einen $0\Omega$-Ausgangswiderstand besitzt und die Zeit in Wirklichkeit größer sein wird. Deshalb wurde erwartet, dass die Flanken etwas abgeflacht werden.\\
 Tatsächlich wurde jedoch ein viel wichtigerer Wert im Datenblatt übersehen. Die \textit{Slew Rate} gibt an, wie schnell sich die Spannung des OPs ändern kann. Beim \textit{LM258} beträgt sie $0.6V/\mu s$. Das Ausgangssignal entsprach aus diesem Grund einem Dreiecksignal und schwankte nur um $7.5V$.
 
 \subsection{Fazit}
