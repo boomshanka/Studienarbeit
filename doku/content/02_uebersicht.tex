@@ -4,10 +4,57 @@
 % Inhalt: Zielsetzung, Entiwcklung/Umsetzung, Hardware, Architektur, Tools
 
 
-\chapter{Planung und Durchführung}
+\chapter{Projektübersicht}
+
+%\section{Ziel}
+Das Ziel des Projektes ist es, die Position eines Objektes mithilfe von Ultraschallsensoren zu messen. Dabei reicht die Position auf einer Fläche, sie muss daher nur Zweidimensional bestimmt werden. Das Ergebnis wird anschließend auf einem Bildschirm visualisiert.\\
+Da es sich dabei bereits um ein komplexes System handelt, bei dem es an vielen Stellen zu unerwarteten Problemen kommen kann, wurde ein vorrangiges Ziel definiert. Zuerst sollte eine einzelne Abstandsmessung durchgeführt und bewertet werden. Diese Aufgabe umfasst bereits alle physikalische Prinzipien, die zur Positionsbestimmung genutzt werden. Sobald die Abstandsmessung zuverlässig funktioniert, kann das endgültige System darauf aufgebaut werden.
 
 
-\section{Tools}
+\section{Architektur, Lösungsansatz} % Hier wird auch die Hardware beschrieben
+Für die Positionsbestimmung werden drei Sender und Empfänger verwendet. Davon ist jeweils einer auf einer Platine verbaut, auf der sich zusätzlich Schaltungen für die Signalverarbeitung und ein Mikrocontroller befinden. Die drei Platinen werden so angeordnet, dass sie Objekte in ihrer Mitte erkennen können. Sie sind alle mit einem Einplatinen-Computer verbunden, mit dem die Mikrocontroller über einen \ac{TWI}-Bus kommunizieren können.\\
+% FIXME Bild Architektursübersicht
+
+\subsection{Sensorplatine und Mikrocontroller}
+Die Mikrocontroller auf den Sensorplatinen erfüllen die Zwecke:
+\begin{itemize}
+	\item Ansteuerung der Ultraschallsender
+	\item Signal am Empfänger detektieren
+	\item Laufzeitmessung durchführen
+	\item Status über \ac{LED}s anzeigen
+	\item Schnittstelle nach außen über das \ac{TWI} bereitstellen
+\end{itemize}
+Verwendet wurde dafür der \textit{ATmega8} von Atmel.  % TODO
+
+
+\subsection{Computer}
+Der Einplatinen-Computer hat folgende Aufgaben:
+\begin{itemize}
+	\item Das Timing der Messungen kontrollieren
+	\item Messergebnisse sammeln und auswerten
+	\item Berechnete Position darstellen
+	\item Ein \ac{GUI} bereitstellen
+\end{itemize}
+Für diesen Zweck wurde ein \textit{Raspberry PI} verwendet. Er besitzt ein \ac{GPIO}-Interface, mit dem die Mikrocontroller gesteuert werden können, sowie ein \ac{HDMI}-Ausgang für die Visualisierung auf einem Bildschirm. Auf dem Computer läuft ein \textit{Archlinux}, dass speziell für die mobilen \textit{ARM}-Prozessoren angepasst wurde.\footnote{\url{http://archlinuxarm.org/}}
+
+
+
+\section{Entwicklung} % TODO
+Liste an Dingen, die entwickelt werden müssen, damit der Entwurf funktioniert.
+Sensorplatine:
+Sendeschaltung,
+Empfängerschaltung,
+Firmware für Mikrocontroller.
+
+Protokoll für TWI-Bus
+
+Ablauf und Timing der Messungen
+Software auf RPI zum Ansteuern der Controller
+GUI auf RPI
+
+
+
+\section{Verwendete Tools, Entwicklungsstrategie} % TODO
 Um Schaltungen zu entwerfen sind einige Programme zum Einsatz gekommen. Damit ließen sich die Funktionen überprüfen, Frequenzgänge berechnen und es konnten Platinen mit den fertigen Schaltplänen designt werden.
 \begin{description}
 	\item[KiCAD] ist ein open-source Programm, mit dem modulare Schaltpläne gezeichnet werden können, woraus sich anschließend CAD-Modelle einer Platine erstellen lassen. Das Programm wird maßgeblich am CERN entwickelt und unterstützt viele zusätzliche Funktionen. So kann z.B. eine Netzliste für die \ac{SPICE}-Engine erstellt werden, mit der die Schaltungen simuliert werden können.\footnote{\url{http://www.kicad-pcb.org/}}
