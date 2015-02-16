@@ -4,23 +4,24 @@
 % Idee, Umsetzung etc
 
 
-\chapter{Sender}
+\chapter{Sender} %TODO Sender Einleitung
 Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte dabei möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Es wird empfohlen, den Sender mit einem Rechtecksignal anzusteuern. Durch sein sehr schmales Spektrum/Frequenz (FIXME) schwingt er dennoch sinusförmig ohne Oberwellen zu erzeugen und nimmt dabei am meisten Energie auf. (FIXME bei gleichbleibender Amplitude im vgl zu anderen Signalen/Sinus). Weiter mit Kapazität des Senders
-
-%Aus alter Übersicht:
-Der Ultraschallsender ist ein Lautsprecher, der mit einer Frequenz von $40kHz$ angeregt werden kann. Er hat einen sehr schmalen Frequenzgang (FIXME), weshalb er auch mit einem gepulsten Signal angeregt werden kann, ohne Oberwellen zu erzeugen. Die einfachste Möglichkeit zum Erzeugen eines $40kHz$-Signals ist mit einem \ac{PWM}-Singal, erzeugt mithilfe des Timers MIKROCONTROLLER BLA
 
 
 \section{Signalerzeugung}
 Das Rechtecksignal wird von dem Mikrocontroller erzeugt. Er besitzt einen Hardwarezähler, der mit einem Ausgangspin verbunden werden kann. Damit lässt sich ein präzises Signal erzeugen, ohne die Rechenleistung des Controllers einzuschränken.\\
-Der Sender hat eine maximale Spitze-Spitze-Spannung von $U_{SS} = 20V$, das ausgegebene Signal des Mikrocontrollers wechselt jedoch nur zwischen $0V$ und $5V$. Die Sendeleistung wäre zu schwach, außerdem sollte der Ausgang des Mikrocontrollers nicht direkt belastet werden. Aus diesen Gründen wurden mehrere Sendeschaltungen entwickelt und untersucht, ob sie geeignet sind.
+Der Sender hat eine maximale Spitze-Spitze-Spannung von $U_{SS} = 20V$, das ausgegebene Signal des Mikrocontrollers wechselt jedoch nur zwischen $0V$ und $5V$. Die Sendeleistung wäre zu schwach, außerdem sollte der Ausgang des Mikrocontrollers nicht direkt belastet werden, da er nur sehr begrenzt Strom liefern kann. Aus diesen Gründen wurden mehrere Sendeverstärker entwickelt und untersucht, ob sie geeignet sind.
 
 
 
 \section{Erste Schaltung: Verstärkung mit Operationsverstärker}
 \subsection{Idee} % FIXME Differenzverstärker
 Mithilfe eines Operationsverstärkers lassen sich einfach Spannungen verstärken. Mit der Komparatorschaltung kann das $0/5V$-Signal auf $-10/+10V$ umgesetzt werden. Gewählt wurde der Operationsverstärker \textit{LM258}, da seine Spannungsversorgung sehr hoch gewählt werden kann und er eine Bandweite von $1.1MHz$ hat, was für diese Zwecke ausreichen sollte.
-% FIXME Bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/komparatorschaltung.jpg}
+\caption{Einfache Komparatorschaltung zum Umsetzen der Spannungen} \label{img:I1} %TODO: LM258/358
+\end{figure}
 
 \subsection{Realität}
 Bereits bei der Planung der Schaltung wurde befürchtet, dass der maximale Strom des Operationsverstärkers für ein scharfes Signal sehr knapp dimensioniert ist ($I_{Source}=30mA; I_{Sink}=40mA$). Nimmt man an, der Operationsverstärker besitzt einen Ausgangswiderstand von $0 \Omega$ und die Ladespannung beträgt $20V$, ist Zeit zum vollständigen Laden des Senders:

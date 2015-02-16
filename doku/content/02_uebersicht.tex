@@ -15,7 +15,7 @@ Da es sich dabei bereits um ein komplexes System handelt, bei dem es an vielen S
 Für die Positionsbestimmung werden drei Sender und Empfänger verwendet. Davon ist jeweils einer auf einer Platine verbaut, auf der sich zusätzlich Schaltungen für die Signalverarbeitung und ein Mikrocontroller befinden. Die drei Platinen werden so angeordnet, dass sie Objekte in ihrer Mitte erkennen können. Sie sind alle mit einem Einplatinen-Computer verbunden, mit dem die Mikrocontroller über einen \ac{TWI}-Bus kommunizieren können. Zwischen dem Computer und den Sensorplatinen befindet sich eine Verteilerplatine, an der die Stromversorgung eingesteckt wird und die Leitungen von Computer zu Platinen entsprechend verdrahtet sind. %TODO: Vertratet geeignetes Wort?
 Zur Verbindung untereinander werden Flachbandkabel verwendet. Die Verteilerplatine besitzt zusätzlich einen Steckplatz mit einer Standard-\ac{ISP}-Pinbelegung, mit dem die Mikrocontroller direkt vom Einplatinen-Computer beschrieben werden können.\\
 % Bild Architektursübersicht
-\begin{figure}[H] %TODO: Bildschirm kann auch mit rein
+\begin{figure}[H] %TODO: Bildschirm kann auch mit rein. Sensoren als Ellipsen darstellen.
 \centering
 \begin{tikzpicture}
 %\filldraw[fill=black!20, draw=black] (0,0) -- (10,0) -- (10,5) -- (0,5) -- (0,0);
@@ -107,7 +107,7 @@ Für diesen Zweck wurde ein \textit{Raspberry PI} verwendet. Er besitzt ein \ac{
 
 
 
-\section{Entwicklung} % TODO
+\section{Entwicklung} %TODO
 Liste an Dingen, die entwickelt werden müssen, damit der Entwurf funktioniert.
 Sensorplatine:
 Sendeschaltung,
@@ -122,7 +122,7 @@ GUI auf RPI
 
 
 
-\section{Verwendete Tools, Entwicklungsstrategie} %TODO
+\section{Verwendete Tools} %TODO
 Um Schaltungen zu entwerfen sind einige Programme zum Einsatz gekommen. Damit ließen sich die Funktionen überprüfen, Frequenzgänge berechnen und es konnten Platinen mit den fertigen Schaltplänen designt werden.
 \begin{description}
 	\item[KiCAD] ist ein open-source Programm, mit dem modulare Schaltpläne gezeichnet werden können, woraus sich anschließend CAD-Modelle einer Platine erstellen lassen. Das Programm wird maßgeblich am CERN entwickelt und unterstützt viele zusätzliche Funktionen. So kann z.B. eine Netzliste für die \ac{SPICE}-Engine erstellt werden, mit der die Schaltungen simuliert werden können.\footnote{\url{http://www.kicad-pcb.org/}}
