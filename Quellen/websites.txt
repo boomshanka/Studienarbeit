@@ -1,0 +1,7 @@
+MOSFET Grundschaltungen:
+-Sourceschaltung: http://www.elektronikinfo.de/strom/sourceschaltung.htm
+-Sourcefolger/Drainschaltung: http://www.elektronikinfo.de/strom/sourcefolger.htm
+
+
+MOSFET als Schalter:
+https://home.zhaw.ch/~hhrt/ETO/MOSFETalsSchalter.pdf
