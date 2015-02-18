@@ -1,21 +1,22 @@
 %!TEX root = ../dokumentation.tex
 
-% Kapitel über Sender-Schaltung, Signalerzeugung
-% Idee, Umsetzung etc
+% Kapitel über Schaltungen, Signalerzeugung und -verarbeitung
+\chapter{Schaltungen} %TODO Sender Einleitung
 
 
-\chapter{Sender} %TODO Sender Einleitung
+% Section über Sender-Schaltung, Signalerzeugung
+\section{Sender} %TODO Sender Einleitung
 Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte dabei möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Es wird empfohlen, den Sender mit einem Rechtecksignal anzusteuern. Durch sein sehr schmales Spektrum/Frequenz (FIXME) schwingt er dennoch sinusförmig ohne Oberwellen zu erzeugen und nimmt dabei am meisten Energie auf. (FIXME bei gleichbleibender Amplitude im vgl zu anderen Signalen/Sinus). Weiter mit Kapazität des Senders
 
 
-\section{Signalerzeugung}
+\subsection{Signalerzeugung}
 Das Rechtecksignal wird von dem Mikrocontroller erzeugt. Er besitzt einen Hardwarezähler, der mit einem Ausgangspin verbunden werden kann. Damit lässt sich ein präzises Signal erzeugen, ohne die Rechenleistung des Controllers einzuschränken.\\
 Der Sender hat eine maximale Spitze-Spitze-Spannung von $U_{SS} = 20V$, das ausgegebene Signal des Mikrocontrollers wechselt jedoch nur zwischen $0V$ und $5V$. Die Sendeleistung wäre zu schwach, außerdem sollte der Ausgang des Mikrocontrollers nicht direkt belastet werden, da er nur sehr begrenzt Strom liefern kann. Aus diesen Gründen wurden mehrere Sendeverstärker entwickelt und untersucht, ob sie geeignet sind.
 
 
 
-\section{Erste Schaltung: Verstärkung mit Operationsverstärker}
-\subsection{Idee} % FIXME Differenzverstärker
+\subsection{Erste Schaltung: Verstärkung mit Operationsverstärker}
+\subsubsection{Idee} % FIXME Differenzverstärker
 Mithilfe eines Operationsverstärkers lassen sich einfach Spannungen verstärken. Mit der Komparatorschaltung kann das $0/5V$-Signal auf $-10/+10V$ umgesetzt werden. Gewählt wurde der Operationsverstärker \textit{LM258}, da seine Spannungsversorgung sehr hoch gewählt werden kann und er eine Bandweite von $1.1MHz$ hat, was für diese Zwecke ausreichen sollte.
 \begin{figure}[H]
 \centering
@@ -23,7 +24,7 @@ Mithilfe eines Operationsverstärkers lassen sich einfach Spannungen verstärken
 \caption{Einfache Komparatorschaltung zum Umsetzen der Spannungen} \label{img:I1} %TODO: LM258/358
 \end{figure}
 
-\subsection{Problematik}
+\subsubsection{Problematik}
 Bereits bei der Planung der Schaltung wurde befürchtet, dass der maximale Strom des Operationsverstärkers für ein scharfes Signal sehr knapp dimensioniert ist ($I_{Source}=30mA; I_{Sink}=40mA$). Nimmt man an, der Operationsverstärker besitzt einen Ausgangswiderstand von $0 \Omega$ und die Ladespannung beträgt $20V$, ist die Zeit zum vollständigen Laden des Senders:
 \begin{equation}
 t=\frac{Q}{I}=\frac{C*U}{I}=\frac{2.55nF*20V}{30mA}=1.7\mu s
@@ -37,17 +38,31 @@ Tatsächlich wurde jedoch ein viel wichtigerer Wert im Datenblatt übersehen. Di
 \caption{Simulierter Signalverlauf von zwei Operationsverstärkern. Rot: Ansteuersignal. Grün: Slew-Rate $0.6V/\mu s$. Blau: Slew-Rate $20V/\mu s$.} \label{img:I2}
 \end{figure}
 
-\subsection{Fazit}
+\subsubsection{Fazit}
 Die Spannungsverstärkung mit dem Operationsverstärker \textit{LM258} hat sich als nicht praktikabel herausgestellt, da er zu langsam reagiert. Für diese Zwecke können jedoch spezielle \textit{Komparatoren} verwendet werden, die sich wie Operationsverstärker verhalten, nur viel schneller und ungenauer sind. Die Genauigkeit spielt beim Umschalten keine Rolle.\\
 Nach dieser Feststellung wurden Schaltungen mit Transistoren untersucht, da sie höhere Leistungen und schnellere Reaktionszeiten zulassen. Die Lösung mit Komparator wurde für den Fall, dass die weiteren Schaltungen keine befriedigende Ergebnisse liefern, für später aufgehoben.
 
 
-\section{Zweite Schaltung: Verstärkung mit Transistor}
+\subsection{Zweite Schaltung: Verstärkung mit Transistor}
 
 
 
-\section{Dritte Schaltung: Gegentaktausgangsstufe, Push/Pull}
+\subsection{Dritte Schaltung: Gegentaktausgangsstufe, Push/Pull}
 
+
+
+% Section über Empfänger und Signalauswertung
+\section{Empfänger}
+Der Empfänger ist einer der wichtigsten Bausteine bei der Abstandsmessung mit Ultraschall. Nur durch eine zuverlässige Signalverarbeitung kann der Zeitpunkt exakt bestimmt werden, an dem das Signal eingetroffen ist. Im Prinzip gibt es zwei Möglichkeiten die Signalauswertung durchzuführen:
+\begin{description} % FIXME: Vielleicht in eigenen sections sinnvoll
+	\item[Signalauswertung mit AD-Wandler:] Das empfangene Signal wird vorverstärkt und ständig von einem AD-Wandler ausgelesen. Die Auswertung kann über einfache Schwellwerte bis hin zu komplexen Filterfunktionen, z.B. mithilfe einer Fourier-Transformation, beliebig aufwendig gestaltet werden. Eine Signalvorverarbeitung ist auch denkbar, z.B. Gleichrichten und Glätten, wenn nur die Auslenkung betrachtet wird. Software kann sich auf die Umgebungsbedingungen anpassen, ist jedoch ungenauer und langsamer als die entsprechende Hardwarelösung. Eine genaue Frequenzauswertung erfordert eine hohe Abtastrate und komplexe Software.
+	\item[Schwellwertschalter auf einem Interrupt-Eingang:] Hardware übernimmt die Signalverarbeitung mit Verstärkern und Frequenzfiltern. Anschließend schalten die Signalspitzen einen Transistor, der als Schwellwertschalter dient. Das binäre Signal kann ein Interrupt auf einem Mikrocontroller auslösen, worauf dieser sofort reagiert. Auch mit leistungsschwachen Controllern können dadurch exakte Laufzeitmessungen durchgeführt werden. Die Signalverarbeitung durch die Hardware ist entscheidend für die Reichweite und Störempfindlichkeit der Messungen.
+\end{description}
+
+In dieser Arbeit kommt ein Schwellwertschalter zum Einsatz. Hardware filtert und verstärkt das Signal, damit ein sauberes Durchschalten auch bei geringen Signalamplituden möglich ist. Das Signal wird weder gleichgerichtet, noch geglättet, sodass der Mikrocontroller die Perioden durch einzelne Pulse detektieren kann. Das bietet die Möglichkeit mit geringem Aufwand Störungen zu erkennen, z.B. kann ein einzelner Puls ignoriert werden. Außerdem ist eine einfache Frequenzauswertung auch möglich, wie z.B. Geschwindigkeitsmessungen über den Dopplereffekt, indem man die Pulse über eine bestimmte Zeit zählt.\\
+
+
+\subsection{Titel}
 
 
 
