@@ -5,8 +5,8 @@
 
 
 % Section über Sender-Schaltung, Signalerzeugung
-\section{Sender} %TODO Sender Einleitung
-Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte dabei möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Es wird empfohlen, den Sender mit einem Rechtecksignal anzusteuern. Durch sein sehr schmales Spektrum/Frequenz (FIXME) schwingt er dennoch sinusförmig ohne Oberwellen zu erzeugen und nimmt dabei am meisten Energie auf. (FIXME bei gleichbleibender Amplitude im vgl zu anderen Signalen/Sinus). Weiter mit Kapazität des Senders
+\section{Sender}
+Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte dabei möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Der hohe Abstrahlwinkel hat auch zur Folge, dass nur ein Bruchteil der Schallwelle am Objekt auftrifft und reflektiert werden kann. Es wird empfohlen, den Sender mit einem Rechtecksignal anzusteuern. Durch seine schmale Frequenzgang schwingt er dennoch Sinus-förmig, ohne Oberwellen zu erzeugen und nimmt dabei am meisten Energie auf, was in einen höheren Schallpegel resultiert. Der Sender besteht aus einem Piezoelement, dessen vereinfachtes Ersatzschaltbild ein Kondensator ist. Laut Datenblatt besitzt er eine Kapazität von $2.55nF$.
 
 
 \subsection{Signalerzeugung}
@@ -17,7 +17,7 @@ Der Sender hat eine maximale Spitze-Spitze-Spannung von $U_{SS} = 20V$, das ausg
 
 \subsection{Erste Schaltung: Verstärkung mit Operationsverstärker}
 \subsubsection{Idee} % FIXME Differenzverstärker
-Mithilfe eines Operationsverstärkers lassen sich einfach Spannungen verstärken. Mit der Komparatorschaltung kann das $0/5V$-Signal auf $-10/+10V$ umgesetzt werden. Gewählt wurde der Operationsverstärker \textit{LM258}, da seine Spannungsversorgung sehr hoch gewählt werden kann und er eine Bandweite von $1.1MHz$ hat, was für diese Zwecke ausreichen sollte.
+Mithilfe eines Operationsverstärkers lassen sich einfach Spannungen verstärken. Mit einer Komparatorschaltung kann das $0/5V$-Signal auf $-10/+10V$ umgesetzt werden. Gewählt wurde der Operationsverstärker \textit{LM258}, da seine Spannungsversorgung sehr hoch und flexibel gewählt werden kann und er eine Bandweite von $1.1MHz$ hat, was für diese Zwecke ausreichen sollte.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/komparatorschaltung.jpg}
@@ -44,9 +44,8 @@ Nach dieser Feststellung wurden Schaltungen mit Transistoren untersucht, da sie 
 
 
 \subsection{Zweite Schaltung: Verstärkung mit Transistor}
-Diese Schaltung sollte möglichst einfach umsetzbar sein, da sie auch für Testzwecke verwendet werden soll. Die Spannungen sollten mit Bipolartransistoren geschaltet werden.
-
-\subsubsection{Emitterschaltung}
+%TODO Sollen Berechnungen von Strömen und Widerständen hier noch rein?
+Der Bipolartransistor ist ein stromgesteuertes Halbleiterbauelement, der als Verstärker und Schalter eingesetzt wird. Die Emitterschaltung eignet sich für hohe Spannungs- und Stromverstärkungen. Im übersteuerten Zustand lassen sich damit ohmsche Lasten elektronisch schalten. Gemeinsamer Bezugspunkt ist der Emitter - daher der Name der Schaltung. Der Strom von Basis zu Emitter steuert den maximalen Stromfluss der Schaltstrecke von Kollektor zu Emitter. Um ein digitales Signal zu verstärken, wird es über den Basiswiderstand auf den Transistor gegeben und ein weiterer Widerstand vor den Kollektor zur resultierenden Spannung geschaltet. Leitet der Transistor, fällt die Spannung am Widerstand ab. Sperrt er, fällt an ihm die Spannung ab und  der Widerstand zieht das Potential vor dem Transistor auf den gewünschten Wert. Das resultierende Signal ist um $180^\circ$ phasenverdreht, d.h. es wird invertiert und nicht verzögert.\\
 
 
 \subsubsection{Spannungsbereich ausschöpfen}
@@ -55,7 +54,7 @@ Als Spannungsversorgung stehen $+5V$, $+12V$ und $-12V$ zur Verfügung. Es gibt 
 	\item[NPN-Transistor:] Gebräuchliche Schaltung um einen Schalter mit einen Transistor zu realisieren. Die $5V$ werden auf $12V$ verstärkt.
 	\item[PNP-Transistor:] Mit nur einem Transistor kann das Signal auf $-12V$-$+5V$ umgesetzt werden. Die Spitze-Spitze-Spannung beträgt $17V$.
 	\item[Zwei Transistoren:] Kombiniert man beide Verstärker, kann das Signal auf $-12V$-$+12V$ verstärkt werden. Da die Spitze-Spitze-Spannung des Senders um $4V$ überstiegen wird, muss sie mit einer Z-Diode begrenzt werden. Sie wird in Reihe entgegen der Spannung geschaltet, sodass an ihr die nötige Spannung abfällt.
-	\item[Wechselsignal:] Der Sender ist nicht gegen Masse geschaltet, sondern erhält am anderen Pin das invertierte Signal. Dadurch lässt sich die Spitze-Spitze-Spannung verdoppeln. Es wird mindestens ein weiterer Transistor benötigt, um die zweite Seite zu beschalten. Dafür kann das Ausgangssignal des ersten Transistors genutzt werden, da es um $180^\circ$ phasenverschoben zum Eingangssignal ist. Allerdings bietet sich dafür keine Spannung an, da die $12V$ zu groß und die $5V$ zu klein sind, um die maximalen $20V$ zu erreichen. %TODO Phasenverschoben in Emitterschaltung schreiben, hier passt Invertiert besser
+	\item[Wechselsignal:] Der Sender ist nicht gegen Masse geschaltet, sondern erhält am anderen Pin das invertierte Signal. Dadurch lässt sich die Spitze-Spitze-Spannung verdoppeln. Es wird mindestens ein weiterer Transistor benötigt, um die zweite Seite zu beschalten. Dafür kann das Ausgangssignal des ersten Transistors genutzt werden, da es um $180^\circ$ phasenverdreht zum Eingangssignal ist. Allerdings bietet sich dafür keine Spannung an, da die $12V$ zu groß und die $5V$ zu klein sind, um die maximalen $20V$ zu erreichen.
 \end{description}
 
 \begin{figure}[H] %TODO Anderes Wort für Spitze-Spitze-Spannung
@@ -65,12 +64,33 @@ Als Spannungsversorgung stehen $+5V$, $+12V$ und $-12V$ zur Verfügung. Es gibt 
 \end{figure}
 
 \subsubsection{Nachteile}
+Die Emitterschaltung ist eine einfache Verstärkerschaltung und eignet sich hervorragend um ohmsche Lasten zu schalten. Der Sender ist jedoch eine kapazitive Last, die zu jeder Flanke geladen oder entladen werden muss. Über den Lastwiderstand wird die Kapazität geladen, wenn der Transistor sperrt. Solange er leitend ist, fließt ein konstanter Strom über diesen Widerstand, der für den Sender nicht benötigt wird. Die Dimensionierung der Lastwiderstände ist deshalb ein Kompromiss aus unnötigen Stromfluss vermeiden und eine gewisse Flankensteilheit durch die RC-Ladekurve zu erreichen. Statt einem Ein- und Ausschalten wäre ein Umschalten zwischen zwei Spannungen sinnvoller. Diesen Ansatz verfolgt die nächste entworfene Schaltung.
+
+%TODO Bild von Simulation von Ausgangssignal?
 
 
+\subsection{Dritte Schaltung: Gegentaktstufe}
+Anstatt die Spannung über den Lastwiderstand am Kollektor eines Transistors auf den richtigen Wert zu ziehen, kann die Spannung über zwei Transistoren, die sich im Gegentakt öffnen und schließen, direkt erreicht werden. Die Vorteile dabei sind, dass der Sender über sehr kleine Widerstände schnell geladen werden kann und dennoch kein unnötiger Stromfluss entsteht. Das Prinzip der Gegentaktstufe wird in verschiedenen Bereichen angewendet: Von schnellen Logik-ICs über verschiedene Treiberbausteine bis hin zu Leistungsendstufen. Durch die Symmetrie und den geringen Eigenstromverbrauch lassen sich hohe Lasten sehr schnell An- und Abschalten. Allerdings ist eine Gegentaktstufe nicht linear, wodurch sie meist ungeeignet für analoge Anwendungen ist.
+%TODO Bild von Prinzip und Funktionsweise erklären
 
-\subsection{Dritte Schaltung: Gegentaktausgangsstufe, Push/Pull}
 
-\subsubsection{Idee}
+\subsubsection{Gleichzeitiges Öffnen der Transistoren}
+Ein hohes Risiko der Schaltung ist, dass ein Kurzschluss entsteht, sobald beide Transistoren gleichzeitig geöffnet sind. Die hohen Ströme würden nicht zuletzt den thermischen Tod der Transistoren bedeuten. Die Schaltung muss so gestaltet werden, dass ein gleichzeitiges Öffnen nicht möglich ist. Durch folgende Anordnung wird das erreicht:\\
+Die Emitter beider Transistoren werden zusammengelegt. An dieser Stelle wird auch der Sender angeschlossen. Ein NPN-Transistor öffnet nur, wenn ein Strom von Basis zu Emitter fließt. Für den PNP-Transistor muss er in die andere Richtung fließen. Werden nun auch die Basispins beider Transistoren verbunden, kann nur einer der beiden Fälle auftreten - ein gleichzeitiges Öffnen ist deshalb nicht mehr möglich. 
+
+\subsubsection{Verzögertes Schließen, langsame Reaktionen}
+Dioden haben an den Übergängen der Dotierungen kapazitive Eigenschaften. Besonders bei hohen Spannungen wirken sie sich sehr negativ auf die Schaltgeschwindigkeit aus, da die Ladung erst abtransportiert werden muss, bevor sich der Zustand des Transistors ändert. Das führt dazu, dass sie zu spät schließen und die Signale verformt werden. Über mehrere Transistoren summiert sich dieser Effekt auf. Anfangs wurde versucht, die Steuerspannung mithilfe von in Reihe geschalteten Zener-Dioden zu begrenzen. Auch eine Diode von Basis zu Kollektor (NPN), bzw von Kollektor zur Basis (PNP) verringert die Schaltgeschwindigkeit. Überschüssige Ladungsträger fließen über die niederohmige Kollektor-Emitter-Strecke ab, wodurch ein Übersteuern des Transistors vermieden wird. Bei der Gegentaktstufe tritt jedoch der Fall ein, indem der Sender vollständig geladen ist und kein Strom mehr fließt. Ohne Stromfluss fällt an den Z-Dioden keine Spannung ab und die Transistoren übersättigen erneut.\\ %TODO Warum schlechtes Wort?!
+Eine akzeptable Lösung wurde gefunden, indem die Arbeitspunkte der Transistoren über Widerstandsverhältnisse angepasst wurden. Mithilfe von Schaltungssimulationen konnten die Verhältnisse genau bestimmt werden, bei denen die Transistoren noch sauber schalten und gleichzeitig vor dem Schließen kaum Ladungsträger abtransportiert werden müssen.
+
+\subsubsection{Aufbau und Funktionsweise}
+Drei Stufen
+
+\subsubsection{Umsetzung mit Feldeffekt-Transistoren}
+
+
+\subsubsection{Fazit}
+
+
 
 
 % Section über Empfänger und Signalauswertung
