@@ -55,10 +55,14 @@ Als Spannungsversorgung stehen $+5V$, $+12V$ und $-12V$ zur Verfügung. Es gibt 
 	\item[NPN-Transistor:] Gebräuchliche Schaltung um einen Schalter mit einen Transistor zu realisieren. Die $5V$ werden auf $12V$ verstärkt.
 	\item[PNP-Transistor:] Mit nur einem Transistor kann das Signal auf $-12V$-$+5V$ umgesetzt werden. Die Spitze-Spitze-Spannung beträgt $17V$.
 	\item[Zwei Transistoren:] Kombiniert man beide Verstärker, kann das Signal auf $-12V$-$+12V$ verstärkt werden. Da die Spitze-Spitze-Spannung des Senders um $4V$ überstiegen wird, muss sie mit einer Z-Diode begrenzt werden. Sie wird in Reihe entgegen der Spannung geschaltet, sodass an ihr die nötige Spannung abfällt.
-	\item[Wechselsignal:] Der Sender ist nicht gegen Masse geschaltet, sondern erhält am anderen Pin das invertierte Signal. Dadurch lässt sich die Spitze-Spitze-Spannung verdoppeln. Es wird mindestens ein Transistor mehr benötigt, um die zweite Seite zu schalten. Allerdings bietet sich dafür keine Spannung an, da die $12V$ zu groß und die $5V$ zu klein sind, um die maximalen $20V$ zu erreichen.
+	\item[Wechselsignal:] Der Sender ist nicht gegen Masse geschaltet, sondern erhält am anderen Pin das invertierte Signal. Dadurch lässt sich die Spitze-Spitze-Spannung verdoppeln. Es wird mindestens ein weiterer Transistor benötigt, um die zweite Seite zu beschalten. Dafür kann das Ausgangssignal des ersten Transistors genutzt werden, da es um $180^\circ$ phasenverschoben zum Eingangssignal ist. Allerdings bietet sich dafür keine Spannung an, da die $12V$ zu groß und die $5V$ zu klein sind, um die maximalen $20V$ zu erreichen. %TODO Phasenverschoben in Emitterschaltung schreiben, hier passt Invertiert besser
 \end{description}
 
-%TODO: Bild
+\begin{figure}[H] %TODO Anderes Wort für Spitze-Spitze-Spannung
+\centering
+\includegraphics[scale=0.6]{images/transistorschaltungen.png}
+\caption{Verstärkungsschaltungen für $12V$, $17V$ und $20V$ Spitze-Spitze-Spannung} \label{img:I3}
+\end{figure}
 
 \subsubsection{Nachteile}
 
