@@ -5,3 +5,13 @@ MOSFET Grundschaltungen:
 
 MOSFET als Schalter:
 https://home.zhaw.ch/~hhrt/ETO/MOSFETalsSchalter.pdf
+
+
+I2C Logiclevel Shifter:
+http://www.nxp.com/documents/application_note/AN10441.pdf
+
+
+Transistoren:
+http://www.elektronik-kompendium.de/sites/slt/0208031.htm
+http://www.elektronik-kompendium.de/sites/bau/0201291.htm
+http://www.elektronik-kompendium.de/sites/slt/0204302.htm

@@ -1,0 +1,236 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:verteilerplatine-cache
+EELAYER 27 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 3
+Title ""
+Date "20 feb 2015"
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Sheet
+S 2150 3950 1150 850 
+U 54E72762
+F0 "Mikrocontroller" 50
+F1 "Mikrocontroller.sch" 50
+F2 "MOSI" I R 3300 4400 60 
+F3 "MISO" O R 3300 4500 60 
+F4 "SCK" I R 3300 4600 60 
+F5 "Reset" I R 3300 4700 60 
+F6 "SDA" B R 3300 4100 60 
+F7 "SCL" B R 3300 4200 60 
+$EndSheet
+$Sheet
+S 7000 3950 1300 1050
+U 54E72E6B
+F0 "RaspberryPI" 50
+F1 "RaspberryPI.sch" 50
+F2 "SDA" B L 7000 4100 60 
+F3 "SCL" B L 7000 4200 60 
+F4 "MOSI" O L 7000 4400 60 
+F5 "MISO" I L 7000 4500 60 
+F6 "SCK" O L 7000 4600 60 
+F7 "Reset" O L 7000 4700 60 
+$EndSheet
+$Comp
+L MOSFET_N T2
+U 1 1 54E74361
+P 6300 4100
+F 0 "T2" H 6310 4270 60  0000 R CNN
+F 1 "MOSFET_N" H 6310 3950 60  0000 R CNN
+F 2 "~" H 6300 4100 60  0000 C CNN
+F 3 "~" H 6300 4100 60  0000 C CNN
+	1    6300 4100
+	0    -1   1    0   
+$EndComp
+$Comp
+L MOSFET_N T1
+U 1 1 54E74370
+P 5600 4000
+F 0 "T1" H 5610 4170 60  0000 R CNN
+F 1 "MOSFET_N" H 5610 3850 60  0000 R CNN
+F 2 "~" H 5600 4000 60  0000 C CNN
+F 3 "~" H 5600 4000 60  0000 C CNN
+	1    5600 4000
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	6500 4200 7000 4200
+Wire Wire Line
+	3300 4100 5400 4100
+Wire Wire Line
+	5800 4100 7000 4100
+Wire Wire Line
+	3300 4200 6100 4200
+$Comp
+L R R?
+U 1 1 54E74F91
+P 6700 3950
+F 0 "R?" V 6780 3950 40  0000 C CNN
+F 1 "R" V 6707 3951 40  0000 C CNN
+F 2 "~" V 6630 3950 30  0000 C CNN
+F 3 "~" H 6700 3950 30  0000 C CNN
+	1    6700 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 54E74FA0
+P 6900 3850
+F 0 "R?" V 6980 3850 40  0000 C CNN
+F 1 "R" V 6907 3851 40  0000 C CNN
+F 2 "~" V 6830 3850 30  0000 C CNN
+F 3 "~" H 6900 3850 30  0000 C CNN
+	1    6900 3850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6300 3900 6300 3600
+Wire Wire Line
+	5600 3600 7100 3600
+Wire Wire Line
+	6700 3700 6700 3600
+Connection ~ 6700 3600
+Wire Wire Line
+	5600 3800 5600 3600
+Connection ~ 6300 3600
+$Comp
+L +3.3V #PWR?
+U 1 1 54E75079
+P 7100 3600
+F 0 "#PWR?" H 7100 3560 30  0001 C CNN
+F 1 "+3.3V" H 7100 3710 30  0000 C CNN
+F 2 "" H 7100 3600 60  0000 C CNN
+F 3 "" H 7100 3600 60  0000 C CNN
+	1    7100 3600
+	0    1    1    0   
+$EndComp
+Connection ~ 6900 3600
+$Comp
+L R R?
+U 1 1 54E75132
+P 3600 3950
+F 0 "R?" V 3680 3950 40  0000 C CNN
+F 1 "R" V 3607 3951 40  0000 C CNN
+F 2 "~" V 3530 3950 30  0000 C CNN
+F 3 "~" H 3600 3950 30  0000 C CNN
+	1    3600 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 54E75141
+P 3800 3850
+F 0 "R?" V 3880 3850 40  0000 C CNN
+F 1 "R" V 3807 3851 40  0000 C CNN
+F 2 "~" V 3730 3850 30  0000 C CNN
+F 3 "~" H 3800 3850 30  0000 C CNN
+	1    3800 3850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3200 3600 3800 3600
+Wire Wire Line
+	3600 3600 3600 3700
+$Comp
+L +5V #PWR?
+U 1 1 54E75180
+P 3200 3600
+F 0 "#PWR?" H 3200 3690 20  0001 C CNN
+F 1 "+5V" H 3200 3690 30  0000 C CNN
+F 2 "" H 3200 3600 60  0000 C CNN
+F 3 "" H 3200 3600 60  0000 C CNN
+	1    3200 3600
+	0    -1   -1   0   
+$EndComp
+Connection ~ 3600 3600
+$Comp
+L R R?
+U 1 1 54E7621E
+P 6600 4750
+F 0 "R?" V 6680 4750 40  0000 C CNN
+F 1 "10k" V 6607 4751 40  0000 C CNN
+F 2 "~" V 6530 4750 30  0000 C CNN
+F 3 "~" H 6600 4750 30  0000 C CNN
+	1    6600 4750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6500 4500 7000 4500
+Connection ~ 6600 4500
+Connection ~ 3800 4100
+Connection ~ 3600 4200
+$Comp
+L GND #PWR?
+U 1 1 54E7635E
+P 6600 5000
+F 0 "#PWR?" H 6600 5000 30  0001 C CNN
+F 1 "GND" H 6600 4930 30  0001 C CNN
+F 2 "" H 6600 5000 60  0000 C CNN
+F 3 "" H 6600 5000 60  0000 C CNN
+	1    6600 5000
+	1    0    0    -1  
+$EndComp
+$Comp
+L DIODESCH D5
+U 1 1 54E766EE
+P 6300 4500
+F 0 "D5" H 6300 4600 40  0000 C CNN
+F 1 "0.8V" H 6300 4400 40  0000 C CNN
+F 2 "~" H 6300 4500 60  0000 C CNN
+F 3 "~" H 6300 4500 60  0000 C CNN
+	1    6300 4500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3300 4700 3600 4700
+$Comp
+L DIODESCH D4
+U 1 1 54E74578
+P 5900 4500
+F 0 "D4" H 5900 4600 40  0000 C CNN
+F 1 "0.8V" H 5900 4400 40  0000 C CNN
+F 2 "~" H 5900 4500 60  0000 C CNN
+F 3 "~" H 5900 4500 60  0000 C CNN
+	1    5900 4500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5700 4500 3300 4500
+$EndSCHEMATC
