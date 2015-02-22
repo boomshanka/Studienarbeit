@@ -1,0 +1,143 @@
+Cmp-Mod V01 Created by CvPcb (2013-may-18)-stable date = So 22 Feb 2015 12:24:21 CET
+
+BeginCmp
+TimeStamp = /54E72762/54E75B3A;
+Reference = D1;
+ValeurCmp = LED;
+IdModule  = LED-3MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E8C390;
+Reference = D4;
+ValeurCmp = 3.3V;
+IdModule  = D3;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E8F467;
+Reference = P1;
+ValeurCmp = DIN_5;
+IdModule  = pin_array_3x2;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E72762/54E728D6;
+Reference = PC1;
+ValeurCmp = CONN_5X2;
+IdModule  = VASCH5x2;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E72762/54E728CA;
+Reference = PC2;
+ValeurCmp = CONN_5X2;
+IdModule  = VASCH5x2;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E72762/54E728D0;
+Reference = PC3;
+ValeurCmp = CONN_5X2;
+IdModule  = VASCH5x2;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E72762/54E9B483;
+Reference = PC4;
+ValeurCmp = CONN_5X2;
+IdModule  = VASCH5x2;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E72E6B/54E72E73;
+Reference = PR1;
+ValeurCmp = CONN_13X2;
+IdModule  = pin_array_13x2;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E8F286;
+Reference = R1;
+ValeurCmp = 2.2k;
+IdModule  = R3;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E8C34A;
+Reference = R2;
+ValeurCmp = 5.6k;
+IdModule  = R3;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E7621E;
+Reference = R3;
+ValeurCmp = 4.7k;
+IdModule  = R3;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E72762/54E75B16;
+Reference = RD1;
+ValeurCmp = 1.5k;
+IdModule  = R3;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E74F91;
+Reference = RP1;
+ValeurCmp = 10k;
+IdModule  = R3;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E74FA0;
+Reference = RP2;
+ValeurCmp = 10k;
+IdModule  = R1;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E75132;
+Reference = RP3;
+ValeurCmp = 4.7k;
+IdModule  = R3;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E75141;
+Reference = RP4;
+ValeurCmp = 4.7k;
+IdModule  = R3;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E74370;
+Reference = T1;
+ValeurCmp = MOSFET_N;
+IdModule  = TO92DGS;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E74361;
+Reference = T2;
+ValeurCmp = MOSFET_N;
+IdModule  = TO92DGS;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E8B9DC;
+Reference = T3;
+ValeurCmp = NPN;
+IdModule  = TO92;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E8C0DA;
+Reference = T4;
+ValeurCmp = PNP;
+IdModule  = TO92;
+EndCmp
+
+EndListe

@@ -144,4 +144,4 @@ sympy-plots-for-*.tex/
 # .gitignore for KiCAD
 *.bak
 *.bck
-
+*.kicad_pcb-bak
