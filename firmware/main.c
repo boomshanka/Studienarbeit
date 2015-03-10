@@ -9,14 +9,14 @@ int main(void)
 {
 	// Init-Funktionen
 	signal_init();
-	signal_interrupt_init();
+//	signal_interrupt_init();
 	
 	// Interrupts aktivieren
 	sei();
 	
 	// 
-	signal_interrupt_activate();
-//	signal_start();
+//	signal_interrupt_activate();
+	signal_start();
 	
 	
 	while (1) ;
