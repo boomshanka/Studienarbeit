@@ -1,0 +1,133 @@
+%!TEX root = ../dokumentation.tex
+
+% Kapitel als Übersicht des Projekts
+% Inhalt: Zielsetzung, Entiwcklung/Umsetzung, Hardware, Architektur, Tools
+
+
+\chapter{Projektübersicht}
+
+%\section{Ziel}
+Das Ziel des Projektes ist es, die Position eines Objektes mithilfe von Ultraschallsensoren zu messen. Dabei reicht die Position auf einer Fläche, sie muss daher nur zweidimensional bestimmt werden. Das Ergebnis wird anschließend auf einem Bildschirm visualisiert.\\
+Da es sich dabei bereits um ein komplexes System handelt, bei dem es an vielen Stellen zu unerwarteten Problemen kommen kann, wurde ein vorrangiges Ziel definiert. Zuerst sollte eine einzelne Abstandsmessung durchgeführt und bewertet werden. Diese Aufgabe umfasst bereits alle physikalische Prinzipien, die zur Positionsbestimmung genutzt werden. Sobald die Abstandsmessung zuverlässig funktioniert, kann das endgültige System darauf aufgebaut werden.
+
+
+\section{Architektur, Lösungsansatz} % Hier wird auch die Hardware beschrieben
+Für die Positionsbestimmung werden drei Sender und Empfänger verwendet. Davon ist jeweils einer auf einer Platine verbaut, auf der sich zusätzlich Schaltungen für die Signalverarbeitung und ein Mikrocontroller befinden. Die drei Platinen werden so angeordnet, dass sie Objekte in ihrer Mitte erkennen können. Sie sind alle mit einem Einplatinen-Computer verbunden, mit dem die Mikrocontroller über einen \ac{TWI}-Bus kommunizieren können. Zwischen dem Computer und den Sensorplatinen befindet sich eine Verteilerplatine, an der die Stromversorgung eingesteckt wird und die Leitungen von Computer zu Platinen entsprechend verdrahtet sind. %TODO: Vertratet geeignetes Wort?
+Zur Verbindung untereinander werden Flachbandkabel verwendet. Die Verteilerplatine besitzt zusätzlich einen Steckplatz mit einer Standard-\ac{ISP}-Pinbelegung, mit dem die Mikrocontroller direkt vom Einplatinen-Computer beschrieben werden können.\\
+% Bild Architektursübersicht
+\begin{figure}[H] %TODO: Bildschirm kann auch mit rein. Sensoren als Ellipsen darstellen.
+\centering
+\begin{tikzpicture}
+%\filldraw[fill=black!20, draw=black] (0,0) -- (10,0) -- (10,5) -- (0,5) -- (0,0);
+
+% Positionen der Platinen
+\coordinate (s1) at (0, 0);
+\coordinate (s2) at (3.3, 5.2);
+\coordinate (s3) at (-3.3, 5.2);
+\coordinate (com) at (-6.5, -1);
+\coordinate (ver) at (-4, -1);
+\coordinate (ob) at (-0.5, 3.5);
+
+% Verbindungen
+% Computer-Verteiler
+\draw (com) -- (ver);
+% Verteiler-Sensor1
+\draw (ver) -- (0,-1);
+% Verteiler-Sensor2
+\draw (ver) |- (0,-1.7) -| ($(s2) + (1,0)$);
+% Verteiler-Sensor3
+\draw (ver) |- (s3);
+
+% Platine 1
+\begin{scope}[shift=(s1), rotate around={180:(s1)}]
+	\filldraw[fill=red!60!black, draw=black] (-0.5,0) rectangle (0.5, 1.5);
+	\fill[fill=black!80, draw=black] (0.1, 0) circle (0.1);
+	\fill[fill=black!80, draw=black] (-0.1,0) circle (0.1);
+	\node[right] at (-0.7,1) {Sensorplatine 1};
+\end{scope}
+
+% Platine 2
+\begin{scope}[shift=(s2), rotate around={300:(s2)}]
+	\filldraw[fill=red!60!black, draw=black] (-0.5,0) rectangle (0.5, 1.5);
+	\fill[fill=black!80, draw=black] (0.1, 0) circle (0.1);
+	\fill[fill=black!80, draw=black] (-0.1,0) circle (0.1);
+	\node at (0, 3) {Sensorplatine 2};
+\end{scope}
+
+% Platine 3
+\begin{scope}[shift=(s3), rotate around={60:(s3)}]
+	\filldraw[fill=red!60!black, draw=black] (-0.5,0) rectangle (0.5, 1.5);
+	\fill[fill=black!80, draw=black] (0.1, 0) circle (0.1);
+	\fill[fill=black!80, draw=black] (-0.1,0) circle (0.1);
+	\node at (0, 3) {Sensorplatine 3};
+\end{scope}
+
+% Objekt
+\filldraw[fill=green!50, draw=black] (ob) circle (0.7);
+\node at (ob) {Objekt};
+
+% Verteilerplatine
+\begin{scope}[shift=(ver)]
+	\filldraw[fill=brown!70, draw=black] (-0.25, -0.5) rectangle (0.25, 0.5);
+	\node[below] at (0, -0.7) {Verteilerplatine};
+\end{scope}
+
+% Raspberry PI
+\begin{scope}[shift=(com)]
+	\filldraw[fill=blue!70!black!70!white, draw=black] (-0.5, -0.75) rectangle (0.5, 0.75);
+	\node[above] at (0, 0.75) {Computer};
+\end{scope}
+
+\end{tikzpicture}
+\caption{Schema der Architektur} \label{fig:ARCH}
+\end{figure}
+
+
+\subsection{Sensorplatine und Mikrocontroller}
+Die Mikrocontroller auf den Sensorplatinen erfüllen die Zwecke:
+\begin{itemize}
+	\item Ansteuerung der Ultraschallsender
+	\item Signal am Empfänger detektieren
+	\item Laufzeitmessung durchführen
+	\item Status über \ac{LED}s anzeigen
+	\item Schnittstelle nach außen über das \ac{TWI} bereitstellen
+\end{itemize}
+Verwendet wurde dafür der \textit{ATmega8} von Atmel.  %TODO
+
+
+\subsection{Computer}
+Der Einplatinen-Computer hat folgende Aufgaben:
+\begin{itemize}
+	\item Das Timing der Messungen kontrollieren
+	\item Messergebnisse sammeln und auswerten
+	\item Berechnete Position darstellen
+	\item Ein \ac{GUI} bereitstellen
+\end{itemize}
+Für diesen Zweck wird ein \textit{Raspberry PI} verwendet. Er besitzt ein \ac{GPIO}-Interface, mit dem die Mikrocontroller gesteuert werden können, sowie ein \ac{HDMI}-Ausgang für die Visualisierung auf einem Bildschirm. Auf dem Computer läuft ein \textit{Archlinux}, dass speziell für die mobilen \textit{ARM}-Prozessoren angepasst wurde.\footnote{\url{http://archlinuxarm.org/}}
+
+
+
+\section{Entwicklung} %TODO
+Liste an Dingen, die entwickelt werden müssen, damit der Entwurf funktioniert.
+Sensorplatine:
+Sendeschaltung,
+Empfängerschaltung,
+Firmware für Mikrocontroller.
+
+Protokoll für TWI-Bus
+
+Ablauf und Timing der Messungen
+Software auf RPI zum Ansteuern der Controller
+GUI auf RPI
+
+
+
+\section{Verwendete Tools} %TODO
+Um Schaltungen zu entwerfen sind einige Programme zum Einsatz gekommen. Damit ließen sich die Funktionen überprüfen, Frequenzgänge berechnen und es konnten Platinen mit den fertigen Schaltplänen designt werden.
+\begin{description}
+	\item[KiCAD] ist ein open-source Programm, mit dem modulare Schaltpläne gezeichnet werden können, woraus sich anschließend CAD-Modelle einer Platine erstellen lassen. Das Programm wird maßgeblich am CERN entwickelt und unterstützt viele zusätzliche Funktionen. So kann z.B. eine Netzliste für die \ac{SPICE}-Engine erstellt werden, mit der die Schaltungen simuliert werden können.\footnote{\url{http://www.kicad-pcb.org/}}
+	\item[LTspice] ist ein Tool von \textit{Linear Technology} um analoge und digitale Schaltungen zu simulieren, insbesondere mit den firmeneigenen Operationsverstärkern. Das Programm basiert auf dem Simulator \ac{SPICE} und besitzt einen eigenen Schaltungseditor.\footnote{\url{http://www.linear.com/designtools/software/\#LTspice}}
+	\item[AktivFilter] ist ein Tool um Frequenzfilter mit Operationsverstärkern zu entwerfen. Aus einigen Vorgaben berechnet das Programm ein Bode-Diagramm, dimensioniert die Bauteile und stellt einen Schaltplan zur Verfügung.\footnote{\url{http://www.softwaredidaktik.de/filter/}}
+\end{description}
+
+
