@@ -11,7 +11,7 @@ Das Ziel des Projektes ist es, die Position eines Objektes mithilfe von Ultrasch
 Da es sich dabei bereits um ein komplexes System handelt, bei dem es an vielen Stellen zu unerwarteten Problemen kommen kann, wurde ein vorrangiges Ziel definiert. Zuerst sollte eine einzelne Abstandsmessung durchgeführt und bewertet werden. Diese Aufgabe umfasst bereits alle physikalische Prinzipien, die zur Positionsbestimmung genutzt werden. Sobald die Abstandsmessung zuverlässig funktioniert, kann das endgültige System darauf aufgebaut werden.
 
 
-\section{Architektur, Lösungsansatz} % Hier wird auch die Hardware beschrieben
+\section{Architektur} % Hier wird auch die Hardware beschrieben
 Für die Positionsbestimmung werden drei Sender und Empfänger verwendet. Davon ist jeweils einer auf einer Platine verbaut, auf der sich zusätzlich Schaltungen für die Signalverarbeitung und ein Mikrocontroller befinden. Die drei Platinen werden so angeordnet, dass sie Objekte in ihrer Mitte erkennen können. Sie sind alle mit einem Einplatinen-Computer verbunden, mit dem die Mikrocontroller über einen \ac{TWI}-Bus kommunizieren können. Zwischen dem Computer und den Sensorplatinen befindet sich eine Verteilerplatine, an der die Stromversorgung eingesteckt wird und die Leitungen von Computer zu Platinen entsprechend verdrahtet sind. %TODO: Vertratet geeignetes Wort?
 Zur Verbindung untereinander werden Flachbandkabel verwendet. Die Verteilerplatine besitzt zusätzlich einen Steckplatz mit einer Standard-\ac{ISP}-Pinbelegung, mit dem die Mikrocontroller direkt vom Einplatinen-Computer beschrieben werden können.\\
 % Bild Architektursübersicht
