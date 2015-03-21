@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 5
 Title ""
-Date "18 mar 2015"
+Date "21 mar 2015"
 Rev ""
 Comp ""
 Comment1 ""
@@ -250,7 +250,7 @@ Connection ~ 4750 1850
 Wire Wire Line
 	3550 750  3550 1350
 $Sheet
-S 5600 2300 950  550 
+S 6400 3150 950  550 
 U 54AEEF81
 F0 "Empfänger" 50
 F1 "Empfänger.sch" 50

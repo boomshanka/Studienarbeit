@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 5
 Title ""
-Date "18 mar 2015"
+Date "21 mar 2015"
 Rev ""
 Comp ""
 Comment1 ""
@@ -60,12 +60,12 @@ $EndComp
 $Comp
 L LM358N U2
 U 1 1 54AEEFCC
-P 10000 2500
-F 0 "U2" H 9950 2700 60  0000 L CNN
-F 1 "LM358N" H 9950 2250 60  0000 L CNN
-F 2 "" H 10000 2500 60  0000 C CNN
-F 3 "" H 10000 2500 60  0000 C CNN
-	1    10000 2500
+P 6700 3050
+F 0 "U2" H 6650 3250 60  0000 L CNN
+F 1 "LM358N" H 6650 2800 60  0000 L CNN
+F 2 "" H 6700 3050 60  0000 C CNN
+F 3 "" H 6700 3050 60  0000 C CNN
+	1    6700 3050
 	1    0    0    -1  
 $EndComp
 $Comp
