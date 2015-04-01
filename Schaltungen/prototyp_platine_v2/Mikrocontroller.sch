@@ -29,14 +29,13 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:prototyp_platine-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 5
 Title ""
-Date "21 mar 2015"
+Date "1 apr 2015"
 Rev ""
 Comp ""
 Comment1 ""
@@ -268,8 +267,8 @@ S 6400 4100 900  450
 U 5500CADB
 F0 "Display" 50
 F1 "Display.sch" 50
-F2 "Data" I L 6400 4200 60 
-F3 "Clock" I L 6400 4300 60 
+F2 "Data" I L 6400 4300 60 
+F3 "Clock" I L 6400 4200 60 
 F4 "Update" I L 6400 4400 60 
 $EndSheet
 Wire Wire Line

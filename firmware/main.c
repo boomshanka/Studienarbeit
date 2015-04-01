@@ -7,6 +7,9 @@
 
 int main(void)
 {
+	// Display init
+	display_init();
+	
 	// Init-Funktionen
 	signal_init();
 //	signal_interrupt_init();
