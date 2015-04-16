@@ -10,6 +10,8 @@
 
 #define DISPLAY_DOT	0x01
 
+uint8_t first_diggit = 0;
+
 
 
 void display_init(void)
@@ -17,39 +19,29 @@ void display_init(void)
 	// Pins auf Ausgang schalten
 	DDRD |= (1<<PIN_CLOCK)|(1<<PIN_DATA)|(1<<PIN_STROBE);
 	
+	// Display auf null setzen
+	_display_write(0);
+	_display_write(0);
+	_display_write(0);
+	_display_write(0);
 	
-	// Testschleife
-	for (uint8_t i = 0; i<10; ++i)
-	{
-		uint8_t number = _display_convert(i);
+}
+
+
+void display_number(uint16_t number)
+{
+	// Strobe off
+	PORTD &= ~(1<<PIN_STROBE);
 		
-		for (uint8_t j = 0x80; j != 0; j = j>>1)
-		{
-			// Datenleitung
-			if (number & j)
-				PORTD |= (1<<PIN_DATA);
-			
-			// Clock high
-			PORTD |= (1<<PIN_CLOCK);
-			
-			_delay_us(10);
-			
-			// Clock low
-			PORTD &= ~(1<<PIN_CLOCK);
-			
-			// Datenleitung low
-			PORTD &= ~(1<<PIN_DATA);
-		}
-		
-		// Strobe on
-		PORTD |= (1<<PIN_STROBE);
-		_delay_ms(1000);
-		
-		// Strobe off
-		PORTD &= ~(1<<PIN_STROBE);
-	}
+	first_diggit = 0;
 	
+	_display_write_number((number / 1000) % 10);
+	_display_write_number((number / 100) % 10);
+	_display_write_number((number / 10) % 10);
+	_display_write_number(number % 10);
 	
+	// Strobe on
+	PORTD |= (1<<PIN_STROBE);
 }
 
 
@@ -91,4 +83,52 @@ uint8_t _display_convert(uint8_t number)
 			return 0;			
 	}
 }
+
+
+void _display_write(uint8_t data)
+{
+	for (uint8_t j = 0x80; j != 0; j = j>>1)
+	{
+		// Datenleitung
+		if (data & j)
+			PORTD |= (1<<PIN_DATA);
+		
+		// Clock high
+		PORTD |= (1<<PIN_CLOCK);
+		
+		//_delay_us(10);
+		
+		// Clock low
+		PORTD &= ~(1<<PIN_CLOCK);
+		
+		// Datenleitung low
+		PORTD &= ~(1<<PIN_DATA);
+	}
+}
+
+
+void _display_write_number(uint8_t number)
+{
+	if (number == 0)
+	{
+		if (!first_diggit)
+		{
+			// Leere Anzeige
+			_display_write(0);
+		}
+		else
+		{
+			// Anzeige mit 0
+			_display_write(_display_convert(0));
+		}
+	}
+	else
+	{
+		first_diggit = 1;
+		_display_write(_display_convert(number));
+	}
+}
+
+
+
 

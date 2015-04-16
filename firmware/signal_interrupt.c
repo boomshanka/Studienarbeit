@@ -4,30 +4,52 @@
 
 volatile uint8_t flag = 0;
 
+volatile uint8_t counterreg = 0;
+volatile uint16_t overflow = 0;
+volatile uint16_t of = 0;
+
+
 
 void signal_interrupt_init()
 {
-	// Interrupt INT1 auf steigende Flanke
-	MCUCR = (1<<ISC11)|(1<<ISC10);
+	// Interrupt INT0 auf fallende Flanke
+	MCUCR = (1<<ISC01);
 	
-	// Pin PD0 auf Ausgang
-	DDRD |= (1<<PD0);
+	// Überlaufinterrupt vom Zähler 0 aktivieren
+	TIMSK |= (1<<TOIE0);
+	
+	
 }
 
 void signal_interrupt_activate()
 {
-	// Interrupt INT1 aktivieren
-	GIMSK |= (1<<INT1);
+	// Bit löschen
+	GIFR |= (1<<INTF0);
+	
+	// Interrupt INT0 aktivieren
+	GIMSK |= (1<<INT0);
 }
 
 
-ISR(INT1_vect)
+void signal_interrupt_deactivate()
 {
+	// Interrupt INT0 deaktivieren
+	GIMSK &= ~(1<<INT0);
+}
+
+
+// Interrupt bei empfangenen Signal
+ISR(INT0_vect)
+{
+	counterreg = TCNT0;
+	overflow = of;
 	flag = 1;
-	
-	if (PORTD & (1<<PD0))
-		PORTD &= ~(1<<PD0);
-	else
-		PORTD |= (1<<PD0);
+}
+
+
+// Interrupt bei Überlauf von Zähler 0
+ISR (TIMER0_OVF_vect)
+{
+	++of;
 }
 

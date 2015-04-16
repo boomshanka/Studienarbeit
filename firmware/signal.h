@@ -9,6 +9,9 @@ void signal_init(void);
 
 inline void signal_start(void)
 {
+	// Zähler zurücksetzen
+	TCNT1 = 0;
+	
 	// Pin PB1 als Ausgang konfigurieren
 	//DDRB |= (1<<PB1);
 	

@@ -29,13 +29,14 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:prototyp_platine-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 5
 Title ""
-Date "1 apr 2015"
+Date "2 apr 2015"
 Rev ""
 Comp ""
 Comment1 ""

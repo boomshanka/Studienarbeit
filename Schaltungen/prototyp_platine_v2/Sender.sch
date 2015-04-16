@@ -29,13 +29,14 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:prototyp_platine-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 4 5
 Title ""
-Date "1 apr 2015"
+Date "2 apr 2015"
 Rev ""
 Comp ""
 Comment1 ""
@@ -67,7 +68,7 @@ F 1 "BC337" H 4850 2050 50  0000 C CNN
 F 2 "TO92-EBC" H 4790 1900 30  0001 C CNN
 F 3 "~" H 4600 1900 60  0000 C CNN
 	1    4600 1900
-	1    0    0    1   
+	1    0    0    -1  
 $EndComp
 $Comp
 L BC307 T2

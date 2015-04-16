@@ -51,7 +51,7 @@ TARGET = firmware
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = main.c signal.c twi_slave.c twi_master.c signal_interrupt.c display.c
+SRC = main.c signal.c signal_interrupt.c display.c time_of_flight.c
 
 
 # List Assembler source files here.
