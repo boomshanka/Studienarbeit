@@ -9,23 +9,23 @@ void signal_init(void);
 
 inline void signal_start(void)
 {
-	// Zähler zurücksetzen
-	TCNT1 = 0;
-	
-	// Pin PB1 als Ausgang konfigurieren
-	//DDRB |= (1<<PB1);
-	
 	// Pin PB2 als Ausgang konfigurieren
-	DDRB |= (1<<PB2);
+	//DDRB |= (1<<PB2);
+	
+	// Timer mit CPU-Frequenz starten
+	TCCR1B |= (1<<CS10);
 }
 
 inline void signal_stop(void)
 {
-	// Pin PB1 als Eingang konfigurieren
-	//DDRB &= ~(1<<PB1);
+	// Timer anhalten
+	TCCR1B &= ~(1<<CS10);
+	
+	// Zähler zurücksetzen
+	TCNT1 = 0;
 	
 	// Pin PB2 als Eingang konfigurieren
-	DDRB &= ~(1<<PB2);
+	//DDRB &= ~(1<<PB2);
 }
 
 #endif 

@@ -37,7 +37,7 @@ uint16_t tof_measure()
 	signal_stop();
 	
 	// 5 Zyklen warten
-	_delay_us(125);
+	_delay_ms(0.8);
 	
 	// Interrupts aktivieren
 	signal_interrupt_activate();
