@@ -177,12 +177,14 @@ LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
 # Type: avrdude -c ?
 # to get a full listing.
 #
-AVRDUDE_PROGRAMMER = linuxspi
+#AVRDUDE_PROGRAMMER = linuxspi
+AVRDUDE_PROGRAMMER = usbasp
 
 # com1 = serial port. Use lpt1 to connect to parallel port.
 AVRDUDE_PORT = /dev/spidev0.0   # programmer connected to serial device
 
-AVRDUDE_WRITE_FLASH = -U flash:w:programmer/$(TARGET).hex
+AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
+#AVRDUDE_WRITE_FLASH = -U flash:w:programmer/$(TARGET).hex
 #AVRDUDE_WRITE_EEPROM = -U eeprom:w:programmer/$(TARGET).eep
 
 
@@ -200,7 +202,8 @@ AVRDUDE_WRITE_FLASH = -U flash:w:programmer/$(TARGET).hex
 # to submit bug reports.
 #AVRDUDE_VERBOSE = -v -v
 
-AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
+AVRDUDE_FLAGS = -p $(MCU) -c $(AVRDUDE_PROGRAMMER)
+#AVRDUDE_FLAGS += -P $(AVRDUDE_PORT)
 AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
 AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
 AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
@@ -224,7 +227,8 @@ OBJCOPY = avr-objcopy
 OBJDUMP = avr-objdump
 SIZE = avr-size
 NM = avr-nm
-AVRDUDE = /usr/local/bin/avrdude
+#AVRDUDE = /usr/local/bin/avrdude
+AVRDUDE = avrdude
 REMOVE = rm -f
 COPY = cp
 
@@ -275,6 +279,9 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 # Default target.
 all: begin gccversion sizebefore build sizeafter finished end
 
+fuse:
+	sudo avrdude -c usbasp -p m8 -U lfuse:w:0xe4:m -U hfuse:w:0xd9:m
+
 build: elf hex eep lss sym
 
 elf: $(TARGET).elf
@@ -318,10 +325,13 @@ gccversion :
 
 
 # Program the device.  
-program: $(TARGET).hex $(TARGET).eep
+pi: $(TARGET).hex $(TARGET).eep
 	scp $(TARGET).hex pi@169.254.0.2:~/programmer/
 	scp $(TARGET).eep pi@169.254.0.2:~/programmer/
 	ssh pi@169.254.0.2 sudo $(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)
+	
+program: $(TARGET).hex $(TARGET).eep
+	sudo $(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)
 
 
 

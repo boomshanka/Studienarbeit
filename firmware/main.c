@@ -57,10 +57,10 @@ void init()
 void state_dist()
 {
 	// "DIS." auf Display ausgeben
-	_display_write(0);
-	_display_write(0xab | 0x01); // S.
-	_display_write(0x60); // I
 	_display_write(0xee); // D
+	_display_write(0x60); // I
+	_display_write(0xab | 0x01); // S.
+	_display_write(0);
 	_delay_ms(2000);
 	display_number(0);
 	
@@ -76,10 +76,11 @@ void state_dist()
 void state_vel()
 {
 	// "VEL." auf Display ausgeben
-	_display_write(0);
-	_display_write(0x61 | 0x01); // L.
-	_display_write(0x8f); // E
 	_display_write(0x64); // V
+	_display_write(0x8f); // E
+	_display_write(0x61 | 0x01); // L.
+	_display_write(0);
+	
 	_delay_ms(2000);
 	display_number(0);
 }
