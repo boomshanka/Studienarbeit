@@ -140,6 +140,13 @@ sympy-plots-for-*.tex/
 *.x86_64
 *.hex
 
+# Other files from avrgcc
+*.eep
+*.lss
+*.map
+*.sym
+*.lst
+
 
 # .gitignore for KiCAD
 *.bak
