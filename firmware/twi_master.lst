@@ -1,0 +1,354 @@
+   1               		.file	"twi_master.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               	.global	twim_start
+  12               	twim_start:
+  13               	.LFB0:
+  14               		.file 1 "twi_master.c"
+   1:twi_master.c  **** /****************************************************************************
+   2:twi_master.c  ****   TWI State codes
+   3:twi_master.c  **** ****************************************************************************/
+   4:twi_master.c  **** // General TWI Master staus codes                      
+   5:twi_master.c  **** #define TWI_START					0x08  // START has been transmitted  
+   6:twi_master.c  **** #define TWI_REP_START				0x10  // Repeated START has been transmitted
+   7:twi_master.c  **** #define TWI_ARB_LOST				0x38  // Arbitration lost
+   8:twi_master.c  **** 
+   9:twi_master.c  **** // TWI Master Transmitter staus codes                      
+  10:twi_master.c  **** #define TWI_MTX_ADR_ACK				0x18  // SLA+W has been tramsmitted and ACK received
+  11:twi_master.c  **** #define TWI_MTX_ADR_NACK			0x20  // SLA+W has been tramsmitted and NACK received 
+  12:twi_master.c  **** #define TWI_MTX_DATA_ACK			0x28  // Data byte has been tramsmitted and ACK received
+  13:twi_master.c  **** #define TWI_MTX_DATA_NACK			0x30  // Data byte has been tramsmitted and NACK received 
+  14:twi_master.c  **** 
+  15:twi_master.c  **** // TWI Master Receiver staus codes  
+  16:twi_master.c  **** #define TWI_MRX_ADR_ACK				0x40  // SLA+R has been tramsmitted and ACK received
+  17:twi_master.c  **** #define TWI_MRX_ADR_NACK			0x48  // SLA+R has been tramsmitted and NACK received
+  18:twi_master.c  **** #define TWI_MRX_DATA_ACK			0x50  // Data byte has been received and ACK tramsmitted
+  19:twi_master.c  **** #define TWI_MRX_DATA_NACK			0x58  // Data byte has been received and NACK tramsmitted
+  20:twi_master.c  **** 
+  21:twi_master.c  **** // TWI Slave Transmitter staus codes
+  22:twi_master.c  **** #define TWI_STX_ADR_ACK				0xA8  // Own SLA+R has been received; ACK has been returned
+  23:twi_master.c  **** #define TWI_STX_ADR_ACK_M_ARB_LOST	0xB0  // Arbitration lost in SLA+R/W as Master; own SLA+R has be
+  24:twi_master.c  **** #define TWI_STX_DATA_ACK			0xB8  // Data byte in TWDR has been transmitted; ACK has been received
+  25:twi_master.c  **** #define TWI_STX_DATA_NACK			0xC0  // Data byte in TWDR has been transmitted; NOT ACK has been recei
+  26:twi_master.c  **** #define TWI_STX_DATA_ACK_LAST_BYTE	0xC8  // Last data byte in TWDR has been transmitted (TWEA = 0
+  27:twi_master.c  **** 
+  28:twi_master.c  **** // TWI Slave Receiver staus codes
+  29:twi_master.c  **** #define TWI_SRX_ADR_ACK				0x60  // Own SLA+W has been received ACK has been returned
+  30:twi_master.c  **** #define TWI_SRX_ADR_ACK_M_ARB_LOST	0x68  // Arbitration lost in SLA+R/W as Master; own SLA+W has be
+  31:twi_master.c  **** #define TWI_SRX_GEN_ACK				0x70  // General call address has been received; ACK has been returned
+  32:twi_master.c  **** #define TWI_SRX_GEN_ACK_M_ARB_LOST	0x78  // Arbitration lost in SLA+R/W as Master; General call add
+  33:twi_master.c  **** #define TWI_SRX_ADR_DATA_ACK		0x80  // Previously addressed with own SLA+W; data has been received;
+  34:twi_master.c  **** #define TWI_SRX_ADR_DATA_NACK		0x88  // Previously addressed with own SLA+W; data has been received
+  35:twi_master.c  **** #define TWI_SRX_GEN_DATA_ACK		0x90  // Previously addressed with general call; data has been receiv
+  36:twi_master.c  **** #define TWI_SRX_GEN_DATA_NACK		0x98  // Previously addressed with general call; data has been recei
+  37:twi_master.c  **** #define TWI_SRX_STOP_RESTART		0xA0  // A STOP condition or repeated START condition has been receiv
+  38:twi_master.c  **** 
+  39:twi_master.c  **** // TWI Miscellaneous status codes
+  40:twi_master.c  **** #define TWI_NO_STATE				0xF8  // No relevant state information available; TWINT = 0
+  41:twi_master.c  **** #define TWI_BUS_ERROR				0x00  // Bus error due to an illegal START or STOP condition
+  42:twi_master.c  **** 
+  43:twi_master.c  **** 
+  44:twi_master.c  **** #include "twi_master.h"
+  45:twi_master.c  **** #include <util/twi.h>
+  46:twi_master.c  **** 
+  47:twi_master.c  **** 
+  48:twi_master.c  **** 
+  49:twi_master.c  **** /*
+  50:twi_master.c  **** void twim_init()
+  51:twi_master.c  **** {
+  52:twi_master.c  **** 	// Vorteiler auf 1 stellen (00), Statusregister löschen
+  53:twi_master.c  **** 	TWSR = 0x00;
+  54:twi_master.c  **** 	
+  55:twi_master.c  **** 	// Bitrate einstellen
+  56:twi_master.c  **** 	TWBR = ((F_CPU/TWI_BITRATE)-16)/2;
+  57:twi_master.c  **** }
+  58:twi_master.c  **** */
+  59:twi_master.c  **** 
+  60:twi_master.c  **** uint8_t twim_start(uint8_t address, uint8_t type_rw)
+  61:twi_master.c  **** {
+  15               		.loc 1 61 0
+  16               		.cfi_startproc
+  17               	.LVL0:
+  18               	/* prologue: function */
+  19               	/* frame size = 0 */
+  20               	/* stack size = 0 */
+  21               	.L__stack_usage = 0
+  62:twi_master.c  **** 	// Start senden und warten, bis Vorgang abgeschlossen ist
+  63:twi_master.c  ****     TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
+  22               		.loc 1 63 0
+  23 0000 94EA      		ldi r25,lo8(-92)
+  24 0002 96BF      		out 0x36,r25
+  25               	.L2:
+  64:twi_master.c  **** 	while (!(TWCR & (1<<TWINT)));
+  26               		.loc 1 64 0 discriminator 1
+  27 0004 06B6      		in __tmp_reg__,0x36
+  28 0006 07FE      		sbrs __tmp_reg__,7
+  29 0008 00C0      		rjmp .L2
+  65:twi_master.c  **** 	
+  66:twi_master.c  ****     // Status mit Maske prüfen
+  67:twi_master.c  **** 	uint8_t status = TWSR & 0xF8;
+  30               		.loc 1 67 0
+  31 000a 91B1      		in r25,0x1
+  32 000c 987F      		andi r25,lo8(-8)
+  33               	.LVL1:
+  68:twi_master.c  **** 	if ((status != TWI_START) && (status != TWI_REP_START))
+  34               		.loc 1 68 0
+  35 000e 9830      		cpi r25,lo8(8)
+  36 0010 01F0      		breq .L3
+  37               		.loc 1 68 0 is_stmt 0 discriminator 1
+  38 0012 9031      		cpi r25,lo8(16)
+  39 0014 01F4      		brne .L8
+  40               	.L3:
+  69:twi_master.c  **** 		return 0;
+  70:twi_master.c  **** 		
+  71:twi_master.c  **** 	// Adresse senden, warten
+  72:twi_master.c  **** 	TWDR = (address<<1) + type_rw;
+  41               		.loc 1 72 0 is_stmt 1
+  42 0016 880F      		lsl r24
+  43               	.LVL2:
+  44 0018 680F      		add r22,r24
+  45               	.LVL3:
+  46 001a 63B9      		out 0x3,r22
+  73:twi_master.c  **** 	TWCR = (1<<TWINT)|(1<<TWEN);
+  47               		.loc 1 73 0
+  48 001c 84E8      		ldi r24,lo8(-124)
+  49 001e 86BF      		out 0x36,r24
+  50               	.L5:
+  74:twi_master.c  **** 	while (!(TWCR & (1<<TWINT)));
+  51               		.loc 1 74 0 discriminator 1
+  52 0020 06B6      		in __tmp_reg__,0x36
+  53 0022 07FE      		sbrs __tmp_reg__,7
+  54 0024 00C0      		rjmp .L5
+  75:twi_master.c  **** 	
+  76:twi_master.c  **** 	// Status prüfen und zurückgeben
+  77:twi_master.c  ****     status = TWSR & 0xF8;
+  55               		.loc 1 77 0
+  56 0026 91B1      		in r25,0x1
+  57               	.LVL4:
+  58 0028 987F      		andi r25,lo8(-8)
+  59               	.LVL5:
+  78:twi_master.c  **** 	return ((status == TWI_START) || (status == TWI_REP_START));
+  60               		.loc 1 78 0
+  61 002a 81E0      		ldi r24,lo8(1)
+  62 002c 9830      		cpi r25,lo8(8)
+  63 002e 01F0      		breq .L9
+  64               		.loc 1 78 0 is_stmt 0 discriminator 2
+  65 0030 9031      		cpi r25,lo8(16)
+  66 0032 01F4      		brne .L8
+  67 0034 00C0      		rjmp .L4
+  68               	.L9:
+  69               		.loc 1 78 0
+  70 0036 0895      		ret
+  71               	.L8:
+  69:twi_master.c  **** 		
+  72               		.loc 1 69 0 is_stmt 1
+  73 0038 80E0      		ldi r24,0
+  74               	.L4:
+  79:twi_master.c  **** }
+  75               		.loc 1 79 0
+  76 003a 0895      		ret
+  77               		.cfi_endproc
+  78               	.LFE0:
+  80               	.global	twim_stop
+  82               	twim_stop:
+  83               	.LFB1:
+  80:twi_master.c  **** 
+  81:twi_master.c  **** 
+  82:twi_master.c  **** void twim_stop(void)
+  83:twi_master.c  **** {
+  84               		.loc 1 83 0
+  85               		.cfi_startproc
+  86               	/* prologue: function */
+  87               	/* frame size = 0 */
+  88               	/* stack size = 0 */
+  89               	.L__stack_usage = 0
+  84:twi_master.c  **** 	// Stop senden und warten
+  85:twi_master.c  **** 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);
+  90               		.loc 1 85 0
+  91 003c 84E9      		ldi r24,lo8(-108)
+  92 003e 86BF      		out 0x36,r24
+  93               	.L20:
+  86:twi_master.c  **** 	while (TWCR & (1<<TWINT));
+  94               		.loc 1 86 0 discriminator 1
+  95 0040 06B6      		in __tmp_reg__,0x36
+  96 0042 07FC      		sbrc __tmp_reg__,7
+  97 0044 00C0      		rjmp .L20
+  98               	/* epilogue start */
+  87:twi_master.c  **** }
+  99               		.loc 1 87 0
+ 100 0046 0895      		ret
+ 101               		.cfi_endproc
+ 102               	.LFE1:
+ 104               	.global	twim_write
+ 106               	twim_write:
+ 107               	.LFB2:
+  88:twi_master.c  **** 	
+  89:twi_master.c  **** 
+  90:twi_master.c  **** 
+  91:twi_master.c  **** uint8_t twim_write(uint8_t data)
+  92:twi_master.c  **** {
+ 108               		.loc 1 92 0
+ 109               		.cfi_startproc
+ 110               	.LVL6:
+ 111               	/* prologue: function */
+ 112               	/* frame size = 0 */
+ 113               	/* stack size = 0 */
+ 114               	.L__stack_usage = 0
+  93:twi_master.c  **** 	// Daten senden und warten
+  94:twi_master.c  ****     TWDR = data;
+ 115               		.loc 1 94 0
+ 116 0048 83B9      		out 0x3,r24
+  95:twi_master.c  ****     TWCR = (1<<TWINT)|(1<<TWEN);
+ 117               		.loc 1 95 0
+ 118 004a 84E8      		ldi r24,lo8(-124)
+ 119               	.LVL7:
+ 120 004c 86BF      		out 0x36,r24
+ 121               	.LVL8:
+ 122               	.L23:
+  96:twi_master.c  ****     while (!(TWCR & (1<<TWINT)));
+ 123               		.loc 1 96 0 discriminator 1
+ 124 004e 06B6      		in __tmp_reg__,0x36
+ 125 0050 07FE      		sbrs __tmp_reg__,7
+ 126 0052 00C0      		rjmp .L23
+  97:twi_master.c  ****     
+  98:twi_master.c  ****     // Status mit Maske prüfen und zurückgeben
+  99:twi_master.c  ****     uint8_t status = TWSR & 0xF8;
+ 127               		.loc 1 99 0
+ 128 0054 91B1      		in r25,0x1
+ 129               	.LVL9:
+ 130 0056 987F      		andi r25,lo8(-8)
+ 131               	.LVL10:
+ 100:twi_master.c  **** 	return (status == TWI_MTX_DATA_ACK);
+ 132               		.loc 1 100 0
+ 133 0058 81E0      		ldi r24,lo8(1)
+ 134 005a 9832      		cpi r25,lo8(40)
+ 135 005c 01F0      		breq .L24
+ 136 005e 80E0      		ldi r24,0
+ 137               	.L24:
+ 101:twi_master.c  **** }
+ 138               		.loc 1 101 0
+ 139 0060 0895      		ret
+ 140               		.cfi_endproc
+ 141               	.LFE2:
+ 143               	.global	twim_read_ack
+ 145               	twim_read_ack:
+ 146               	.LFB3:
+ 102:twi_master.c  **** 
+ 103:twi_master.c  **** 
+ 104:twi_master.c  **** 
+ 105:twi_master.c  **** uint8_t twim_read_ack(void)
+ 106:twi_master.c  **** {
+ 147               		.loc 1 106 0
+ 148               		.cfi_startproc
+ 149               	/* prologue: function */
+ 150               	/* frame size = 0 */
+ 151               	/* stack size = 0 */
+ 152               	.L__stack_usage = 0
+ 107:twi_master.c  **** 	// Daten anfordern
+ 108:twi_master.c  **** 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA); // ACK
+ 153               		.loc 1 108 0
+ 154 0062 84EC      		ldi r24,lo8(-60)
+ 155 0064 86BF      		out 0x36,r24
+ 156               	.L30:
+ 109:twi_master.c  **** 	while ((TWCR & (1<<TWINT)) == 0);
+ 157               		.loc 1 109 0 discriminator 1
+ 158 0066 06B6      		in __tmp_reg__,0x36
+ 159 0068 07FE      		sbrs __tmp_reg__,7
+ 160 006a 00C0      		rjmp .L30
+ 110:twi_master.c  **** 	
+ 111:twi_master.c  **** 	return TWDR;
+ 161               		.loc 1 111 0
+ 162 006c 83B1      		in r24,0x3
+ 112:twi_master.c  **** }
+ 163               		.loc 1 112 0
+ 164 006e 0895      		ret
+ 165               		.cfi_endproc
+ 166               	.LFE3:
+ 168               	.global	twim_read_nack
+ 170               	twim_read_nack:
+ 171               	.LFB4:
+ 113:twi_master.c  **** 
+ 114:twi_master.c  **** 
+ 115:twi_master.c  **** uint8_t twim_read_nack(void)
+ 116:twi_master.c  **** {
+ 172               		.loc 1 116 0
+ 173               		.cfi_startproc
+ 174               	/* prologue: function */
+ 175               	/* frame size = 0 */
+ 176               	/* stack size = 0 */
+ 177               	.L__stack_usage = 0
+ 117:twi_master.c  **** 	// Daten anfordern
+ 118:twi_master.c  **** 	TWCR = (1<<TWINT)|(1<<TWEN); // NACK
+ 178               		.loc 1 118 0
+ 179 0070 84E8      		ldi r24,lo8(-124)
+ 180 0072 86BF      		out 0x36,r24
+ 181               	.L33:
+ 119:twi_master.c  **** 	while ((TWCR & (1<<TWINT)) == 0);
+ 182               		.loc 1 119 0 discriminator 1
+ 183 0074 06B6      		in __tmp_reg__,0x36
+ 184 0076 07FE      		sbrs __tmp_reg__,7
+ 185 0078 00C0      		rjmp .L33
+ 120:twi_master.c  **** 	
+ 121:twi_master.c  **** 	return TWDR;
+ 186               		.loc 1 121 0
+ 187 007a 83B1      		in r24,0x3
+ 122:twi_master.c  **** }
+ 188               		.loc 1 122 0
+ 189 007c 0895      		ret
+ 190               		.cfi_endproc
+ 191               	.LFE4:
+ 193               	.global	twim_status
+ 195               	twim_status:
+ 196               	.LFB5:
+ 123:twi_master.c  **** 
+ 124:twi_master.c  **** 
+ 125:twi_master.c  **** uint8_t twim_status(void)
+ 126:twi_master.c  **** {
+ 197               		.loc 1 126 0
+ 198               		.cfi_startproc
+ 199               	/* prologue: function */
+ 200               	/* frame size = 0 */
+ 201               	/* stack size = 0 */
+ 202               	.L__stack_usage = 0
+ 127:twi_master.c  **** 	 // Status mit Maske prüfen und zurückgeben
+ 128:twi_master.c  ****     uint8_t status = TWSR & 0xF8;
+ 203               		.loc 1 128 0
+ 204 007e 91B1      		in r25,0x1
+ 205               	.LVL11:
+ 206 0080 987F      		andi r25,lo8(-8)
+ 207               	.LVL12:
+ 129:twi_master.c  **** 	return (status == TWI_MTX_DATA_ACK);
+ 208               		.loc 1 129 0
+ 209 0082 81E0      		ldi r24,lo8(1)
+ 210 0084 9832      		cpi r25,lo8(40)
+ 211 0086 01F0      		breq .L36
+ 212 0088 80E0      		ldi r24,0
+ 213               	.L36:
+ 130:twi_master.c  **** }
+ 214               		.loc 1 130 0
+ 215 008a 0895      		ret
+ 216               		.cfi_endproc
+ 217               	.LFE5:
+ 219               	.Letext0:
+ 220               		.file 2 "/usr/avr/include/stdint.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 twi_master.c
+     /tmp/ccdQDYNN.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccdQDYNN.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccdQDYNN.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccdQDYNN.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccdQDYNN.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccdQDYNN.s:12     .text:0000000000000000 twim_start
+     /tmp/ccdQDYNN.s:82     .text:000000000000003c twim_stop
+     /tmp/ccdQDYNN.s:106    .text:0000000000000048 twim_write
+     /tmp/ccdQDYNN.s:145    .text:0000000000000062 twim_read_ack
+     /tmp/ccdQDYNN.s:170    .text:0000000000000070 twim_read_nack
+     /tmp/ccdQDYNN.s:195    .text:000000000000007e twim_status
+
+NO UNDEFINED SYMBOLS

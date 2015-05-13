@@ -1,5 +1,3 @@
-#include "signal_interrupt.h"
-
 #include <avr/interrupt.h>
 #include <avr/io.h>
 

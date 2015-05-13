@@ -1,8 +1,6 @@
 #ifndef SIGNAL_H
 #define SIGNAL_H
 
-#include <stdint.h>
-
 #include <avr/io.h>
 
 

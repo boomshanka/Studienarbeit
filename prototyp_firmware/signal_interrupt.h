@@ -1,9 +1,6 @@
 #ifndef _SIGNAL_INTERRUPT_H__
 #define _SIGNAL_INTERRUPT_H__
 
-#include <stdint.h>
-
-
 
 volatile uint8_t flag;
 volatile uint8_t counterreg;

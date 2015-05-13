@@ -1,0 +1,251 @@
+   1               		.file	"signal_interrupt.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               	.global	signal_interrupt_init
+  12               	signal_interrupt_init:
+  13               	.LFB0:
+  14               		.file 1 "signal_interrupt.c"
+   1:signal_interrupt.c **** #include "signal_interrupt.h"
+   2:signal_interrupt.c **** 
+   3:signal_interrupt.c **** #include <avr/interrupt.h>
+   4:signal_interrupt.c **** #include <avr/io.h>
+   5:signal_interrupt.c **** 
+   6:signal_interrupt.c **** 
+   7:signal_interrupt.c **** volatile uint8_t flag = 0;
+   8:signal_interrupt.c **** 
+   9:signal_interrupt.c **** volatile uint8_t counterreg = 0;
+  10:signal_interrupt.c **** volatile uint16_t overflow = 0;
+  11:signal_interrupt.c **** volatile uint16_t of = 0;
+  12:signal_interrupt.c **** 
+  13:signal_interrupt.c **** 
+  14:signal_interrupt.c **** 
+  15:signal_interrupt.c **** void signal_interrupt_init()
+  16:signal_interrupt.c **** {
+  15               		.loc 1 16 0
+  16               		.cfi_startproc
+  17               	/* prologue: function */
+  18               	/* frame size = 0 */
+  19               	/* stack size = 0 */
+  20               	.L__stack_usage = 0
+  17:signal_interrupt.c **** 	// Interrupt INT0 auf fallende Flanke
+  18:signal_interrupt.c **** 	MCUCR = (1<<ISC01);
+  21               		.loc 1 18 0
+  22 0000 82E0      		ldi r24,lo8(2)
+  23 0002 85BF      		out 0x35,r24
+  19:signal_interrupt.c **** 	
+  20:signal_interrupt.c **** 	// Überlaufinterrupt vom Zähler 0 aktivieren
+  21:signal_interrupt.c **** 	TIMSK |= (1<<TOIE0);
+  24               		.loc 1 21 0
+  25 0004 89B7      		in r24,0x39
+  26 0006 8160      		ori r24,lo8(1)
+  27 0008 89BF      		out 0x39,r24
+  28 000a 0895      		ret
+  29               		.cfi_endproc
+  30               	.LFE0:
+  32               	.global	signal_interrupt_activate
+  34               	signal_interrupt_activate:
+  35               	.LFB1:
+  22:signal_interrupt.c **** 	
+  23:signal_interrupt.c **** 	
+  24:signal_interrupt.c **** }
+  25:signal_interrupt.c **** 
+  26:signal_interrupt.c **** void signal_interrupt_activate()
+  27:signal_interrupt.c **** {
+  36               		.loc 1 27 0
+  37               		.cfi_startproc
+  38               	/* prologue: function */
+  39               	/* frame size = 0 */
+  40               	/* stack size = 0 */
+  41               	.L__stack_usage = 0
+  28:signal_interrupt.c **** 	// Bit löschen
+  29:signal_interrupt.c **** 	GIFR |= (1<<INTF0);
+  42               		.loc 1 29 0
+  43 000c 8AB7      		in r24,0x3a
+  44 000e 8064      		ori r24,lo8(64)
+  45 0010 8ABF      		out 0x3a,r24
+  30:signal_interrupt.c **** 	
+  31:signal_interrupt.c **** 	// Interrupt INT0 aktivieren
+  32:signal_interrupt.c **** 	GIMSK |= (1<<INT0);
+  46               		.loc 1 32 0
+  47 0012 8BB7      		in r24,0x3b
+  48 0014 8064      		ori r24,lo8(64)
+  49 0016 8BBF      		out 0x3b,r24
+  50 0018 0895      		ret
+  51               		.cfi_endproc
+  52               	.LFE1:
+  54               	.global	signal_interrupt_deactivate
+  56               	signal_interrupt_deactivate:
+  57               	.LFB2:
+  33:signal_interrupt.c **** }
+  34:signal_interrupt.c **** 
+  35:signal_interrupt.c **** 
+  36:signal_interrupt.c **** void signal_interrupt_deactivate()
+  37:signal_interrupt.c **** {
+  58               		.loc 1 37 0
+  59               		.cfi_startproc
+  60               	/* prologue: function */
+  61               	/* frame size = 0 */
+  62               	/* stack size = 0 */
+  63               	.L__stack_usage = 0
+  38:signal_interrupt.c **** 	// Interrupt INT0 deaktivieren
+  39:signal_interrupt.c **** 	GIMSK &= ~(1<<INT0);
+  64               		.loc 1 39 0
+  65 001a 8BB7      		in r24,0x3b
+  66 001c 8F7B      		andi r24,lo8(-65)
+  67 001e 8BBF      		out 0x3b,r24
+  68 0020 0895      		ret
+  69               		.cfi_endproc
+  70               	.LFE2:
+  72               	.global	__vector_1
+  74               	__vector_1:
+  75               	.LFB3:
+  40:signal_interrupt.c **** }
+  41:signal_interrupt.c **** 
+  42:signal_interrupt.c **** 
+  43:signal_interrupt.c **** // Interrupt bei empfangenen Signal
+  44:signal_interrupt.c **** ISR(INT0_vect)
+  45:signal_interrupt.c **** {
+  76               		.loc 1 45 0
+  77               		.cfi_startproc
+  78 0022 1F92      		push r1
+  79               	.LCFI0:
+  80               		.cfi_def_cfa_offset 3
+  81               		.cfi_offset 1, -2
+  82 0024 0F92      		push r0
+  83               	.LCFI1:
+  84               		.cfi_def_cfa_offset 4
+  85               		.cfi_offset 0, -3
+  86 0026 0FB6      		in r0,__SREG__
+  87 0028 0F92      		push r0
+  88 002a 1124      		clr __zero_reg__
+  89 002c 8F93      		push r24
+  90               	.LCFI2:
+  91               		.cfi_def_cfa_offset 5
+  92               		.cfi_offset 24, -4
+  93 002e 9F93      		push r25
+  94               	.LCFI3:
+  95               		.cfi_def_cfa_offset 6
+  96               		.cfi_offset 25, -5
+  97               	/* prologue: Signal */
+  98               	/* frame size = 0 */
+  99               	/* stack size = 5 */
+ 100               	.L__stack_usage = 5
+  46:signal_interrupt.c **** 	counterreg = TCNT0;
+ 101               		.loc 1 46 0
+ 102 0030 82B7      		in r24,0x32
+ 103 0032 8093 0000 		sts counterreg,r24
+  47:signal_interrupt.c **** 	overflow = of;
+ 104               		.loc 1 47 0
+ 105 0036 8091 0000 		lds r24,of
+ 106 003a 9091 0000 		lds r25,of+1
+ 107 003e 9093 0000 		sts overflow+1,r25
+ 108 0042 8093 0000 		sts overflow,r24
+  48:signal_interrupt.c **** 	flag = 1;
+ 109               		.loc 1 48 0
+ 110 0046 81E0      		ldi r24,lo8(1)
+ 111 0048 8093 0000 		sts flag,r24
+ 112               	/* epilogue start */
+  49:signal_interrupt.c **** }
+ 113               		.loc 1 49 0
+ 114 004c 9F91      		pop r25
+ 115 004e 8F91      		pop r24
+ 116 0050 0F90      		pop r0
+ 117 0052 0FBE      		out __SREG__,r0
+ 118 0054 0F90      		pop r0
+ 119 0056 1F90      		pop r1
+ 120 0058 1895      		reti
+ 121               		.cfi_endproc
+ 122               	.LFE3:
+ 124               	.global	__vector_9
+ 126               	__vector_9:
+ 127               	.LFB4:
+  50:signal_interrupt.c **** 
+  51:signal_interrupt.c **** 
+  52:signal_interrupt.c **** // Interrupt bei Überlauf von Zähler 0
+  53:signal_interrupt.c **** ISR (TIMER0_OVF_vect)
+  54:signal_interrupt.c **** {
+ 128               		.loc 1 54 0
+ 129               		.cfi_startproc
+ 130 005a 1F92      		push r1
+ 131               	.LCFI4:
+ 132               		.cfi_def_cfa_offset 3
+ 133               		.cfi_offset 1, -2
+ 134 005c 0F92      		push r0
+ 135               	.LCFI5:
+ 136               		.cfi_def_cfa_offset 4
+ 137               		.cfi_offset 0, -3
+ 138 005e 0FB6      		in r0,__SREG__
+ 139 0060 0F92      		push r0
+ 140 0062 1124      		clr __zero_reg__
+ 141 0064 8F93      		push r24
+ 142               	.LCFI6:
+ 143               		.cfi_def_cfa_offset 5
+ 144               		.cfi_offset 24, -4
+ 145 0066 9F93      		push r25
+ 146               	.LCFI7:
+ 147               		.cfi_def_cfa_offset 6
+ 148               		.cfi_offset 25, -5
+ 149               	/* prologue: Signal */
+ 150               	/* frame size = 0 */
+ 151               	/* stack size = 5 */
+ 152               	.L__stack_usage = 5
+  55:signal_interrupt.c **** 	++of;
+ 153               		.loc 1 55 0
+ 154 0068 8091 0000 		lds r24,of
+ 155 006c 9091 0000 		lds r25,of+1
+ 156 0070 0196      		adiw r24,1
+ 157 0072 9093 0000 		sts of+1,r25
+ 158 0076 8093 0000 		sts of,r24
+ 159               	/* epilogue start */
+  56:signal_interrupt.c **** }
+ 160               		.loc 1 56 0
+ 161 007a 9F91      		pop r25
+ 162 007c 8F91      		pop r24
+ 163 007e 0F90      		pop r0
+ 164 0080 0FBE      		out __SREG__,r0
+ 165 0082 0F90      		pop r0
+ 166 0084 1F90      		pop r1
+ 167 0086 1895      		reti
+ 168               		.cfi_endproc
+ 169               	.LFE4:
+ 171               	.global	of
+ 172               		.section .bss
+ 175               	of:
+ 176 0000 0000      		.zero	2
+ 177               	.global	overflow
+ 180               	overflow:
+ 181 0002 0000      		.zero	2
+ 182               	.global	counterreg
+ 185               	counterreg:
+ 186 0004 00        		.zero	1
+ 187               	.global	flag
+ 190               	flag:
+ 191 0005 00        		.zero	1
+ 192               		.text
+ 193               	.Letext0:
+ 194               		.file 2 "/usr/avr/include/stdint.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 signal_interrupt.c
+     /tmp/ccbO4CyS.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccbO4CyS.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccbO4CyS.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccbO4CyS.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccbO4CyS.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccbO4CyS.s:12     .text:0000000000000000 signal_interrupt_init
+     /tmp/ccbO4CyS.s:34     .text:000000000000000c signal_interrupt_activate
+     /tmp/ccbO4CyS.s:56     .text:000000000000001a signal_interrupt_deactivate
+     /tmp/ccbO4CyS.s:74     .text:0000000000000022 __vector_1
+     /tmp/ccbO4CyS.s:185    .bss:0000000000000004 counterreg
+     /tmp/ccbO4CyS.s:175    .bss:0000000000000000 of
+     /tmp/ccbO4CyS.s:180    .bss:0000000000000002 overflow
+     /tmp/ccbO4CyS.s:190    .bss:0000000000000005 flag
+     /tmp/ccbO4CyS.s:126    .text:000000000000005a __vector_9
+
+UNDEFINED SYMBOLS
+__do_clear_bss

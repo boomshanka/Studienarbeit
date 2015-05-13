@@ -1,0 +1,133 @@
+   1               		.file	"main.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               	.global	init
+  12               	init:
+  13               	.LFB9:
+  14               		.file 1 "main.c"
+   1:main.c        **** #include "signal.h"
+   2:main.c        **** #include "signal_interrupt.h"
+   3:main.c        **** #include "time_of_flight.h"
+   4:main.c        **** #include "leds.h"
+   5:main.c        **** 
+   6:main.c        **** 
+   7:main.c        **** #include <avr/io.h>
+   8:main.c        **** #include <avr/interrupt.h>
+   9:main.c        **** 
+  10:main.c        **** #include <util/delay.h>
+  11:main.c        **** #include <stdint.h>
+  12:main.c        **** 
+  13:main.c        **** 
+  14:main.c        **** 
+  15:main.c        **** void init(void);
+  16:main.c        **** 
+  17:main.c        **** 
+  18:main.c        **** int main(void)
+  19:main.c        **** {
+  20:main.c        **** 	// Initialisieren
+  21:main.c        **** 	init();
+  22:main.c        **** 	
+  23:main.c        **** 	// Interrupts aktivieren
+  24:main.c        **** 	sei();
+  25:main.c        **** 	
+  26:main.c        **** 	
+  27:main.c        **** 	while (1)
+  28:main.c        **** 	{
+  29:main.c        **** 		
+  30:main.c        **** 	}
+  31:main.c        **** 	
+  32:main.c        **** 	return 0;
+  33:main.c        **** }
+  34:main.c        **** 
+  35:main.c        **** 
+  36:main.c        **** void init()
+  37:main.c        **** {
+  15               		.loc 1 37 0
+  16               		.cfi_startproc
+  17               	/* prologue: function */
+  18               	/* frame size = 0 */
+  19               	/* stack size = 0 */
+  20               	.L__stack_usage = 0
+  38:main.c        **** 	leds_init();
+  21               		.loc 1 38 0
+  22 0000 00D0      		rcall leds_init
+  23               	.LVL0:
+  39:main.c        **** 	signal_init();
+  24               		.loc 1 39 0
+  25 0002 00D0      		rcall signal_init
+  26               	.LVL1:
+  40:main.c        **** 	signal_interrupt_init();
+  27               		.loc 1 40 0
+  28 0004 00D0      		rcall signal_interrupt_init
+  29               	.LVL2:
+  41:main.c        **** 	tof_init();
+  30               		.loc 1 41 0
+  31 0006 00C0      		rjmp tof_init
+  32               	.LVL3:
+  33               		.cfi_endproc
+  34               	.LFE9:
+  36               		.section	.text.startup,"ax",@progbits
+  37               	.global	main
+  39               	main:
+  40               	.LFB8:
+  19:main.c        **** 	// Initialisieren
+  41               		.loc 1 19 0
+  42               		.cfi_startproc
+  43               	/* prologue: function */
+  44               	/* frame size = 0 */
+  45               	/* stack size = 0 */
+  46               	.L__stack_usage = 0
+  21:main.c        **** 	
+  47               		.loc 1 21 0
+  48 0000 00D0      		rcall init
+  49               	.LVL4:
+  24:main.c        **** 	
+  50               		.loc 1 24 0
+  51               	/* #APP */
+  52               	 ;  24 "main.c" 1
+  53 0002 7894      		sei
+  54               	 ;  0 "" 2
+  55               	/* #NOAPP */
+  56               	.L3:
+  30:main.c        **** 	
+  57               		.loc 1 30 0 discriminator 1
+  58 0004 00C0      		rjmp .L3
+  59               		.cfi_endproc
+  60               	.LFE8:
+  62               		.comm	of,2,1
+  63               		.comm	overflow,2,1
+  64               		.comm	counterreg,1,1
+  65               		.comm	flag,1,1
+  66               		.text
+  67               	.Letext0:
+  68               		.file 2 "/usr/avr/include/stdint.h"
+  69               		.file 3 "signal_interrupt.h"
+  70               		.file 4 "leds.h"
+  71               		.file 5 "signal.h"
+  72               		.file 6 "time_of_flight.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/cc0dyKRO.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc0dyKRO.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc0dyKRO.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc0dyKRO.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc0dyKRO.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc0dyKRO.s:12     .text:0000000000000000 init
+     /tmp/cc0dyKRO.s:39     .text.startup:0000000000000000 main
+                            *COM*:0000000000000002 of
+                            *COM*:0000000000000002 overflow
+                            *COM*:0000000000000001 counterreg
+                            *COM*:0000000000000001 flag
+
+UNDEFINED SYMBOLS
+leds_init
+signal_init
+signal_interrupt_init
+tof_init
+__do_clear_bss
