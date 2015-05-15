@@ -2,7 +2,7 @@
 
 
 
-void signal_init(void)
+void signal_init()
 {
 	// COM1A0 & COM1A1: Ausgangspin PB1 bei Vergleichswert setzen, bei Überlauf löschen
 	// COM1B0 & COM1B1: Ausgangspins PB2 bei Vergleichswert setzen, bei Überlauf löschen
