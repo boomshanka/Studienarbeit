@@ -3,6 +3,7 @@
 #include "time_of_flight.h"
 #include "leds.h"
 
+#include "twi_slave.h"
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -20,27 +21,36 @@ int main(void)
 {
 	// Initialisieren
 	init();
-	leds_blink(1<<LEDS_YELLOW);
+	leds_blink(1<<LEDS_YELLOW, 3);
 	
 	// Interrupts aktivieren
 	sei();
-	leds_blink(1<<LEDS_GREEN);
+	leds_blink(1<<LEDS_GREEN, 3);
 	
 	// Testweise Signal aktivieren
-	signal_start();
+	//signal_start();
 	
 	while (1)
 	{
-		if (!(PIND & (1<<PD2)))
+		/*uint8_t data = twis_read_nack();
+		uint8_t type;
+		if (twis_response_required(&type))
 		{
-			leds_on(1<<LEDS_GREEN);
-			leds_off(1<<LEDS_RED);
+			twis_write(0xb2);
+		}*/
+		
+		
+		
+		if (tof_measure() != 0)
+		{
+			leds_blink(1<<LEDS_GREEN, 1);
 		}
 		else
 		{
-			leds_on(1<<LEDS_RED);
-			leds_off(1<<LEDS_GREEN);
+			leds_blink(1<<LEDS_RED, 1);
 		}
+		
+		_delay_ms(250);
 	}
 	
 	return 0;
@@ -56,6 +66,8 @@ void init()
 	signal_init();
 	signal_interrupt_init();
 	tof_init();
+	
+	twis_init(0x1a, TWIS_BITRATE_100k);
 }
 
 
