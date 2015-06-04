@@ -15,6 +15,7 @@
 
 
 void init(void);
+void twiloop(void);
 
 
 int main(void)
@@ -32,12 +33,6 @@ int main(void)
 	
 	while (1)
 	{
-		/*uint8_t data = twis_read_nack();
-		uint8_t type;
-		if (twis_response_required(&type))
-		{
-			twis_write(0xb2);
-		}*/
 		
 		
 		
@@ -69,6 +64,49 @@ void init()
 	
 	twis_init(0x1a, TWIS_BITRATE_100k);
 }
+
+
+
+void twiloop()
+{
+	uint8_t	twi_responsetype;
+	
+	
+	while (1)
+	{
+		if (twis_response_required(&twi_responsetype))
+		{
+			switch (twi_responsetype)
+			{
+				case TWIS_READ:
+					// bsp 4 bites lesen
+					twis_read_ack();
+					twis_read_ack();
+					twis_read_ack();
+					twis_read_nack();
+					
+					twis_stop();
+					break;
+					
+				case TWIS_WRITE:
+					// bsp 2 bytes senden
+					twis_write();
+					twis_write();
+					
+					twis_stop();
+					break;
+					
+				default:
+					// Kommunikationsfehler
+			}
+		}
+		
+		// Hier regelmäßige updates (z.B. LED blinken lassen)
+	}
+}
+
+
+
 
 
 
