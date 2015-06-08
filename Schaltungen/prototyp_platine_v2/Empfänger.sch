@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 5
 Title ""
-Date "2 apr 2015"
+Date "22 may 2015"
 Rev ""
 Comp ""
 Comment1 ""
@@ -573,4 +573,6 @@ Wire Wire Line
 	7950 3250 8000 3250
 Wire Wire Line
 	9000 3150 9200 3150
+Text Notes 4250 5200 0    60   ~ 0
+TODO: R3+R4 -> Diode\nWiderstand Parallel zu c1 (Tiefpass)\nC2 entfernen/überbrücken\n\nR5 & R6 anpassen\n\nC3/R7 anpassen (hochpass mit <<40kHz)
 $EndSCHEMATC

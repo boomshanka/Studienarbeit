@@ -1,0 +1,11 @@
+%!TEX root = ../dokumentation.tex
+
+\chapter{Schnittstellenkommunikation}
+Für den Datenaustausch zwischen dem genutzen Raspberry Pi und dem ATMega8-Microcontroller kann man das I2C/TWI-Protokoll nutzen.TWI steht für Two-Wire-Interface (TWI) und überträgt Daten seriell. 
+Beim Verbinden des AVR mit dem RPi muss darauf geachtet werden, dass der AVR mit 3,3V läuft, da ansonsten der RPi beschädigt wird. Im Anschluss daran muss das RPi zur Kommunikation per I2C (Module hinzufügen und Installation des I2C-Tools-Pakets)und der Arduino als I2C-Slave vorbereitet werden. Der Raspberry Pi wird schließlich als Master konfiguriert.
+Um die Verbindung herzustellen wird SDA und SCL des Raspberry (Pin 3 und 5) jeweils mit SDA und SCL des AVR verbunden. Dies entspricht beim ATmega8 Pin 27 und 28. Im nächsten Schritt werden die Leitungen über einen Pull-up-Widerstand mit Vcc verbunden werden.
+
+Beim ATmega der Code ist einfach die Bibliothek von [1].
+
+Beim Raspberry benutzt man die I2C-Bibliothek von [2] und den folgenden 
+
