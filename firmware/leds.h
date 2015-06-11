@@ -14,6 +14,7 @@ void leds_on(uint8_t pins);
 void leds_off(uint8_t pins);
 
 void leds_blink(uint8_t pins, uint8_t n);
+void leds_pulse(uint8_t pins);
 
 
 #endif

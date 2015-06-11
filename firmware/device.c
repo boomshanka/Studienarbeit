@@ -1,6 +1,7 @@
 #include "device.h"
 
 #include <avr/io.h>
+#include <util/delay.h>
 
 
 uint8_t dev_big  = 0;
@@ -15,6 +16,8 @@ void device_init()
 	PORTB |= (1<<PB6);
 	// PB7 Ausgang (low)
 	DDRB |= (1<<PB7);
+	// Kurz warten, damit sich Pegel einstellen
+	_delay_us(50);
 	
 	if (!(PINB & (1<<PB6)))
 	{
@@ -28,6 +31,8 @@ void device_init()
 		PORTD |= (1<<PD6);
 		// PD7 Ausgang (low)
 		DDRD |= (1<<PD7);
+		// Kurz warten
+		_delay_us(50);
 		
 		if (!(PIND & (1<<PD6)))
 		{

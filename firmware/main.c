@@ -1,5 +1,6 @@
 #include "device.h"
 #include "leds.h"
+#include "display.h"
 
 #include "signal.h"
 #include "signal_interrupt.h"
@@ -17,7 +18,13 @@
 
 
 void init(void);
-void twiloop(void);
+
+void loop_big(void);
+void loop_small(void);
+
+void twi(void);
+
+uint8_t connected = 0;
 
 
 int main(void)
@@ -34,7 +41,11 @@ int main(void)
 	_delay_ms(500);
 	if (device_big())
 	{
+		display_number(0);
 		leds_blink(1<<LEDS_GREEN, 2);
+		
+		// Hauptschleife für große Platine starten
+		loop_big();
 	}
 	else if (device_small())
 	{
@@ -45,21 +56,8 @@ int main(void)
 		leds_blink(1<<LEDS_RED, 2);
 	}
 	
-	
-	
-	while (1)
-	{
-		if (tof_measure() != 0)
-		{
-			leds_blink(1<<LEDS_GREEN, 1);
-		}
-		else
-		{
-			leds_blink(1<<LEDS_RED, 1);
-		}
-		
-		_delay_ms(250);
-	}
+	// Hauptschleife für kleine Platine starten
+	loop_small();
 	
 	return 0;
 }
@@ -74,6 +72,8 @@ void init()
 	if (device_big())
 	{
 		// Anzeige initialisieren
+		display_init();
+		display_number(8888);
 	}
 	leds_init();
 	signal_init();
@@ -85,7 +85,7 @@ void init()
 
 
 
-void twiloop()
+void twi()
 {
 	uint8_t	twi_responsetype;
 	
@@ -119,15 +119,58 @@ void twiloop()
 					break;
 			}
 		}
-		
-		// Hier regelmäßige updates (z.B. LED blinken lassen)
 	}
 }
 
 
+void loop_big()
+{
+	while (1)
+	{
+		if (!connected)
+		{
+			// Nicht verbunden, Wechsel zwischen Modus Distanz und Geschwindigkeit möglich
+		}
+		else
+		{
+			// Gelbe LED pulsieren lassen
+			leds_pulse(1<<LEDS_YELLOW);
+		}
+		
+		//twi();
+	}
+}
 
 
+void loop_small()
+{
+	while (1)
+	{
+		if (!connected)
+		{
+			// Nicht verbunden, rote LED pulsieren lassen
+			leds_pulse(1<<LEDS_RED);
+		}
+		else
+		{
+			// Gelbe LED pulsieren lassen
+			leds_pulse(1<<LEDS_YELLOW);
+		}
+		
+		//twi();
+	}
+}
 
 
-
-
+/*
+ if (tof_measure() != 0)
+		{
+			leds_blink(1<<LEDS_GREEN, 1);
+		}
+		else
+		{
+			leds_blink(1<<LEDS_RED, 1);
+		}
+		
+		_delay_ms(250);
+*/
