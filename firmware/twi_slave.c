@@ -47,13 +47,13 @@
 
 
 
-void twis_init(uint8_t address, uint32_t bitrate)
+void twis_init(uint8_t address)
 {
 	// Vorteiler auf 1 stellen (00), Statusregister löschen
 	TWSR = 0x00;
 	
 	// Bitrate einstellen
-	TWBR = ((F_CPU/bitrate)-16)/2;
+//	TWBR = ((F_CPU/bitrate)-16)/2; // Als Slave nicht nötig (?)
 	
 	// Adresse setzen
 	TWAR = (address << 1);
