@@ -1,6 +1,34 @@
 #ifndef DISPLAY
 #define DISPLAY
 
+#define DISPLAY_DOT	0x10
+
+
+// 0x01	 
+//		 _
+//		
+// 0x02	
+//		|
+//		
+// 0x04	
+//		
+//		|
+// 0x08
+//		
+//		 _
+// 0x10
+//
+//		   .
+// 0x20
+//		
+//		  |
+// 0x40
+//		  |
+//		
+// 0x80	 _
+//		
+//	
+
 #include <stdint.h>
 
 

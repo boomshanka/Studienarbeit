@@ -13,7 +13,7 @@
 
 
 
-void	twis_init(uint8_t address, uint32_t bitrate);
+void	twis_init(uint8_t address);
 
 uint8_t	twis_response_required(uint8_t *response_type);
 void	twis_stop(void);

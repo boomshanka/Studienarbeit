@@ -8,8 +8,6 @@
 #define PIN_DATA	PD6
 #define PIN_STROBE	PD7
 
-#define DISPLAY_DOT	0x01
-
 uint8_t first_diggit = 0;
 
 

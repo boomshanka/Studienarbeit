@@ -1,64 +1,108 @@
 #include "time_of_flight.h"
 #include "signal.h"
-#include "signal_interrupt.h"
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
+#include <util/atomic.h>
+
+
+volatile uint8_t tof_flag = 0;
+volatile uint8_t tof_overflow = 0;
 
 
 void tof_init()
 {
-	// Timer initialisieren (Vorteiler 8)
-	//TCCR0 = (1<<CS02)|(1<<CS00);
-	TCCR0 = (1<<CS01);
+	// Interrupt INT0 auf fallende Flanke
+	MCUCR = (1<<ISC01);
+	
+	// Überlaufinterrupt vom Zähler 0 aktivieren
+	TIMSK |= (1<<TOIE0);
 }
 
 
 
-uint16_t tof_measure()
+void tof_startmes()
 {
-	// Flag auf 0
-	flag = 0;
+	// Status Running
+	tof_flag = (1<<TOF_RUNNING);
 	
-	
-	// Timer starten
+	// Überlaufregister zurücksetzen
+	tof_overflow = 0;
+	// Timer zurücksetzen
 	TCNT0 = 0;
 	
-	// Overflow auf 0
-	of = 0;
-	
-	// Signal starten
-	signal_start();
-	
-	// 5 Zyklen warten
-	_delay_us(125);
-	
-	// Signal stoppen
-	signal_stop();
-	
-	// 5 Zyklen warten
-	_delay_ms(0.8);
-	
-	// Interrupts aktivieren
-	signal_interrupt_activate();
-	
-	// Auf Signal warten
-	uint8_t time = 0;
-	while (!flag && time != 255)
+	// Zeitkritischer Bereich
+	ATOMIC_BLOCK(ATOMIC_FORCEON)
 	{
-		_delay_ms(1);
-		++ time;
+		// Timer starten (Vorteiler 8)
+		TCCR0 = (1<<CS01);
+		
+		// Signal starten
+		signal_start();
+		// 5 Zyklen warten
+		_delay_us(125);
+		// Signal stoppen
+		signal_stop();
 	}
 	
-	// Interrupts deaktivieren
-	signal_interrupt_deactivate();
+	// Totzeit! FIXME
+	_delay_us(250);
 	
-	// Wert zurück
-	if (time == 255)
-		return 0;
-		
-	return overflow*(uint16_t)(255) + (uint16_t)(counterreg);
-	//return overflow;
+	// Empfänger aktiviern
+	// Statusbit löschen
+	GIFR |= (1<<INTF0);
+	// Interrupt INT0 aktivieren
+	GIMSK |= (1<<INT0);
 }
 
+
+void tof_stopmes()
+{
+	// Timer stoppen
+	TCCR0 = 0;
+	
+	// Interrupt INT0 deaktivieren
+	GIMSK &= ~(1<<INT0);
+	
+	// Flag löschen
+	tof_flag = 0;
+}
+
+uint16_t tof_getresult()
+{
+	// Ergebnis aus Überlaufregister und Zählerregister ausrechnen
+	return (uint16_t)(255)*(uint16_t)(tof_overflow) + (uint16_t)(TCNT0);
+}
+
+
+
+// Interrupt bei empfangenen Signal
+ISR(INT0_vect)
+{
+	// Zähler anhalten
+	TCCR0 = 0;
+	
+	// Flag setzen
+	tof_flag = (1<<TOF_SUCCESS)|(1<<TOF_STOPPED);
+	
+	// Interrupt deaktivieren
+	GIMSK &= ~(1<<INT0);
+}
+
+
+// Interrupt bei Überlauf von Zähler 0
+ISR (TIMER0_OVF_vect)
+{
+	if (++tof_overflow == 0)
+	{
+		// Timeout!
+		// Zähler anhalten
+		TCCR0 = 0;
+		// Flag setzen
+		tof_flag = (1<<TOF_TIMEOUT)|(1<<TOF_STOPPED);
+		// Interrupt INT0 deaktivieren
+		GIMSK &= ~(1<<INT0);
+	}
+}
 
