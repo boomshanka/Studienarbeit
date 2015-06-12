@@ -3,3 +3,4 @@
 1: PWM-Signal und resultinerendes Signal der Ausgangsstufe zwischen Transistoren und Entkoppelkondensator. Auffällig: Spannung wird nicht negativ, positive Auslenkung unsauber.
 2: PWM-Signal und Ausgangssignal der ersten Stufe des Verstärkers. Auffällig: Steigende Flanke sehr stark abgeflacht, Pulsbreite sieht aber gut aus.
 3: Weiteres Signal am Verstärker. Fallende Flanken unsauber.
+4: Signal am Verstärker, erreicht (kurzzeitig) 20V. Grund: Ein Transistor war defekt und wurde ersetzt.

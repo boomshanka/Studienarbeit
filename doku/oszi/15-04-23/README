@@ -1,0 +1,16 @@
+23. April 15: Untersuchung der Signale von Sender und Empfänger von Prototyp-Platine
+
+1_01: Nachschwingen des Senders über langen Zeitraum.
+1_02: Nachschwingen und Oberwellen in vergrößerter Aufnahme.
+
+2_01: Rückkopplungen der Schwingungen: Oben Empfänger, unten Sender. Keine Reflektion, nur Wechselwirkungen.
+
+3_01: Signale von Frequenzfilter am Empfänger. Sauberes 40kHz-Signal passiert unverändert.
+3_02: Verstärkerstufe: Unten verstärktes Sinus-Signal
+3_03: Letzte Verstärkerstufe
+
+4_01: Signal durch Rückkopplung und Reflektion. Reflektiertes Signal ist stärker.
+	  Oben: Empfangenes Signal (verstärkt). Unten: OP addiert Offsetspannung (ca 0.7V) vor Transistor. Signal wird abgeschnitten, sobald Strom fließt.
+4_02: Selbes Bild mit doppelter Zeitbasis.
+4_03: Laufzeitmessung. Oben: Empfangenes Signal. Unten: Digitales Signal hinter Transistor. 
+4_04: Laufzeitmessung mit kürzerer Distanz. Totzeit bedingt durch Rückkopplung begrenzt minimale Distanz.

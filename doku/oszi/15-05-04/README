@@ -1,0 +1,4 @@
+4. Mai 15: ISP-Schnittstelle von Raspberry geht nicht mehr.
+
+1: Oben Clock-Signal, unten MOSI. MOSI-Pin von Raspberry sendet keine Signale mehr.
+2: Oben Chipselect/Reset, unten Clock.
