@@ -47,7 +47,7 @@ void tof_startmes()
 	}
 	
 	// Totzeit! FIXME
-	_delay_us(250);
+	_delay_us(700);
 	
 	// Empfänger aktiviern
 	// Statusbit löschen

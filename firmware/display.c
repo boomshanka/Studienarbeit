@@ -26,17 +26,17 @@ void display_init(void)
 }
 
 
-void display_number(uint16_t number)
+void display_number(uint16_t number, uint8_t dot)
 {
 	// Strobe off
 	PORTD &= ~(1<<PIN_STROBE);
 		
 	first_diggit = 0;
 	
-	_display_write_number((number / 1000) % 10);
-	_display_write_number((number / 100) % 10);
-	_display_write_number((number / 10) % 10);
-	_display_write_number(number % 10);
+	_display_write_number((number / 1000) % 10, dot & (1<<3));
+	_display_write_number((number / 100) % 10, dot & (1<<2));
+	_display_write_number((number / 10) % 10, dot & (1<<1));
+	_display_write_number(number % 10, dot & (1<<0));
 	
 	// Strobe on
 	PORTD |= (1<<PIN_STROBE);
@@ -105,7 +105,7 @@ void _display_write(uint8_t data)
 }
 
 
-void _display_write_number(uint8_t number)
+void _display_write_number(uint8_t number, uint8_t dot)
 {
 	if (number == 0)
 	{
@@ -117,13 +117,13 @@ void _display_write_number(uint8_t number)
 		else
 		{
 			// Anzeige mit 0
-			_display_write(_display_convert(0));
+			_display_write(_display_convert(0) | (dot ? DISPLAY_DOT : 0));
 		}
 	}
 	else
 	{
 		first_diggit = 1;
-		_display_write(_display_convert(number));
+		_display_write(_display_convert(number) | (dot ? DISPLAY_DOT : 0));
 	}
 }
 
