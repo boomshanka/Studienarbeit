@@ -95,7 +95,7 @@ Zur Verbindung untereinander werden Flachbandkabel verwendet. Die Verteilerplati
 
 
 \subsection{Sensorplatine und Mikrocontroller}
-Die Mikrocontroller auf den Sensorplatinen erfüllen die Zwecke:
+Die Mikrocontroller auf den Sensorplatinen erfüllen folgende Zwecke:
 \begin{itemize}
 	\item Ansteuerung der Ultraschallsender
 	\item Signal am Empfänger detektieren
@@ -118,18 +118,35 @@ Für diesen Zweck wird ein \textit{Raspberry PI} verwendet. Er besitzt ein \ac{G
 
 
 
-\section{Entwicklung} %TODO
-Liste an Dingen, die entwickelt werden müssen, damit der Entwurf funktioniert.
-Sensorplatine:
-Sendeschaltung,
-Empfängerschaltung,
-Firmware für Mikrocontroller.
+\section{Entwicklung} %TODO Überarbeiten, noch nicht fertig!
+Es gibt bereits eine Vielzahl von fertigen Ultraschallmodulen zu kaufen, die mit relativ wenig Aufwand ansteuerbar und verwendbar sind. In diesem Projekt werden jedoch einfache Ultraschall-Sender und -Empfänger verwendet, sodass die dazugehörigen Schaltungen selbst entwickelt werden müssen. Darüber hinaus wurden die Platinen mit den Mikrocontrollern und die dazugehörigen Firmware selbst entworfen. Auch das ganze System wurde auf einem möglichst tiefen Level entworfen, sodass die Funktionalität 
 
-Protokoll für TWI-Bus
-
-Ablauf und Timing der Messungen
-Software auf RPI zum Ansteuern der Controller
-GUI auf RPI
+Im Einzelnen gibt es folgende Dinge, die selbst entwickelt wurden:
+\begin{description}
+	\item[Die Sensorplatine] mit den Komponenten:
+	\begin{itemize}
+		\item Sendeverstärker-Schaltung
+		\item Empfängerschaltung
+		\item Firmware für den Mikrocontroller
+	\end{itemize}
+	\item[Die Verteilerplatine] mit den Komponenten:
+	\begin{itemize}
+		\item TWI-Spannungsübersetzung
+		\item ISP-Schnittstelle
+		\item Verkabelung, Stromversorgung
+	\end{itemize}
+	\item[Die Schnittstelle zwischen Controllern und Computer] bla
+	\begin{itemize}
+		\item 
+		\item Das Protokoll, dass auf dem \ac{TWI} aufsetzt
+	\end{itemize}
+	\item[Software für den Raspberry Pi] bla
+	\begin{itemize}
+		\item GUI
+		\item TWI/I2C schnittstelle
+		\item Ablauf und Timing der Messungen
+	\end{itemize}
+\end{description}
 
 
 

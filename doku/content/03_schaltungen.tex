@@ -6,18 +6,18 @@
 
 % Section über Sender-Schaltung, Signalerzeugung
 \section{Sender}
-Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte dabei möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Der hohe Abstrahlwinkel hat auch zur Folge, dass nur ein Bruchteil der Schallwelle am Objekt auftrifft und reflektiert werden kann. Es wird empfohlen, den Sender mit einem Rechtecksignal anzusteuern. Durch sein schmales Frequenzband schwingt er dennoch Sinus-förmig und nimmt dabei am meisten Energie auf. Der Sender besteht aus einem Piezoelement, dessen vereinfachtes Ersatzschaltbild ein Kondensator ist. Laut Datenblatt besitzt er eine Kapazität von $2.55nF$.
+Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte dabei möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Der hohe Abstrahlwinkel hat auch zur Folge, dass nur ein Bruchteil der Schallwelle am Objekt auftrifft und reflektiert werden kann. Im Datenblatt wird empfohlen, den Sender mit einem Rechtecksignal anzusteuern. Durch sein schmales Frequenzband schwingt er dennoch Sinus-förmig und nimmt dabei am meisten Energie auf. Der Sender besteht aus einem Piezoelement, dessen vereinfachtes Ersatzschaltbild ein Kondensator ist. Laut Datenblatt besitzt er eine Kapazität von $2.55nF$.\\
 
 
 \subsection{Signalerzeugung}
 Das Rechtecksignal wird von dem Mikrocontroller erzeugt. Er besitzt einen Hardwarezähler, der mit einem Ausgangspin verbunden werden kann. Damit lässt sich ein präzises Signal erzeugen, ohne die Rechenleistung des Controllers einzuschränken.\\
-Der Sender hat eine maximale Spitze-Spitze-Spannung von $U_{SS} = 20V$, das ausgegebene Signal des Mikrocontrollers wechselt jedoch nur zwischen $0V$ und $5V$. Die Sendeleistung wäre zu schwach, außerdem sollte der Ausgang des Mikrocontrollers nicht direkt belastet werden, da er nur sehr begrenzt Strom liefern kann. Aus diesen Gründen wurden mehrere Sendeverstärker entwickelt und untersucht, ob sie geeignet sind.
+Der Sender hat eine maximale Spitze-Spitze-Spannung von $U_{SS} = 20V$, das ausgegebene Signal des Mikrocontrollers wechselt jedoch nur zwischen $0V$ und $5V$. Die Sendeleistung wäre zu schwach, außerdem sollte der Ausgang des Mikrocontrollers nicht direkt belastet werden, da er nur sehr begrenzt Strom liefern kann. Aus diesen Gründen wurden mehrere Sendeverstärker entwickelt und untersucht, ob sie geeignet sind. Dafür stand eine Spannungsversorgung mit den Spannungen $+5V$, $+12V$ und $-12V$ zu Verfügung.
 
 
 
 \subsection{Erste Schaltung: Verstärkung mit Operationsverstärker}
 \subsubsection{Idee} % FIXME Differenzverstärker
-Mithilfe eines Operationsverstärkers lassen sich einfach Spannungen verstärken. Mit einer Komparatorschaltung kann das $0/5V$-Signal auf $-10/+10V$ umgesetzt werden. Der Operationsverstärker \textit{LM258} ist zum Einsatz gekommen, da seine Spannungsversorgung sehr hoch und flexibel gewählt werden kann und er eine relativ hohe Bandweite von $1.1MHz$ aufweist.
+Mithilfe eines Operationsverstärkers lassen sich einfach Spannungen verstärken. Mit einer Komparatorschaltung kann das Steuersignal auf $-10V..+10V$ umgesetzt werden. Der Operationsverstärker \textit{LM258} ist zum Einsatz gekommen, da seine Spannungsversorgung sehr hoch und flexibel gewählt werden kann und er eine relativ hohe Bandweite von $1.1MHz$ aufweist. Außerdem ist die maximale Ausgangsspannung um zwei Volt nach Oben und Unten eingeschränkt, sodass die $20V$ zum Ansteuern des Senders exakt erreicht werden.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/komparatorschaltung.jpg}
@@ -30,7 +30,7 @@ Bereits bei der Planung der Schaltung wurde befürchtet, dass der maximale Strom
 t=\frac{Q}{I}=\frac{C*U}{I}=\frac{2.55nF*20V}{30mA}=1.7\mu s
 \end{equation}
 Im Vergleich zur Pulsdauer von $12.5\mu s$ ist dieser Wert in Ordnung. Allerdings besitzt nur ein idealer Operationsverstärker einen $0\Omega$-Ausgangswiderstand und der Sender ist auch kein idealer Kondensator ohne seriellen Widerstand. Deshalb wurde erwartet, dass die Flanken etwas abgeflacht werden.\\
-Tatsächlich wurde jedoch ein viel wichtigerer Wert im Datenblatt übersehen. Die \textit{Slew Rate} gibt an, wie schnell sich die Spannung des OPs ändern kann. Beim \textit{LM258} beträgt sie $0.6V/\mu s$. Das Ausgangssignal entsprach aus diesem Grund einem Dreiecksignal und schwankte nur um wenige Volt.
+Tatsächlich wurde jedoch ein viel wichtigerer Wert im Datenblatt übersehen: Die \textit{Slew Rate} gibt an, wie schnell sich die Spannung des OPs ändern kann. Beim \textit{LM258} beträgt sie $0.6V/\mu s$. Das Ausgangssignal entsprach aus diesem Grund einem Dreiecksignal und schwankte nur um wenige Volt.
 % Bild von Simulation
 \begin{figure}[H] %TODO: Kontrast von Bild erhöhen. Außerdem stimmen die 20V/µs nur ungefähr.
 \centering
@@ -39,7 +39,7 @@ Tatsächlich wurde jedoch ein viel wichtigerer Wert im Datenblatt übersehen. Di
 \end{figure}
 
 \subsubsection{Fazit}
-Die Spannungsverstärkung mit dem Operationsverstärker \textit{LM258} hat sich als nicht praktikabel herausgestellt, da er zu langsam reagiert. Für diese Zwecke können jedoch spezielle \textit{Komparatoren} verwendet werden, die sich wie Operationsverstärker verhalten, nur viel schneller und ungenauer sind. Die Genauigkeit spielt beim Umschalten keine Rolle.\\
+Die Spannungsverstärkung mit dem Operationsverstärker \textit{LM258} hat sich als nicht praktikabel herausgestellt, da er zu langsam reagiert. Für diese Zwecke können jedoch spezielle \textit{Komparatoren} verwendet werden, die sich wie Operationsverstärker verhalten, jedoch viel schneller und ungenauer sind. Die Genauigkeit spielt beim Umschalten keine Rolle.\\
 Nach dieser Feststellung wurden Schaltungen mit Transistoren untersucht, da sie höhere Leistungen und schnellere Reaktionszeiten zulassen.
 
 
@@ -52,7 +52,7 @@ Der Bipolartransistor ist ein stromgesteuertes Halbleiterbauelement, der als Ver
 Als Spannungsversorgung stehen $+5V$, $+12V$ und $-12V$ zur Verfügung. Es gibt verschiedene Schaltungen, die unterschiedliche Spannungsbereiche bieten:
 \begin{description}
 	\item[NPN-Transistor:] Gebräuchliche Schaltung um einen Schalter mit einen Transistor zu realisieren. Die $5V$ werden auf $12V$ verstärkt.
-	\item[PNP-Transistor:] Mit nur einem Transistor kann das Signal auf $-12V$-$+5V$ umgesetzt werden. Die Spitze-Spitze-Spannung beträgt $17V$.
+	\item[PNP-Transistor:] Mit nur einem Transistor kann das Signal auf $-12$-$+5V$ umgesetzt werden. Die Spitze-Spitze-Spannung beträgt $17V$.
 	\item[Zwei Transistoren:] Kombiniert man beide Verstärker, kann das Signal auf $-12V$-$+12V$ verstärkt werden. Da die Spitze-Spitze-Spannung des Senders um $4V$ überstiegen wird, muss sie mit einer Z-Diode begrenzt werden. Sie wird in Reihe entgegen der Spannung geschaltet, sodass an ihr die nötige Spannung abfällt.
 	\item[Wechselsignal:] Der Sender ist nicht gegen Masse geschaltet, sondern erhält am anderen Pin das invertierte Signal. Dadurch lässt sich die Spitze-Spitze-Spannung verdoppeln. Es wird mindestens ein weiterer Transistor benötigt, um die zweite Seite zu beschalten. Dafür kann das Ausgangssignal des ersten Transistors genutzt werden, da es um $180^\circ$ phasenverdreht zum Eingangssignal ist. Der Vorteil dieser Schaltung ist, dass die Spannung halbiert werden kann, ohne Sendeleistung einzubüßen.
 \end{description}
@@ -60,7 +60,7 @@ Als Spannungsversorgung stehen $+5V$, $+12V$ und $-12V$ zur Verfügung. Es gibt 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{images/transistorschaltungen.png}
-\caption{Verstärkungsschaltungen für $12V$, $17V$ und $20V$pannung} \label{img:I3}
+\caption{Verstärkungsschaltungen für $12V$, $17V$ und $20V$ Spannungsdifferenz} \label{img:I3}
 \end{figure}
 
 \subsubsection{Nachteile}
@@ -70,17 +70,17 @@ Die Emitterschaltung ist eine einfache Verstärkerschaltung und eignet sich herv
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.14]{oszi/15-04-01/2.jpg}
-\caption{Ladekurven an einer Kapazität} \label{img:I4}
+\caption{RC-Ladekurven hinter einem Transistor (Oben Ansteuersignal)} \label{img:I4}
 \end{figure}
 
 \subsection{Dritte Schaltung: Gegentaktstufe}
-Anstatt die Spannung über den Lastwiderstand am Kollektor eines Transistors auf den richtigen Wert zu ziehen, kann die Spannung über zwei Transistoren, die sich im Gegentakt öffnen und schließen, direkt erreicht werden. Die Vorteile dabei sind, dass der Sender über sehr kleine Widerstände schnell geladen werden kann und dennoch kein unnötiger Stromfluss entsteht. Das Prinzip der Gegentaktstufe wird in verschiedenen Bereichen angewendet: Von schnellen Logik-ICs über verschiedene Treiberbausteine bis hin zu Leistungsendstufen. Durch die Symmetrie und den geringen Eigenstromverbrauch lassen sich hohe Lasten sehr schnell An- und Abschalten. Allerdings ist eine Gegentaktstufe nicht linear, wodurch sie meist ungeeignet für analoge Anwendungen ist.
+Anstatt die Spannung über den Lastwiderstand am Kollektor eines Transistors auf den richtigen Wert zu ziehen, kann die Spannung über zwei Transistoren, die sich im Gegentakt öffnen und schließen, direkt erreicht werden. Die Vorteile dabei sind, dass der Sender über sehr kleine Widerstände schnell geladen werden kann und dennoch kein unnötiger Stromfluss entsteht. Das Prinzip der Gegentaktstufe wird in verschiedenen Bereichen angewendet: Von schnellen Logik-ICs über verschiedene Treiberbausteine bis hin zu Leistungsendstufen. Durch die Symmetrie und den geringen Eigenstromverbrauch lassen sich hohe Lasten sehr schnell An- und Abschalten. Allerdings ist eine Gegentaktstufe nicht linear, wodurch sie meist ungeeignet für analoge Anwendungen ist. In diesem Fall wird nur ein digitales Umschalten benötigt.
 
 
 
 \subsubsection{Gleichzeitiges Öffnen der Transistoren}
-Ein hohes Risiko der Schaltung ist, dass ein Kurzschluss entsteht, sobald beide Transistoren gleichzeitig geöffnet sind. Die hohen Ströme würden nicht zuletzt den thermischen Tod der Transistoren bedeuten. Die Schaltung muss so gestaltet werden, dass ein gleichzeitiges Öffnen nicht möglich ist. Durch folgenden Aufbau kann das erreicht werden:\\
-Die Emitter beider Transistoren werden zusammengelegt. An dieser Stelle wird auch der Sender angeschlossen. Ein NPN-Transistor öffnet nur, wenn ein Strom von Basis zu Emitter fließt. Für den PNP-Transistor muss er in die andere Richtung fließen. Werden nun auch die Basispins dieser beiden Transistoren verbunden, kann nur einer der zwei Fälle auftreten - ein gleichzeitiges Öffnen ist deshalb nicht mehr möglich.
+Ein hohes Risiko der Schaltung ist, dass ein Kurzschluss entsteht, sobald beide Transistoren gleichzeitig geöffnet sind. Die hohen Ströme würden nicht zuletzt den thermischen Tod der Transistoren bedeuten. Die Schaltung muss so gestaltet werden, dass ein gleichzeitiges Öffnen nicht möglich ist. Durch folgenden Aufbau kann dies erreicht werden:\\
+Die Emitter zweier Transistoren, jeweils einer vom Typ NPN und PNP, werden zusammengelegt. An dieser Stelle wird auch der Sender angeschlossen. Ein NPN-Transistor öffnet nur, wenn ein Strom von Basis zu Emitter fließt. Für den PNP-Transistor muss er in die andere Richtung fließen. Werden nun auch die Basispins dieser beiden Transistoren verbunden, kann nur einer der zwei Fälle auftreten - ein gleichzeitiges Öffnen ist deshalb nicht mehr möglich.
 %TODO Nummern ins Bild und im Text verlinken
 \begin{figure}[H]
 \centering
@@ -89,20 +89,44 @@ Die Emitter beider Transistoren werden zusammengelegt. An dieser Stelle wird auc
 \end{figure}
 
 
-\subsubsection{Verzögertes Schließen, langsame Reaktionen}
+\subsubsection{Verzögerte Reaktionen der Transistoren}
 Dioden haben an den Übergängen der Dotierungen kapazitive Eigenschaften. Besonders bei hohen Spannungen wirken sie sich sehr negativ auf die Schaltgeschwindigkeit aus, da die Ladung erst abtransportiert werden muss, bevor sich der Zustand des Transistors ändert. Das führt dazu, dass sie zu spät schließen und die Signale verformt werden. Über mehrere Transistoren summiert sich dieser Effekt auf. Anfangs wurde versucht, die Steuerspannung mithilfe von in Reihe geschalteten Zener-Dioden zu begrenzen. Auch eine Diode von Basis zu Kollektor (NPN), bzw von Kollektor zur Basis (PNP) verringert die Schaltgeschwindigkeit. Überschüssige Ladungsträger fließen über die niederohmige Kollektor-Emitter-Strecke ab, wodurch ein Übersättigen des Transistors vermieden wird. Bei der Gegentaktstufe tritt jedoch der Fall ein, indem der Sender vollständig geladen ist und kein Strom mehr fließt. Ohne Stromfluss fällt an den Z-Dioden keine Spannung ab und die Transistoren übersättigen erneut.\\ %TODO Warum schlechtes Wort?!
-Eine akzeptable Lösung wurde gefunden, indem die Arbeitspunkte der Transistoren über Widerstandsverhältnisse (R13 und R14) angepasst wurden. Mithilfe von Schaltungssimulationen konnten die Verhältnisse genau bestimmt werden, bei denen die Transistoren noch sauber schalten und gleichzeitig vor dem Schließen kaum Ladungsträger abtransportiert werden müssen. Die Simulationen waren so genau, dass mit nur geringfügigen Änderungen der Widerstandswerte auch in der Realität optimale Ergebnisse erzielt wurden.
+Eine akzeptable Lösung wurde gefunden, indem die Arbeitspunkte der Transistoren über Widerstandsverhältnisse (R13 und R14 sowie R15 und R16, siehe \ref{img:I5}) angepasst wurden. Mithilfe von Schaltungssimulationen konnten die Verhältnisse genau bestimmt werden, bei denen die Transistoren noch sauber schalten und gleichzeitig vor dem Schließen kaum Ladungsträger abtransportiert werden müssen. Die Simulationen waren so genau, dass mit nur geringfügigen Änderungen der Widerstandswerte auch in der Realität optimale Ergebnisse erzielt wurden.
 
 \subsubsection{Aufbau und Funktionsweise}
-Drei Stufen
+Die Verstärkerschaltung setzt das Ansteuersignal von $0..5V$ auf $-8..+12V$ um, sodass der Ultraschallsender mit $20V$ Spannungsdifferenz angesteuert wird. Die vier Volt Differenz von der Spannungsquelle mit $-12V$ werden mithilfe einer Zener-Diode erreicht, damit der Sender nicht durch Überspannung beschädigt wird. Die Umsetzung wird mit drei Schritten erreicht: In den ersten zwei Stufen (mit T4 und T3, siehe \ref{img:I5}) wird das Signal auf $-12..+12V$ verstärkt (Prinzip der dritten Schaltung aus \ref{img:I3}), die letzte Stufe ist die eigentliche Gegentakt-Ausgangsstufe, wo das Umschalten der beiden Ausgangsspannungen stattfindet.
 
 
 \subsubsection{Fazit}
+Die Gegentakt-Ausgangsstufe ist im Vergleich zu den bisherigen Schaltungen sehr aufwendig. Mit ihr lassen sich sehr große Lasten schalten, gleichzeitig ist sie sehr Stromsparend. Sie ist leistungsmäßig für diesen Zweck jedoch überdimensioniert, die leistungsschwächere Ausgangsstufe von einem oder mehreren Logik-ICs hätten diesen Zweck auch erfüllen können.
 
 
-\subsection{Oberwellen - der Kampf gegen Windmühlen}
+\subsection{Oberwellen und der Kampf gegen Windmühlen} %TODO Zeit!
+Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, waren die unbefriedigenden Signalverläufe am Ausgang der Sendeverstärker. Die Pegel wurden nur unsauber erreicht und nicht gehalten. Der Fehler war, dass die Ursachen dafür in den falschen Bereichen gesehen wurden. Oberwellen wurden zu Beginn aus mehreren Gründen ausgeschlossen:
+\begin{itemize}
+	\item Das Datenblatt empfiehlt die Ansteuerung der Sender mit Rechtecksignalen
+	\item Das Frequenzband des Senders ist sehr schmal, andere Frequenzen werden stark gedämpft
+	\item Die Flanke beim Schließen der Transistoren sind steil, beim Öffnen gibt es RC-Ladekurven-ähnliche Verformungen der Flanken
+	\item Der Signalverlauf am Empfänger war wie erwartet ein sauberes Sinus-Signal
+\end{itemize}
+Es wurde vermutet, dass die Ströme nicht ausreichend sind, um die Kapazitäten in den geringen Pulszeiten zu versorgen. Allerdings erbrachte der Gegentaktverstärker trotz den hohen Strömen auch nicht das erhoffte Ergebnis. Wieder wurden die Pegel nicht sauber gehalten, nur die Flankensteilheit wurde verbessert.\\
+Ein Hinweis auf das Problem gab es jedoch: Die Ausgangsspannung schwingt auch weiter, nachdem das Steuersignal keine Pulse mehr sendet. Dieses Verhalten tritt nicht auf, wenn der Ultraschallsender nicht angeschlossen ist. Tatsächlich stammen die Schwingungen vom Sender. In ihm wird die elektronische Schwingung in eine mechanische umgesetzt. Das schwingende Element, dass die Schallwellen erzeugt, besitzt eine Trägheit, die es mechanisch nachschwingen lässt und dadurch auch elektrische Signale rückkoppelt.\\ %TODO: Rückkoppeln? Besseres Wort?
+Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass dieses Element auch mit höheren Frequenzen schwingt. Dabei handelt es sich hauptsächlich um harmonische Oberschwingungen, d.h. Schwingungen mit der n-Fachen Frequenz der Resonanzschwingung von $40 kHz$.
+\begin{figure}[H]
+\centering
+\includegraphics[width=(\textwidth), angle=90]{oszi/15-04-16/3.jpg} %TODO Anderes Bild mit vollem Spannungsbereich
+\caption{Ausgang der Gegentaktstufe mit angeschlossenen Sender} \label{img:I6}
+\end{figure}
 
-
+\subsubsection{Lösung}
+Um Oberwellen zu vermeiden, können die Sender statt mit Rechtecksignalen mit einem Sinus angesteuert werden. Die meisten hochfrequenten Anteile lassen sich auch schon mit einem Tiefpass entfernen, der die Flanken etwas abflacht. Der Versuch die Verstärker immer leistungsfähiger zu machen, führte vielmehr dazu, dass noch mehr hochfrequente Anteile entstehen konnten. Es wurde versucht die Kapazitäten zu bekämpfen, die jedoch - wie die Windmühlen aus Don Quijotes - das echte Problem nicht darstellten.\\ %TODO kurze Fußnote
+Da im Datenblatt die Sender mit Rechtecksignalen angesteuert werden und die empfangenen Signale einem sauberen Sinus entsprechen, können die Oberwellen auch ignoriert werden. Der Grund hierfür ist, dass der Empfänger wiederum einen schmalen Frequenzbereich aufweist und das Signal filtert. Ein Leistungsverlust der Nutzfrequenz durch die störenden Anteile ist jedoch möglich.\\
+Das Nachschwingen kann allerdings zu einem Problem werden, wenn die Signale den empfindlichen Empfänger beeinflussen, entweder durch mechanische oder elektrische Rückkopplung. Die mechanischen Schwingungen können reduziert werden, indem zwischen Sender und Empfänger eine größere Distanz eingehalten wird und durch Schaumstoff zwischen ihnen mögliche akustische Wellen gedämpft werden. Elektrische Störungen werden mit Abblock-Kondensatoren geschwächt. Sie befinden sich zwischen den Versorgungsspannungen und der Masse und schließen hochfrequente Anteile kurz. Ansonsten muss eine Totzeit berücksichtigt werden, bis der Empfänger das Nutzsignal ohne Störungen empfangen kann.
+\begin{figure}[H]
+\centering
+\includegraphics[width=(\textwidth)]{oszi/15-04-16/1.jpg}
+\caption{Rückkopplung von Sender (unten) und Empfänger bei einer Laufzeitmessung} \label{img:I7}
+\end{figure}
 
 
 % Section über Empfänger und Signalauswertung
