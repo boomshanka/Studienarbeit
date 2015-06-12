@@ -102,7 +102,7 @@ Die Gegentakt-Ausgangsstufe ist im Vergleich zu den bisherigen Schaltungen sehr 
 
 
 \subsection{Oberwellen und der Kampf gegen Windmühlen} %TODO Zeit!
-Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, waren die unbefriedigenden Signalverläufe am Ausgang der Sendeverstärker. Die Pegel wurden nur unsauber erreicht und nicht gehalten. Der Fehler war, dass die Ursachen dafür in den falschen Bereichen gesehen wurden. Oberwellen wurden zu Beginn aus mehreren Gründen ausgeschlossen:
+Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, waren die unbefriedigenden Signalverläufe am Ausgang der Sendeverstärker. Die Pegel wurden nur teilweise erreicht und nicht gehalten. Der Fehler war, dass dafür die falschen Ursachen angenommen wurden. Schwingungen durch Oberwellen wurden zu Beginn aus mehreren Gründen ausgeschlossen:
 \begin{itemize}
 	\item Das Datenblatt empfiehlt die Ansteuerung der Sender mit Rechtecksignalen
 	\item Das Frequenzband des Senders ist sehr schmal, andere Frequenzen werden stark gedämpft
@@ -110,8 +110,8 @@ Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, war
 	\item Der Signalverlauf am Empfänger war wie erwartet ein sauberes Sinus-Signal
 \end{itemize}
 Es wurde vermutet, dass die Ströme nicht ausreichend sind, um die Kapazitäten in den geringen Pulszeiten zu versorgen. Allerdings erbrachte der Gegentaktverstärker trotz den hohen Strömen auch nicht das erhoffte Ergebnis. Wieder wurden die Pegel nicht sauber gehalten, nur die Flankensteilheit wurde verbessert.\\
-Ein Hinweis auf das Problem gab es jedoch: Die Ausgangsspannung schwingt auch weiter, nachdem das Steuersignal keine Pulse mehr sendet. Dieses Verhalten tritt nicht auf, wenn der Ultraschallsender nicht angeschlossen ist. Tatsächlich stammen die Schwingungen vom Sender. In ihm wird die elektronische Schwingung in eine mechanische umgesetzt. Das schwingende Element, dass die Schallwellen erzeugt, besitzt eine Trägheit, die es mechanisch nachschwingen lässt und dadurch auch elektrische Signale rückkoppelt.\\ %TODO: Rückkoppeln? Besseres Wort?
-Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass dieses Element auch mit höheren Frequenzen schwingt. Dabei handelt es sich hauptsächlich um harmonische Oberschwingungen, d.h. Schwingungen mit der n-Fachen Frequenz der Resonanzschwingung von $40 kHz$.
+Ein Hinweis auf das Problem gab es jedoch: Die Ausgangsspannung schwingt auch weiter, nachdem das Steuersignal keine Pulse mehr sendet. Dieses Verhalten tritt nicht auf, wenn der Ultraschallsender nicht angeschlossen ist. Tatsächlich stammen die Schwingungen vom Sender. In ihm wird die elektrische Schwingung in eine mechanische umgesetzt. Das schwingende Element, dass die Schallwellen erzeugt, besitzt eine Trägheit, die es mechanisch nachschwingen lässt und dadurch auch elektrische Signale rückkoppelt.\\ %TODO: Rückkoppeln? Besseres Wort?
+Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass es auch zu Schwingungen mit höheren Frequenzen kommt. Dabei handelt es sich hauptsächlich um harmonische Oberschwingungen, d.h. Schwingungen mit der n-Fachen Frequenz der Resonanzschwingung von $40 kHz$. %TODO ob das auch stimmt?
 \begin{figure}[H]
 \centering
 \includegraphics[width=(\textwidth), angle=90]{oszi/15-04-16/3.jpg} %TODO Anderes Bild mit vollem Spannungsbereich
@@ -120,7 +120,7 @@ Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass dieses Element 
 
 \subsubsection{Lösung}
 Um Oberwellen zu vermeiden, können die Sender statt mit Rechtecksignalen mit einem Sinus angesteuert werden. Die meisten hochfrequenten Anteile lassen sich auch schon mit einem Tiefpass entfernen, der die Flanken etwas abflacht. Der Versuch die Verstärker immer leistungsfähiger zu machen, führte vielmehr dazu, dass noch mehr hochfrequente Anteile entstehen konnten. Es wurde versucht die Kapazitäten zu bekämpfen, die jedoch - wie die Windmühlen aus Don Quijotes - das echte Problem nicht darstellten.\\ %TODO kurze Fußnote
-Da im Datenblatt die Sender mit Rechtecksignalen angesteuert werden und die empfangenen Signale einem sauberen Sinus entsprechen, können die Oberwellen auch ignoriert werden. Der Grund hierfür ist, dass der Empfänger wiederum einen schmalen Frequenzbereich aufweist und das Signal filtert. Ein Leistungsverlust der Nutzfrequenz durch die störenden Anteile ist jedoch möglich.\\
+Da im Datenblatt die Sender mit Rechtecksignalen angesteuert werden und die empfangenen Signale einem sauberen Sinus entsprechen, können die Oberwellen auch ignoriert werden. Der Grund hierfür ist, dass der Empfänger wiederum einen schmalen Frequenzbereich aufweist und das Signal filtert. Zudem ist es möglich, dass die Oberschwingungen nur auf der elektrischen Seite entstehen und die mechanischen Wellen davon unbeeinflusst bleiben. Ein Leistungsverlust der Nutzfrequenz durch die störenden Anteile ist jedoch möglich.\\
 Das Nachschwingen kann allerdings zu einem Problem werden, wenn die Signale den empfindlichen Empfänger beeinflussen, entweder durch mechanische oder elektrische Rückkopplung. Die mechanischen Schwingungen können reduziert werden, indem zwischen Sender und Empfänger eine größere Distanz eingehalten wird und durch Schaumstoff zwischen ihnen mögliche akustische Wellen gedämpft werden. Elektrische Störungen werden mit Abblock-Kondensatoren geschwächt. Sie befinden sich zwischen den Versorgungsspannungen und der Masse und schließen hochfrequente Anteile kurz. Ansonsten muss eine Totzeit berücksichtigt werden, bis der Empfänger das Nutzsignal ohne Störungen empfangen kann.
 \begin{figure}[H]
 \centering
@@ -133,10 +133,10 @@ Das Nachschwingen kann allerdings zu einem Problem werden, wenn die Signale den 
 \section{Empfänger}
 Der Empfänger ist einer der wichtigsten Bausteine bei der Abstandsmessung mit Ultraschall. Nur durch eine zuverlässige Signalverarbeitung kann der Zeitpunkt exakt bestimmt werden, an dem das Signal eingetroffen ist. Im Prinzip gibt es zwei Möglichkeiten die Signalauswertung durchzuführen:
 \begin{description} % FIXME: Vielleicht in eigenen sections sinnvoll
-	\item[Signalauswertung mit AD-Wandler:] Das empfangene Signal wird vorverstärkt und ständig von einem AD-Wandler ausgelesen. Die Auswertung kann über einfache Schwellwerte bis hin zu komplexen Filterfunktionen, z.B. mithilfe einer Fourier-Transformation, beliebig aufwendig gestaltet werden. Eine Signalvorverarbeitung ist auch denkbar, z.B. Gleichrichten und Glätten, wenn nur die Auslenkung betrachtet wird. Software kann sich auf die Umgebungsbedingungen anpassen, ist jedoch ungenauer und langsamer als die entsprechende Hardwarelösung. Eine genaue Frequenzauswertung erfordert eine hohe Abtastrate und komplexe Software, die dementsprechend auch Rechenleistung benötigt.
+	\item[Signalauswertung per Software mit AD-Wandler:] Das empfangene Signal wird vorverstärkt und ständig von einem AD-Wandler ausgelesen. Die Auswertung kann über einfache Schwellwerte bis hin zu komplexen Filterfunktionen, z.B. mithilfe einer Fourier-Transformation, beliebig aufwendig gestaltet werden. Eine Signalvorverarbeitung ist auch denkbar, z.B. Gleichrichten und Glätten, wenn nur die Auslenkung betrachtet wird. Software kann sich auf die Umgebungsbedingungen anpassen, ist jedoch ungenauer und langsamer als die entsprechende Hardwarelösung. Eine genaue Frequenzauswertung erfordert eine hohe Abtastrate und komplexe Software, die dementsprechend auch Rechenleistung benötigt.
 	\item[Schwellwertschalter auf einem Interrupt-Eingang:] Hardware übernimmt die Signalverarbeitung mit Verstärkern und Frequenzfiltern. Anschließend schalten die Signalspitzen einen Transistor, der als Schwellwertschalter dient. Das binäre Signal kann ein Interrupt an einem Mikrocontroller auslösen, worauf dieser sofort reagiert. Auch mit leistungsschwachen Controllern können dadurch exakte Laufzeitmessungen durchgeführt werden. Die Signalverarbeitung durch die Hardware ist entscheidend für die Reichweite und Störunempfindlichkeit der Messungen.
 \end{description}
-In dieser Arbeit wird ein Transistor als Schwellwertschalter verwendet. Für die Signalvorverarbeitung wurden verschiedene Ansätze entwickelt und untersucht. Diese unterscheiden sich in Empfindlichkeit, Komplexität und sind für bestimmte Einsatzgebiete geeignet.
+In dieser Arbeit wird ein Transistor als Schwellwertschalter verwendet. Für die Signalvorverarbeitung wurden verschiedene Ansätze entwickelt und untersucht. Diese unterscheiden sich in Empfindlichkeit und Komplexität und wurden für die Anwendungsfälle entsprechend bewertet.
 
 
 
@@ -150,13 +150,30 @@ Um eine möglichst hohe Reichweite zu erzielen, sollte die Verstärkung der Sign
 
 
 \subsubsection{Probleme}
-
+Die Verstärkung wird auf einen gewissen Pegel reduziert und die Signalformen verfälscht, wodurch auch das Frequenzspektrum geändert wird.\\
 
 \subsubsection{Fazit}
-In bestimmten Anwendungsfällen macht es Sinn Perioden als einzelne Pulse zu verstärken. Für die Abstandsmessung ist diese Methode jedoch ungünstig, da sie exaktere Schaltungen benötigt und die Empfindlichkeit - und damit die Reichweite - eingeschränkt wird. Auch die verwendeten Operationsverstärker sind durch die geringe Slew-Rate ein Hindernis.
+In bestimmten Anwendungsfällen macht es Sinn Perioden als einzelne Pulse zu verstärken. Für die Abstandsmessung ist diese Methode jedoch ungünstig, da sie exaktere Schaltungen benötigt und die Empfindlichkeit - und damit die Reichweite - eingeschränkt wird. Auch die verwendeten Operationsverstärker sind durch die geringe Slew-Rate ein Hindernis.\\
+Störsignale hingegen spielen keine Rolle, die aktiven Frequenzfilter können deshalb eingespart werden. Dadurch lassen sich auch potentielle Fehlerquellen und Seiteneffekte vermeiden.
 
 
 
-\subsection{Schaltung als Tiefpassfilter / Integrierverstärker}
+\subsection{Zweiter Entwurf: Schaltung mit Tiefpassfilter / Integrierverstärker}
+
+\subsubsection{Änderungen}
+Einige Erkenntnisse aus der ersten Schaltung führten zu der neuen Lösung. Die Anforderungen wurden geändert und auf den Zweck der Abstandsmessung optimiert. Das Signal wurde nach einem ersten Vorverstärker gleichgerichtet und mit einem Tiefpass geglättet, sodass die Probleme der hohen Frequenzen wegfielen. Eine Frequenzfilterung mit einem aktiven Bandpass findet nicht mehr statt, da einige Experimente bestätigten, dass der Ultraschallempfänger keine messbaren Störfrequenzen empfängt. Die Komplexität der Schaltung wurde deutlich minimiert, statt vier Operationsverstärker kommen nur noch zwei zum Einsatz und die Empfindlichkeit wird über ein einziges Potentiometer eingestellt, statt den ursprünglichen drei.
+
+%TODO Seite auf Bild drehen
+\begin{figure}[H]
+\centering
+\includegraphics[width=(\textwidth)]{images/empfanger2.png}
+\caption{Schaltplan der verbesserten Empfängerschaltung} \label{img:Empf2}
+\end{figure}
+
+\subsubsection{Funktionsweise}
+
+
+
+\subsubsection{Funktionstest und Bewertung}
 
 
