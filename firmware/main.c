@@ -22,6 +22,7 @@ void loop_big(void);
 void loop_small(void);
 
 uint8_t slave_update(void);
+void	slave_statchange(void);
 
 void twi(void);
 
@@ -30,6 +31,7 @@ void print_dis(void);
 
 
 uint8_t connected = 0;
+uint8_t command = 0;
 
 uint8_t data[4] = {0};
 uint8_t data_length = 0;
@@ -95,47 +97,37 @@ void init()
 void twi()
 {
 	uint8_t	twi_responsetype;
-	uint8_t command;
 	
 	if (twis_response_required(&twi_responsetype))
 	{
 		switch (twi_responsetype)
 		{
 			case TWIS_READ:
-				// bsp 4 bites lesen
+				// Erstes Byte (Befehl) lesen. Empfangs-Routine möglichst schnell beenden
 				command = twis_read_ack();
 				
 				switch (command)
 				{
 					case PROT_CONNECT:
-						// Status übernehmen
+						// Verbindungsstatus übernehmen
 						connected = twis_read_ack();
-						// Alle Messungen unterbrechen
-						tof_stopmes();
-						// LEDs aus
-						leds_off((1<<LEDS_RED) | (1<<LEDS_YELLOW));
-						// Display leeren
-						if (device_big())
-							display_number(0, 0);
 						break;
 						
 					case PROT_STARTMES:
-						tof_startmes();
-						break;
-						
 					case PROT_DIST_SEND:
-						
-						break;
-						
 					case PROT_DIST_MES:
-						
+						// Keine weiteren Daten werden empfangen
 						break;
 						
 					default:
+						// Unbekanntes Kommando, Kommunikationsfehler
 						break;
 				}
 				
 				twis_stop();
+				
+				// Statusänderungen übernehmen
+				slave_statchange();
 				break;
 				
 			case TWIS_WRITE:
@@ -168,6 +160,8 @@ void loop_big()
 	uint8_t state_dis = 1;
 	print_dis();
 	
+	uint16_t counter = 0;
+	
 	while (1)
 	{
 		if (!connected)
@@ -179,10 +173,16 @@ void loop_big()
 				if (!(slave_update() & (1<<TOF_RUNNING)))
 				{
 					// Keine Messung läuft, kann gestartet werden
-					_delay_ms(150);
-					leds_off((1<<LEDS_GREEN)|(1<<LEDS_RED));
-					_delay_ms(50);
-					tof_startmes();
+					if (++counter == 20000)
+					{
+						leds_off((1<<LEDS_GREEN)|(1<<LEDS_RED));
+					}
+					else if (counter == 25000)
+					{
+						tof_startmes();
+						counter = 0;
+						leds_blink(1<<LEDS_YELLOW, 2);
+					}
 				}
 			}
 			else
@@ -261,6 +261,43 @@ uint8_t slave_update()
 	}
 	
 	return temp_flag;
+}
+
+
+void slave_statchange()
+{
+	switch (command)
+	{
+		case PROT_CONNECT:
+			// Alle Messungen unterbrechen
+			tof_stopmes();
+			// LEDs aus
+			leds_off((1<<LEDS_RED) | (1<<LEDS_YELLOW));
+			// Display leeren
+			if (device_big())
+				display_number(0, 0);
+			break;
+			
+		case PROT_STARTMES:
+			// Messung starten
+			tof_startmes();
+			break;
+			
+		case PROT_DIST_SEND:
+			// Ultraschall- & Trigger-Signal senden
+			tof_sendtrigger();
+			break;
+				
+		case PROT_DIST_MES:
+			// Auf Trigger-Signal warten, dann Zeitmessung starten
+			tof_waitfortrigger();
+			break;
+			
+		default:
+			// Fehler! Unbekanntes Kommando / Kommunikationsfehler
+			leds_blink((1<<LEDS_RED), 2);
+			break;
+	}
 }
 
 

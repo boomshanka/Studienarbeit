@@ -20,12 +20,12 @@ Die Firmware hat die Aufgabe die Hardware des Controllers zu steuern. Sie ist in
 \section{Genauigkeit und Reichweite der Messungen}
 Die Messgenauigkeit und maximale Reichweite ist durch den Takt des Zählers, sowie die Bitbreite des Messwertes abhängig. Die Firmware taktet den Zähler mit $1MHz$ und speichert die Daten in einem 16-Bit Register. Daraus ergeben sich folgende Werte:\\
 Schrittlänge:
-\begin{equation} %TODO Schallgeschwindigkeit zw 20-25° 344-245 m/s
-\Delta s = \frac{u}{f} = \frac{343m/s}{1*10^6 1/s} = 0.343 mm
+\begin{equation} %TODO Schallgeschwindigkeit zw 20-25° 344-245 m/s, Außerdem: Pro gemessene Strecke wird doppelte Schallstrecke benötigt
+\Delta s = \frac{u}{f} = \frac{0.5 * 343m/s}{1*10^6 1/s} = 0.172 mm
 \end{equation}
 Maximale Distanz:
 \begin{equation}
-dist = 2^{16} * \Delta s = 22.48 m
+dist = 2^{16} * \Delta s = 11.24 m
 \end{equation}
 
 Der Wert bezieht sich auf die relative Genauigkeit. Offsetfehler, die durch Latenzzeiten entstehen, können in einem gewissen Umfang experimentell bestimmt und herausgerechnet werden. Die relative Genauigkeit hängt allerdings von der Toleranz des internen Taktes ab, dieser wird vor allem bei Temperaturänderungen ungenauer. Bei starken Abweichungen kann der Mikrocontroller über einen genaueren externen Quarz getaktet werden.

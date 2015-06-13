@@ -6,6 +6,12 @@
 #include <util/delay.h>
 #include <util/atomic.h>
 
+// Triggerpin ist MISO (PB4)
+#define TOF_TRIGGERPIN	PB4
+#define TOF_TRIGGERPORT	PORTB
+#define TOF_TRIGGERDDR	DDRB
+#define TOF_TRIGGERSTAT	PINB
+
 
 volatile uint8_t tof_flag = 0;
 volatile uint8_t tof_overflow = 0;
@@ -18,6 +24,10 @@ void tof_init()
 	
 	// Überlaufinterrupt vom Zähler 0 aktivieren
 	TIMSK |= (1<<TOIE0);
+	
+	// Triggerpin als Eingang mit Pullup
+	TOF_TRIGGERDDR &= ~(1<<TOF_TRIGGERPIN);
+	TOF_TRIGGERPORT |= (1<<TOF_TRIGGERPIN);
 }
 
 
@@ -35,11 +45,11 @@ void tof_startmes()
 	// Zeitkritischer Bereich
 	ATOMIC_BLOCK(ATOMIC_FORCEON)
 	{
+		// Signal starten
+		signal_start();
 		// Timer starten (Vorteiler 8)
 		TCCR0 = (1<<CS01);
 		
-		// Signal starten
-		signal_start();
 		// 5 Zyklen warten
 		_delay_us(125);
 		// Signal stoppen
@@ -73,6 +83,45 @@ uint16_t tof_getresult()
 {
 	// Ergebnis aus Überlaufregister und Zählerregister ausrechnen
 	return (uint16_t)(255)*(uint16_t)(tof_overflow) + (uint16_t)(TCNT0);
+}
+
+
+
+void tof_waitfortrigger()
+{
+	// Warten solange Pin high ist
+	// FIXME timeout o.ä.?
+	while (TOF_TRIGGERSTAT & (1<<TOF_TRIGGERPIN)) {}
+	
+	// Timer starten (Vorteiler 8)
+	TCCR0 = (1<<CS01);
+	// Status Running
+	tof_flag = (1<<TOF_RUNNING);
+}
+
+
+void tof_sendtrigger()
+{
+	// Triggerpin als Ausgang 
+	TOF_TRIGGERDDR |= (1<<TOF_TRIGGERPIN);
+	
+	// Zeitkritischer Bereich
+	ATOMIC_BLOCK(ATOMIC_FORCEON)
+	{
+		// Signal starten
+		signal_start();
+		// Trigger-Signal senden - Pin Low
+		TOF_TRIGGERPORT &= ~(1<<TOF_TRIGGERPIN);
+		
+		// 5 Zyklen warten
+		_delay_us(125);
+		// Signal stoppen
+		signal_stop();
+	}
+	
+	// Triggerpin wieder Eingang mit Pullup
+	TOF_TRIGGERDDR &= ~(1<<TOF_TRIGGERPIN);
+	TOF_TRIGGERPORT |= (1<<TOF_TRIGGERPIN);
 }
 
 

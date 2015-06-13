@@ -18,6 +18,9 @@ void		tof_startmes(void);
 void		tof_stopmes(void);
 uint16_t	tof_getresult(void);
 
+void		tof_waitfortrigger(void);
+void		tof_sendtrigger(void);
+
 
 #endif
 
