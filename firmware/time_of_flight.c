@@ -89,14 +89,29 @@ uint16_t tof_getresult()
 
 void tof_waitfortrigger()
 {
+	// Status Waiting
+	tof_flag = (1<<TOF_WAITING);
+	
+	// Überlaufregister zurücksetzen
+	tof_overflow = 0;
+	// Timer zurücksetzen
+	TCNT0 = 0;
+	
 	// Warten solange Pin high ist
-	// FIXME timeout o.ä.?
-	while (TOF_TRIGGERSTAT & (1<<TOF_TRIGGERPIN)) {}
+	// Wenn Flag TOF_WAITING nicht mehr gesetzt ist wird Warten abgebrochen
+	while ((TOF_TRIGGERSTAT & (1<<TOF_TRIGGERPIN)) || (tof_flag & !(1<<TOF_WAITING))) {}
 	
 	// Timer starten (Vorteiler 8)
 	TCCR0 = (1<<CS01);
-	// Status Running
-	tof_flag = (1<<TOF_RUNNING);
+	
+	// Empfänger aktiviern
+	// Statusbit löschen
+	GIFR |= (1<<INTF0);
+	// Interrupt INT0 aktivieren
+	GIMSK |= (1<<INT0);
+	
+	// Status Waiting und Direct
+	tof_flag = (1<<TOF_RUNNING)|(1<<TOF_DIRECT);
 }
 
 
@@ -133,7 +148,7 @@ ISR(INT0_vect)
 	TCCR0 = 0;
 	
 	// Flag setzen
-	tof_flag = (1<<TOF_SUCCESS)|(1<<TOF_STOPPED);
+	tof_flag = (1<<TOF_SUCCESS)|(1<<TOF_STOPPED)|(tof_flag & (1<<TOF_DIRECT));
 	
 	// Interrupt deaktivieren
 	GIMSK &= ~(1<<INT0);

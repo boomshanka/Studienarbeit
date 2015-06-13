@@ -30,6 +30,7 @@ void print_vel(void);
 void print_dis(void);
 
 
+uint8_t state_dis = 1;
 uint8_t connected = 0;
 uint8_t command = 0;
 
@@ -107,9 +108,7 @@ void twi()
 
 void loop_big()
 {
-	uint8_t state_dis = 1;
 	print_dis();
-	
 	uint16_t counter = 0;
 	
 	while (1)
@@ -185,9 +184,9 @@ uint8_t slave_update()
 		// Status prüfen
 		if (temp_flag & (1<<TOF_SUCCESS))
 		{
-			uint16_t result = tof_getresult()/(uint16_t)(6);
+			uint16_t result = tof_getresult()/(uint16_t)((temp_flag & (1<<TOF_DIRECT)) ? 3 : 6);
 			txbuffer[0] = PROT_MESSUCC;
-			txbuffer[1] = (result>>16);		// Highbyte
+			txbuffer[1] = (uint8_t)(result>>16);		// Highbyte
 			txbuffer[2] = (uint8_t)result;	// Lowbyte
 			txlength = 3;
 			leds_on(1<<LEDS_GREEN);
@@ -218,9 +217,8 @@ void slave_statchange(uint8_t command)
 	switch (command)
 	{
 		case PROT_CONNECT:
-			// FIXME
+			// Status Verbinden setzen
 			connected=1;
-
 			// Alle Messungen unterbrechen
 			tof_stopmes();
 			// LEDs aus
@@ -230,18 +228,34 @@ void slave_statchange(uint8_t command)
 				display_number(0, 0);
 			break;
 			
+		case PROT_DISCONNECT:
+			// Status nicht Verbunden
+			connected=0;
+			// Alle Messungen unterbrechen
+			tof_stopmes();
+			// LEDs aus
+			leds_off((1<<LEDS_RED) | (1<<LEDS_YELLOW) | (1<<LEDS_GREEN));
+			// Status Distanz
+			print_dis();
+			state_dis = 1;
+			break;
+			
 		case PROT_STARTMES:
 			// Messung starten
+			leds_off((1<<LEDS_RED) | (1<<LEDS_YELLOW) | (1<<LEDS_GREEN));
 			tof_startmes();
 			break;
 			
 		case PROT_DIST_SEND:
 			// Ultraschall- & Trigger-Signal senden
+			leds_off((1<<LEDS_RED) | (1<<LEDS_YELLOW) | (1<<LEDS_GREEN));
 			tof_sendtrigger();
 			break;
 				
 		case PROT_DIST_MES:
 			// Auf Trigger-Signal warten, dann Zeitmessung starten
+			leds_off((1<<LEDS_RED) | (1<<LEDS_GREEN));
+			leds_on(1<<LEDS_YELLOW);
 			tof_waitfortrigger();
 			break;
 			
