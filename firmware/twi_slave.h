@@ -1,26 +1,28 @@
 #ifndef _TWI_SLAVE_H__
 #define _TWI_SLAVE_H__
 
-// Bitrate 100kHz oder 200kHz. 400kHz ist zu hoch!
-#define TWIS_BITRATE_100k	100000UL
-#define TWIS_BITRATE_200k	200000UL
-
-#define	TWIS_READ			0x60
-#define	TWIS_WRITE			0xA8
-
-
 #include <stdint.h>
 
+#define buffer_size 4 								//Größe der Buffer in Byte (2..254)
+
+//#################################### Schutz vor unsinnigen Buffergrößen
+#if (buffer_size > 254)
+	#error Buffer zu groß gewählt! Maximal 254 Bytes erlaubt.
+#endif
+
+#if (buffer_size < 2)
+	#error Buffer muss mindestens zwei Byte groß sein!
+#endif
+
+//#################################### Globale Variablen, die vom Hauptprogramm genutzt werden 
+
+volatile uint8_t rxbuffer[buffer_size];				// Der Empfangsbuffer, der vom Slave ausgelesen werden kann.
+volatile uint8_t rxlength;
+volatile uint8_t txbuffer[buffer_size];				// Der Sendebuffe, der vom Master ausgelesen werden kann.
+volatile uint8_t txlength;
 
 
 void	twis_init(uint8_t address);
-
-uint8_t	twis_response_required(uint8_t *response_type);
-void	twis_stop(void);
-
-void	twis_write(uint8_t data);
-uint8_t	twis_read_ack(void);
-uint8_t twis_read_nack(void);
 
 
 

@@ -68,6 +68,6 @@ uint8_t device_address()
 	else if (dev_small)
 		return 0x2c;
 	else
-		return 0x2f;
+		return 0x2e;
 }
 

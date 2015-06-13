@@ -22,7 +22,7 @@ void loop_big(void);
 void loop_small(void);
 
 uint8_t slave_update(void);
-void	slave_statchange(void);
+void	slave_statchange(uint8_t);
 
 void twi(void);
 
@@ -33,8 +33,8 @@ void print_dis(void);
 uint8_t connected = 0;
 uint8_t command = 0;
 
-uint8_t data[4] = {0};
-uint8_t data_length = 0;
+//uint8_t data[4] = {0};
+//uint8_t data_length = 0;
 
 
 int main(void)
@@ -89,68 +89,18 @@ void init()
 	signal_init();
 	tof_init();
 	
-	twis_init(0x1a);
+	twis_init(device_address());
 }
 
 
 
 void twi()
 {
-	uint8_t	twi_responsetype;
-	
-	if (twis_response_required(&twi_responsetype))
+	if (rxlength > 0)
 	{
-		switch (twi_responsetype)
-		{
-			case TWIS_READ:
-				// Erstes Byte (Befehl) lesen. Empfangs-Routine möglichst schnell beenden
-				command = twis_read_ack();
-				
-				switch (command)
-				{
-					case PROT_CONNECT:
-						// Verbindungsstatus übernehmen
-						connected = twis_read_ack();
-						break;
-						
-					case PROT_STARTMES:
-					case PROT_DIST_SEND:
-					case PROT_DIST_MES:
-						// Keine weiteren Daten werden empfangen
-						break;
-						
-					default:
-						// Unbekanntes Kommando, Kommunikationsfehler
-						break;
-				}
-				
-				twis_stop();
-				
-				// Statusänderungen übernehmen
-				slave_statchange();
-				break;
-				
-			case TWIS_WRITE:
-				// Zwischengespeicherte Daten senden
-				for (uint8_t i = 0; i < data_length; ++i)
-				{
-					twis_write(data[i]);
-				}
-				
-				if (data_length == 0)
-				{
-					twis_write(PROT_NODATA);
-				}
-				twis_stop();
-				
-				// Daten entfernen
-				data_length = 0;
-				break;
-				
-			default:
-				// Kommunikationsfehler
-				break;
-		}
+		slave_statchange(rxbuffer[0]);
+		
+		rxlength = 0;
 	}
 }
 
@@ -181,7 +131,6 @@ void loop_big()
 					{
 						tof_startmes();
 						counter = 0;
-						leds_blink(1<<LEDS_YELLOW, 2);
 					}
 				}
 			}
@@ -237,10 +186,10 @@ uint8_t slave_update()
 		if (temp_flag & (1<<TOF_SUCCESS))
 		{
 			uint16_t result = tof_getresult()/(uint16_t)(6);
-			data[0] = PROT_MESSUCC;
-			data[1] = (result>>16);		// Highbyte
-			data[2] = (uint8_t)result;	// Lowbyte
-			data_length = 3;
+			txbuffer[0] = PROT_MESSUCC;
+			txbuffer[1] = (result>>16);		// Highbyte
+			txbuffer[2] = (uint8_t)result;	// Lowbyte
+			txlength = 3;
 			leds_on(1<<LEDS_GREEN);
 			
 			if (device_big())
@@ -248,8 +197,8 @@ uint8_t slave_update()
 		}
 		else if (temp_flag & (1<<TOF_TIMEOUT))
 		{
-			data[0] = PROT_MESFAIL;
-			data_length = 1;
+			txbuffer[0] = PROT_MESFAIL;
+			txlength = 1;
 			leds_on(1<<LEDS_RED);
 						
 			if (device_big())
@@ -264,11 +213,14 @@ uint8_t slave_update()
 }
 
 
-void slave_statchange()
+void slave_statchange(uint8_t command)
 {
 	switch (command)
 	{
 		case PROT_CONNECT:
+			// FIXME
+			connected=1;
+
 			// Alle Messungen unterbrechen
 			tof_stopmes();
 			// LEDs aus
