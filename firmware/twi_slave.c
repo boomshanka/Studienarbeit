@@ -1,5 +1,8 @@
 #include "twi_slave.h"
 
+#include "time_of_flight.h"
+#include "protocol.h"
+
 #include <avr/interrupt.h> 	
 #include <util/twi.h>
 
@@ -42,46 +45,51 @@ ISR (TWI_vect)
 {
 	uint8_t pos = 0;
 	
-	switch (TW_STATUS) 								// TWI-Statusregister prüfen und nötige Aktion bestimmen 
+	switch (TW_STATUS) 						// TWI-Statusregister prüfen und nötige Aktion bestimmen 
 	{
-		case TW_SR_SLA_ACK: 						// 0x60 Slave Receiver, wurde adressiert	
-			TWCR_ACK; 								// nächstes Datenbyte empfangen, ACK danach
-			rxlength=0; 						// Schreibposition 0
+		case TW_SR_SLA_ACK: 				// 0x60 Slave Receiver, wurde adressiert	
+			TWCR_ACK; 						// nächstes Datenbyte empfangen, ACK danach
+			rxlength=0; 					// Schreibposition 0
 			break;
 
-		case TW_SR_DATA_ACK: 						// 0x80 Slave Receiver,Daten empfangen
-			rxbuffer[rxlength++] = TWDR; 			// Daten in Buffer schreiben
-												// Buffer-Adresse weiterzählen für nächsten Schreibzugriff
-			if(rxlength < buffer_size)	 		// im Buffer ist noch Platz für mehr als ein Byte
+		case TW_SR_DATA_ACK: 				// 0x80 Slave Receiver,Daten empfangen
+			rxbuffer[rxlength++] = TWDR;	// Daten in Buffer schreiben
+											// Buffer-Adresse weiterzählen für nächsten Schreibzugriff
+			if(rxlength < buffer_size)	 	// im Buffer ist noch Platz für mehr als ein Byte
 			{
-				TWCR_ACK;						// nächstes Datenbyte empfangen, ACK danach, um nächstes Byte anzufordern
+				TWCR_ACK;					// nächstes Datenbyte empfangen, ACK danach, um nächstes Byte anzufordern
 			}
-			else   								// es kann nur noch ein Byte kommen, dann ist der Buffer voll
+			else   							// es kann nur noch ein Byte kommen, dann ist der Buffer voll
 			{
-				TWCR_NACK;						// letztes Byte lesen, dann NACK, um vollen Buffer zu signaliseren
+				TWCR_NACK;					// letztes Byte lesen, dann NACK, um vollen Buffer zu signaliseren
+			}
+			
+			if (rxlength == 1 && (rxbuffer[0] == PROT_CONNECT | rxbuffer[0] == PROT_DISCONNECT))
+			{
+				tof_flag &= ~(1<<TOF_WAITING);
 			}
 			break;
 
-		case TW_ST_SLA_ACK: 						//
-		case TW_ST_DATA_ACK: 						// 0xB8 Slave Transmitter, weitere Daten wurden angefordert
-			TWDR = txbuffer[pos++]; 			// Datenbyte senden 
-													// bufferadresse für nächstes Byte weiterzählen
-			if(pos < txlength) 						// im Buffer ist mehr als ein Byte, das gesendet werden kann
+		case TW_ST_SLA_ACK: 				//
+		case TW_ST_DATA_ACK: 				// 0xB8 Slave Transmitter, weitere Daten wurden angefordert
+			TWDR = txbuffer[pos++]; 		// Datenbyte senden 
+											// bufferadresse für nächstes Byte weiterzählen
+			if(pos < txlength) 				// im Buffer ist mehr als ein Byte, das gesendet werden kann
 			{
-				TWCR_ACK; 							// nächstes Byte senden, danach ACK erwarten
+				TWCR_ACK; 					// nächstes Byte senden, danach ACK erwarten
 			}
 			else
 			{
-				TWCR_NACK; 							// letztes Byte senden, danach NACK erwarten
+				TWCR_NACK; 					// letztes Byte senden, danach NACK erwarten
 			}
 			break;
 
-		case TW_ST_DATA_NACK: 						// 0xC0 Keine Daten mehr gefordert 
-		case TW_SR_DATA_NACK: 						// 0x88 
-		case TW_ST_LAST_DATA: 						// 0xC8  Last data byte in TWDR has been transmitted (TWEA = 0); ACK has been received
-		case TW_SR_STOP: 							// 0xA0 STOP empfangen
-		default: 	
-			TWCR_RESET; 							// Übertragung beenden, warten bis zur nächsten Adressierung
+		case TW_ST_DATA_NACK: 				// 0xC0 Keine Daten mehr gefordert 
+		case TW_SR_DATA_NACK: 				// 0x88 
+		case TW_ST_LAST_DATA: 				// 0xC8  Last data byte in TWDR has been transmitted (TWEA = 0); ACK has been received
+		case TW_SR_STOP: 					// 0xA0 STOP empfangen
+		default:
+			TWCR_RESET; 					// Übertragung beenden, warten bis zur nächsten Adressierung
 			break;	
 	}
 }

@@ -186,8 +186,8 @@ uint8_t slave_update()
 		{
 			uint16_t result = tof_getresult()/(uint16_t)((temp_flag & (1<<TOF_DIRECT)) ? 3 : 6);
 			txbuffer[0] = PROT_MESSUCC;
-			txbuffer[1] = (uint8_t)(result>>16);		// Highbyte
-			txbuffer[2] = (uint8_t)result;	// Lowbyte
+			txbuffer[1] = (uint8_t)(result>>16);	// Highbyte
+			txbuffer[2] = (uint8_t)result;			// Lowbyte
 			txlength = 3;
 			leds_on(1<<LEDS_GREEN);
 			
