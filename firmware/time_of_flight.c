@@ -82,7 +82,10 @@ void tof_stopmes()
 uint16_t tof_getresult()
 {
 	// Ergebnis aus Überlaufregister und Zählerregister ausrechnen
-	return (uint16_t)(255)*(uint16_t)(tof_overflow) + (uint16_t)(TCNT0);
+	uint16_t result = (uint16_t)(255)*(uint16_t)(tof_overflow) + (uint16_t)(TCNT0);
+	// Richtig wäre: 1/(v * 10^-3) [* 2] = 1/0.344 [* 2], also 2.90697674419 : 5.81395348837 statt 3 : 6
+	// FIXME: Muss result gecastet werden? Dann kann Result gleich vom Typ Float sein!
+	return result / ((tof_flag & (1<<TOF_DIRECT)) ? 2.9069767f : 5.8139534f);
 }
 
 

@@ -184,7 +184,7 @@ uint8_t slave_update()
 		// Status prüfen
 		if (temp_flag & (1<<TOF_SUCCESS))
 		{
-			uint16_t result = tof_getresult()/(uint16_t)((temp_flag & (1<<TOF_DIRECT)) ? 3 : 6);
+			uint16_t result = tof_getresult();
 			txbuffer[0] = PROT_MESSUCC;
 			txbuffer[1] = (uint8_t)(result>>16);	// Highbyte
 			txbuffer[2] = (uint8_t)result;			// Lowbyte
