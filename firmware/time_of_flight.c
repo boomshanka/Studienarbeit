@@ -57,7 +57,7 @@ void tof_startmes()
 	}
 	
 	// Totzeit! FIXME
-	_delay_us(700);
+	_delay_us(750);
 	
 	// Empfänger aktiviern
 	// Statusbit löschen
@@ -81,13 +81,18 @@ void tof_stopmes()
 
 uint16_t tof_getresult()
 {
+	uint16_t result = (uint16_t)(255)*(uint16_t)(tof_overflow) + (uint16_t)(TCNT0);
+	return result / ((tof_flag & (1<<TOF_DIRECT)) ? 3 : 6);
+
+	// Wäre theoretisch exakter, aber Quarze sind zu ungenau
+	
 	// Ergebnis aus Überlaufregister und Zählerregister ausrechnen
-	uint32_t result = (uint16_t)(255)*(uint16_t)(tof_overflow) + (uint16_t)(TCNT0);
+//	uint32_t result = 1000 * ((uint32_t)(255)*(uint32_t)(tof_overflow) + (uint32_t)(TCNT0));
 	
 	// Richtig wäre: 1/(v * 10^-3) [* 2] = 1/0.344 [* 2], also 2.90697674419 : 5.81395348837 statt 3 : 6
 	// Berechnung mit Faktor 10^3 (und 32 Bit) um Gleitkommazahlen zu vermeiden
 	// FIXME Prüfe, ob Compiler tatsächlich mit 32 Bit rechnet!
-	return (uint16_t)(result * 1000 / ((tof_flag & (1<<TOF_DIRECT)) ? 2907 : 5814));
+//	return (uint16_t)(result / ((tof_flag & (1<<TOF_DIRECT)) ? (uint32_t)(2907) : (uint32_t)(5814)));
 	//return result / ((tof_flag & (1<<TOF_DIRECT)) ? 2.9069767f : 5.8139534f);
 }
 
