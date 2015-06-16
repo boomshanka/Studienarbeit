@@ -2,10 +2,24 @@
 
 \chapter{Schnittstellenkommunikation}
 Für den Datenaustausch zwischen dem genutzen Raspberry Pi und dem ATMega8-Microcontroller kann man das I2C/TWI-Protokoll nutzen.TWI steht für Two-Wire-Interface (TWI) und überträgt Daten seriell. 
-Beim Verbinden des AVR mit dem RPi muss darauf geachtet werden, dass der AVR mit 3,3V läuft, da ansonsten der RPi beschädigt wird. Im Anschluss daran muss das RPi zur Kommunikation per I2C (Module hinzufügen und Installation des I2C-Tools-Pakets)und der Arduino als I2C-Slave vorbereitet werden. Der Raspberry Pi wird schließlich als Master konfiguriert.
-Um die Verbindung herzustellen wird SDA und SCL des Raspberry (Pin 3 und 5) jeweils mit SDA und SCL des AVR verbunden. Dies entspricht beim ATmega8 Pin 27 und 28. Im nächsten Schritt werden die Leitungen über einen Pull-up-Widerstand mit Vcc verbunden werden.
+Beim Verbinden des AVR mit dem RPi muss darauf geachtet werden, dass der AVR mit 3,3V läuft, da ansonsten der RPi beschädigt wird. Dies darf jedoch außer acht gelassen werden, wenn der RPI die Rolle des Masters und der Arduino die des Slaves einnimmt, denn nur der Master setzt die Datenleitung auf „high“.
+Im Anschluss daran muss das RPi zur Kommunikation per I2C als Master (Module hinzufügen und Installation des I2C-Tools-Pakets) und der Arduino als I2C-Slave vorbereitet werden. 
+Um die Verbindung herzustellen wird SDA und SCL des Raspberry (Pin 3 und 5) jeweils mit SDA und SCL des AVR verbunden. Dies entspricht beim ATmega8 Pin 27 und 28. Im nächsten Schritt werden die Leitungen über einen Pull-up-Widerstand mit Vcc verbunden.
+Es muss dabei beachtet werden, dass der im Raspberry Pi verwendete Broadcomm BCM2835 Prozessor einen Fehler auslösen kann, der dazu führt, dass eine Kommunikation mit einigen I2C Geräten unmöglich wird. In diesem Fall werden falsche Daten gelesen oder geschrieben. Der Grund hierfür ist, dass einige I2C Geräte „clock stretching“ verwenden, welches nicht durch den Raspberry unterstützt wird. 
 
-Beim ATmega der Code ist einfach die Bibliothek von [1].
+Detaillierte Problembeschreibung:
+Clock Stretching: Gemäß ihrer Spezifikation können I2C-Slaves während einer Kommunikation die Clock-Leitung auf "low" halten. Auf Weise wird ein erneutes Steigen der Flanke verhindert und die Übertragung kann aktiv verzögert werden. Falls nötig ist so mehr Zeit für die Verarbeitung der Daten vorhanden. Gibt der I2C die Clock Leitung dann wieder frei, ist es notwendig, dass der Master den Takt wieder an die Clock Leitung anlegt.
 
-Beim Raspberry benutzt man die I2C-Bibliothek von [2] und den folgenden 
+Der eigentliche Fehler besteht also darin, dass die SCL Taktleitung nur maskiert wird sobald ein I2C Slave die Taktleitung auf „low“ zieht. In der Folge stellt der Raspberry Pi allerdings nicht sicher, dass der folgende Takt die gleiche Länge besitzt. Es entstehen Spikes, die dann die Kommunikation mit dem I2C Gerät unmöglich machen, da diese zu kurz sein können um vom I2C Slave erkannt zu werden. Das kann zu einer Verschiebung des Taktzyklus führen, sodass Master und Slave nicht mehr synchron laufen. 
+Dadurch entsteht ein weiteres Problem: der Raspberry liest die Datenleitung zu früh ein (noch während der Slave die Leitung auf „low“ hält) und selbst sehr kurze clock stretches führen dazu, dass falsche Daten vom Raspberry gelesen werden.
+
+Es gibt mehrere Möglichkeiten dieses Problem zu umgehen. 
+1)	keine I2C Geräte nutzen, die clock stretching einsetzen
+2)	clock-stretching nur am Ende nach dem Lesen des ACK/NACK verwenden, und ihn dabei um mindestens 1/2 Takt-Periode verlängern
+3)	einen geringeren I2C-Takt wählen, so dass die I2C-Slaves schnell genug sind, und kein "clock-stretching" mehr benötigen
+Im Rahmen dieser Arbeit wurde daher zunächst beschlossen, clock stretching durch den I2C Slave zu unterbinden, da diese ohnehin nicht benötigt werden. Möglich wird dies durch Anpassungen in der Firmware (diese arbeitet nun mit Interrupts und daher viel schneller) und eine verringerte Frequenz am Raspberry.
+
+
+
+Bildquelle: http://www.advamation.de/technik/raspberrypi/rpi-i2c-bug.html
 
