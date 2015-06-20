@@ -12,7 +12,7 @@
 //NACK nach empfangenen Daten senden/ NACK nach gesendeten Daten erwarten     
 #define TWCR_NACK 	TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(0<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|(0<<TWWC);
 //switched to the non adressed slave mode...
-#define TWCR_RESET 	TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|(0<<TWWC);  
+#define TWCR_RESET 	TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|(0<<TWWC);
 
 
 
@@ -37,14 +37,13 @@ void twis_init(uint8_t address)
 	
 	rxlength = 0;
 	txlength = 0; 
+	txpos	 = 0;
 }
 
 
 
 ISR (TWI_vect)  
 {
-	uint8_t pos = 0;
-	
 	switch (TW_STATUS) 						// TWI-Statusregister prüfen und nötige Aktion bestimmen 
 	{
 		case TW_SR_SLA_ACK: 				// 0x60 Slave Receiver, wurde adressiert	
@@ -64,7 +63,7 @@ ISR (TWI_vect)
 				TWCR_NACK;					// letztes Byte lesen, dann NACK, um vollen Buffer zu signaliseren
 			}
 			
-			if (rxlength == 1 && (rxbuffer[0] == PROT_CONNECT | rxbuffer[0] == PROT_DISCONNECT))
+			if (rxlength == 1 && (rxbuffer[0] == PROT_CONNECT || rxbuffer[0] == PROT_DISCONNECT))
 			{
 				tof_flag &= ~(1<<TOF_WAITING);
 			}
@@ -72,15 +71,19 @@ ISR (TWI_vect)
 
 		case TW_ST_SLA_ACK: 				//
 		case TW_ST_DATA_ACK: 				// 0xB8 Slave Transmitter, weitere Daten wurden angefordert
-			TWDR = txbuffer[pos++]; 		// Datenbyte senden 
+			TWDR = txbuffer[txpos++]; 		// Datenbyte senden 
 											// bufferadresse für nächstes Byte weiterzählen
-			if(pos < txlength) 				// im Buffer ist mehr als ein Byte, das gesendet werden kann
+			if(txpos < txlength) 				// im Buffer ist mehr als ein Byte, das gesendet werden kann
 			{
 				TWCR_ACK; 					// nächstes Byte senden, danach ACK erwarten
 			}
 			else
 			{
 				TWCR_NACK; 					// letztes Byte senden, danach NACK erwarten
+				
+				// Daten auf NODATA
+				txbuffer[0] = PROT_NODATA;
+				txpos = 0;
 			}
 			break;
 
