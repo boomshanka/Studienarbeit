@@ -2,16 +2,17 @@
 
 % Kapitel über Schaltungen, Signalerzeugung und -verarbeitung
 \chapter{Schaltungen}
-
+Für jede Aufgabe wurden verschiedene Schaltungen entwickelt und auf ihre Funktionalität überprüft. Probleme konnten bei der Weiterentwicklung vermieden werden, sodass die resultierende Schaltungen optimale Ergebnisse erzielen.
 
 % Section über Sender-Schaltung, Signalerzeugung
 \section{Sender}
-Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte dabei möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Der hohe Abstrahlwinkel hat auch zur Folge, dass nur ein Bruchteil der Schallwelle am Objekt auftrifft und reflektiert werden kann. Im Datenblatt wird empfohlen, den Sender mit einem Rechtecksignal anzusteuern. Durch sein schmales Frequenzband schwingt er dennoch Sinus-förmig und nimmt dabei am meisten Energie auf. Der Sender besteht aus einem Piezoelement, dessen vereinfachtes Ersatzschaltbild ein Kondensator ist. Laut Datenblatt besitzt er eine Kapazität von $2.55nF$.\\
+Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Bei voller Ausnutzung der Ansteuerspannung können Schallpegel bis zu $120dB$ erreicht werden, das entspricht in etwa der Lautstärke eines startenden Düsenflugzeugs. Allerdings lässt der Schalldruck mit steigendem Abstand schnell nach und ist für das menschliche Gehör weder wahrnehmbar, noch schädlich. Der hohe Abstrahlwinkel hat auch zur Folge, dass nur ein Bruchteil der Schallwelle am Objekt auftrifft und reflektiert werden kann.\\
+Im Datenblatt wird empfohlen, den Sender mit einem Rechtecksignal anzusteuern. Durch sein schmales Frequenzband schwingt er dennoch Sinus-förmig. Der Sender besteht aus einem Piezoelement, dessen vereinfachtes Ersatzschaltbild ein Kondensator ist. Laut Datenblatt besitzt er eine Kapazität von $2.55nF$.\\
 
 
 \subsection{Signalerzeugung}
 Das Rechtecksignal wird von dem Mikrocontroller erzeugt. Er besitzt einen Hardwarezähler, der mit einem Ausgangspin verbunden werden kann. Damit lässt sich ein präzises Signal erzeugen, ohne die Rechenleistung des Controllers einzuschränken.\\
-Der Sender hat eine maximale Spitze-Spitze-Spannung von $U_{SS} = 20V$, das ausgegebene Signal des Mikrocontrollers wechselt jedoch nur zwischen $0V$ und $5V$. Die Sendeleistung wäre zu schwach, außerdem sollte der Ausgang des Mikrocontrollers nicht direkt belastet werden, da er nur sehr begrenzt Strom liefern kann. Aus diesen Gründen wurden mehrere Sendeverstärker entwickelt und untersucht, ob sie geeignet sind. Dafür stand eine Spannungsversorgung mit den Spannungen $+5V$, $+12V$ und $-12V$ zu Verfügung.
+Der Sender hat eine maximale Spitze-Spitze-Spannung von $U_{SS} = 20V$, das ausgegebene Signal des Mikrocontrollers wechselt jedoch nur zwischen $0V$ und $5V$. Die Sendeleistung wäre zu schwach, außerdem sollte der Ausgang des Mikrocontrollers nicht direkt belastet werden, da er nur sehr begrenzt Strom liefern kann. Aus diesen Gründen wurden mehrere Sendeverstärker entwickelt. Dafür stand eine Spannungsversorgung mit den Spannungen $+5V$, $+12V$ und $-12V$ zu Verfügung.
 
 
 
@@ -32,7 +33,7 @@ t=\frac{Q}{I}=\frac{C*U}{I}=\frac{2.55nF*20V}{30mA}=1.7\mu s
 Im Vergleich zur Pulsdauer von $12.5\mu s$ ist dieser Wert in Ordnung. Allerdings besitzt nur ein idealer Operationsverstärker einen $0\Omega$-Ausgangswiderstand und der Sender ist auch kein idealer Kondensator ohne seriellen Widerstand. Deshalb wurde erwartet, dass die Flanken etwas abgeflacht werden.\\
 Tatsächlich wurde jedoch ein viel wichtigerer Wert im Datenblatt übersehen: Die \textit{Slew Rate} gibt an, wie schnell sich die Spannung des OPs ändern kann. Beim \textit{LM258} beträgt sie $0.6V/\mu s$. Das Ausgangssignal entsprach aus diesem Grund einem Dreiecksignal und schwankte nur um wenige Volt.
 % Bild von Simulation
-\begin{figure}[H] %TODO: Kontrast von Bild erhöhen. Außerdem stimmen die 20V/µs nur ungefähr.
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{images/signalverlauf_opamps.png}
 \caption{Simulierter Signalverlauf von zwei Operationsverstärkern. Rot: Ansteuersignal. Grün: Slew-Rate $0.6V/\mu s$. Blau: Slew-Rate $20V/\mu s$.} \label{img:I2}
@@ -69,7 +70,7 @@ Die Emitterschaltung ist eine einfache Verstärkerschaltung und eignet sich herv
 %TODO Bild überarbeiten
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.14]{oszi/15-04-01/2.jpg}
+\includegraphics[width=(\textwidth)]{oszi/15-04-01/2.png}
 \caption{RC-Ladekurven hinter einem Transistor (Oben Ansteuersignal)} \label{img:I4}
 \end{figure}
 
@@ -106,7 +107,7 @@ Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, war
 \begin{itemize}
 	\item Das Datenblatt empfiehlt die Ansteuerung der Sender mit Rechtecksignalen
 	\item Das Frequenzband des Senders ist sehr schmal, andere Frequenzen werden stark gedämpft
-	\item Die Flanke beim Schließen der Transistoren sind steil, beim Öffnen gibt es RC-Ladekurven-ähnliche Verformungen der Flanken
+	\item Die Flanke beim Schließen der Transistoren sind steil, beim Öffnen (Ladestrom fließt über Widerstand) gibt es RC-Ladekurven-ähnliche Verformungen der Flanken
 	\item Der Signalverlauf am Empfänger war wie erwartet ein sauberes Sinus-Signal
 \end{itemize}
 Es wurde vermutet, dass die Ströme nicht ausreichend sind, um die Kapazitäten in den geringen Pulszeiten zu versorgen. Allerdings erbrachte der Gegentaktverstärker trotz den hohen Strömen auch nicht das erhoffte Ergebnis. Wieder wurden die Pegel nicht sauber gehalten, nur die Flankensteilheit wurde verbessert.\\
@@ -114,17 +115,17 @@ Ein Hinweis auf das Problem gab es jedoch: Die Ausgangsspannung schwingt auch we
 Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass es auch zu Schwingungen mit höheren Frequenzen kommt. Dabei handelt es sich hauptsächlich um harmonische Oberschwingungen, d.h. Schwingungen mit der n-Fachen Frequenz der Resonanzschwingung von $40 kHz$. %TODO ob das auch stimmt?
 \begin{figure}[H]
 \centering
-\includegraphics[width=(\textwidth), angle=90]{oszi/15-04-16/3.jpg} %TODO Anderes Bild mit vollem Spannungsbereich
-\caption{Ausgang der Gegentaktstufe mit angeschlossenen Sender} \label{img:I6}
+\includegraphics[width=(\textwidth), angle=0]{oszi/15-04-23/2_01.png} %TODO Anderes Bild mit vollem Spannungsbereich
+\caption{Schwingungen der Ausgangsstufe (unten) und Rückkopplung am Empfänger} \label{img:I6}
 \end{figure}
 
 \subsubsection{Lösung}
-Um Oberwellen zu vermeiden, können die Sender statt mit Rechtecksignalen mit einem Sinus angesteuert werden. Die meisten hochfrequenten Anteile lassen sich auch schon mit einem Tiefpass entfernen, der die Flanken etwas abflacht. Der Versuch die Verstärker immer leistungsfähiger zu machen, führte vielmehr dazu, dass noch mehr hochfrequente Anteile entstehen konnten. Es wurde versucht die Kapazitäten zu bekämpfen, die jedoch - wie die Windmühlen aus Don Quijotes - das echte Problem nicht darstellten.\\ %TODO kurze Fußnote
+Um Oberwellen zu vermeiden, können die Sender statt mit Rechtecksignalen mit einem Sinus angesteuert werden. Die meisten hochfrequenten Anteile lassen sich auch schon mit einem Tiefpass entfernen, der die Flanken etwas abflacht. Der Versuch die Verstärker immer leistungsfähiger zu machen, führte vielmehr dazu, dass noch mehr hochfrequente Anteile entstehen konnten. Es wurde versucht die Kapazitäten zu bekämpfen, die jedoch - wie die Windmühlen aus Don Quijote\footnote{Roman von Miguel de Cervantes} - das echte Problem nicht darstellten.\\
 Da im Datenblatt die Sender mit Rechtecksignalen angesteuert werden und die empfangenen Signale einem sauberen Sinus entsprechen, können die Oberwellen auch ignoriert werden. Der Grund hierfür ist, dass der Empfänger wiederum einen schmalen Frequenzbereich aufweist und das Signal filtert. Zudem ist es möglich, dass die Oberschwingungen nur auf der elektrischen Seite entstehen und die mechanischen Wellen davon unbeeinflusst bleiben. Ein Leistungsverlust der Nutzfrequenz durch die störenden Anteile ist jedoch möglich.\\
-Das Nachschwingen kann allerdings zu einem Problem werden, wenn die Signale den empfindlichen Empfänger beeinflussen, entweder durch mechanische oder elektrische Rückkopplung. Die mechanischen Schwingungen können reduziert werden, indem zwischen Sender und Empfänger eine größere Distanz eingehalten wird und durch Schaumstoff zwischen ihnen mögliche akustische Wellen gedämpft werden. Elektrische Störungen werden mit Abblock-Kondensatoren geschwächt. Sie befinden sich zwischen den Versorgungsspannungen und der Masse und schließen hochfrequente Anteile kurz. Ansonsten muss eine Totzeit berücksichtigt werden, bis der Empfänger das Nutzsignal ohne Störungen empfangen kann.
+Das Nachschwingen kann allerdings zu einem Problem werden, wenn die Signale den empfindlichen Empfänger beeinflussen, entweder durch mechanische oder elektrische Rückkopplung. Die mechanischen Schwingungen können reduziert werden, indem zwischen Sender und Empfänger eine größere Distanz eingehalten wird und durch Schaumstoff zwischen ihnen mögliche akustische Wellen gedämpft werden. Elektrische Störungen werden mit Abblock-Kondensatoren geschwächt. Sie befinden sich zwischen den Versorgungsspannungen und der Masse und schließen hochfrequente Anteile kurz. Ansonsten muss eine Totzeit berücksichtigt werden, bis der Empfänger das Nutzsignal ohne Störungen empfangen kann. Im Datenblatt wird eine minimale Distanz der Messungen von $20cm$ angegeben, wahrscheinlich genau aus den genannten Gründen.
 \begin{figure}[H]
 \centering
-\includegraphics[width=(\textwidth)]{oszi/15-04-16/1.jpg}
+\includegraphics[width=(\textwidth)]{oszi/15-04-16/1.png}
 \caption{Rückkopplung von Sender (unten) und Empfänger bei einer Laufzeitmessung} \label{img:I7}
 \end{figure}
 

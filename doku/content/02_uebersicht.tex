@@ -7,12 +7,12 @@
 \chapter{Projektübersicht}
 
 %\section{Ziel}
-Das Ziel des Projektes ist es, die Position eines Objektes mithilfe von Ultraschallsensoren zu messen. Dabei reicht die Position auf einer Fläche, sie muss daher nur zweidimensional bestimmt werden. Das Ergebnis wird anschließend auf einem Bildschirm visualisiert.\\
+Das Ziel des Projektes ist es, die Position eines Objektes mithilfe von Ultraschallsensoren zu messen. Dabei reicht die Position auf einer Fläche, sie muss daher nur zweidimensional bestimmt werden. Das Ergebnis soll anschließend auf einem Bildschirm visualisiert werden.\\
 Ein erstes Zwischenergebnis sollte mit der Abstandsmessung einer einzelnen Sensorplatine erreicht werden. Diese Aufgabe umfasst bereits alle physikalische Prinzipien, die zur Positionsbestimmung genutzt werden. Die Ergebnisse der Messungen können daraufhin verwendet werden, um mögliche Probleme zu beseitigen und die Schaltungen zu optimieren. Sobald die Abstandsmessung zuverlässig funktioniert, kann das endgültige System darauf aufgebaut werden, sodass weitere Probleme ausschließlich durch die Architektur der Lösung hervorgerufen werden können und deshalb einfach zu identifizieren sind.
 
 
 \section{Architektur} % Hier wird auch die Hardware beschrieben
-Für die Positionsbestimmung werden drei Sender und Empfänger verwendet. Davon ist jeweils einer auf einer Platine verbaut, auf der sich zusätzlich Schaltungen für die Signalverarbeitung und ein Mikrocontroller befinden. Die drei Platinen werden so angeordnet, dass sie Objekte in ihrer Mitte erkennen können. Sie sind alle mit einem Einplatinen-Computer verbunden, mit dem die Mikrocontroller über einen \ac{TWI}-Bus kommunizieren können. Zwischen dem Computer und den Sensorplatinen befindet sich eine Verteilerplatine, an der die Stromversorgung eingesteckt wird und die Leitungen von Computer zu Platinen entsprechend verkabelt sind.
+Für die Positionsbestimmung werden drei Sender und Empfänger verwendet, sodass nicht nur die Position, sondern auch die Größe des Objekts bestimmbar ist. Jeweils einer ist auf einer Platine verbaut, auf der sich zusätzlich Schaltungen für die Signalverarbeitung und ein Mikrocontroller befinden. Die drei Platinen werden so angeordnet, dass sie Objekte in ihrer Mitte erkennen können. Sie sind mit einem Einplatinen-Computer verbunden, mit dem die Mikrocontroller über einen \ac{TWI}-Bus kommunizieren können. Zwischen dem Computer und den Sensorplatinen befindet sich eine Verteilerplatine, an der die Stromversorgung eingesteckt wird und die Leitungen von Computer zu Platinen entsprechend verkabelt sind.
 Zur Verbindung untereinander werden Flachbandkabel verwendet. Die Verteilerplatine besitzt zusätzlich einen Steckplatz mit einer Standard-\ac{ISP}-Pinbelegung, mit dem die Mikrocontroller direkt vom Einplatinen-Computer beschrieben werden können.\\
 % Bild Architektursübersicht
 \begin{figure}[H]
@@ -94,7 +94,7 @@ Zur Verbindung untereinander werden Flachbandkabel verwendet. Die Verteilerplati
 \end{figure}
 
 
-\subsection{Sensorplatine und Mikrocontroller}
+\subsection{Mikrocontroller}
 Die Mikrocontroller auf den Sensorplatinen erfüllen folgende Zwecke:
 \begin{itemize}
 	\item Ansteuerung der Ultraschallsender
@@ -103,7 +103,8 @@ Die Mikrocontroller auf den Sensorplatinen erfüllen folgende Zwecke:
 	\item Status über \ac{LED}s anzeigen
 	\item Schnittstelle nach außen über das \ac{TWI} bereitstellen
 \end{itemize}
-Verwendet wurde dafür der \textit{ATmega8} von Atmel, ein weit verbreiteter 8-Bit Controller mit vielen Hardwaremodulen, wie z.B. Analog-Digital-Wandler, Zähler und einige Schnittstellen wie das \ac{TWI}. Das Programm läuft als Firmware direkt auf der Hardware und ist in C geschrieben.
+Verwendet wird dafür der \textit{ATmega8} von Atmel. Die AVR-Mikrocontroller sind eine weit verbreitete Familie von
+Mikrocontrollern mit einer 8-Bit Architektur und einem \ac{RISC}-Befehlssatz. Sie sind günstig, einfach zu Handhaben, besitzen eine übersichtliche innere Struktur und es gibt eine Vielzahl an Software und Tools, um mit ihnen zu Arbeiten. Die Mikrocontroller bieten neben einfachen digitalen Input-/Output-Pins auch zusätzliche Hardwarefunktionen, wie z.B. Analog-Digital-Wandler, \ac{TWI}- und andere serielle Schnittstellen, Timer, verschiedenste Hardware-Interrupts und vieles mehr. Das Programm für die oben genannten Funktionen läuft als Firmware direkt auf der Hardware und ist in C geschrieben.
 
 
 \subsection{Computer}
@@ -118,43 +119,41 @@ Für diesen Zweck wird ein \textit{Raspberry PI} verwendet. Er besitzt ein \ac{G
 
 
 
-\section{Entwicklung} %TODO Überarbeiten, noch nicht fertig!
-Es gibt bereits eine Vielzahl von fertigen Ultraschallmodulen zu kaufen, die mit relativ wenig Aufwand ansteuerbar und verwendbar sind. In diesem Projekt werden jedoch einfache Ultraschall-Sender und -Empfänger verwendet, sodass die dazugehörigen Schaltungen selbst entwickelt werden müssen. Darüber hinaus wurden die Platinen mit den Mikrocontrollern und die dazugehörigen Firmware selbst entworfen. Auch das ganze System wurde auf einem möglichst tiefen Level entworfen, sodass die Funktionalität 
-
-Im Einzelnen gibt es folgende Dinge, die selbst entwickelt wurden:
+\section{Entwicklung}
+Es gibt bereits eine Vielzahl von fertigen Ultraschallmodulen zu kaufen, die mit relativ wenig Aufwand ansteuerbar und verwendbar sind. In diesem Projekt werden jedoch einfache Ultraschall-Sender und -Empfänger verwendet, sodass die dazugehörigen Schaltungen selbst entwickelt werden konnten. Im Einzelnen gab es folgende Entwicklungsaufwände:
 \begin{description}
 	\item[Die Sensorplatine] mit den Komponenten:
 	\begin{itemize}
-		\item Sendeverstärker-Schaltung
-		\item Empfängerschaltung
-		\item Firmware für den Mikrocontroller
+		\item Sendeverstärker-Schaltung.
+		\item Empfängerschaltung.
+		\item Firmware für den Mikrocontroller.
 	\end{itemize}
 	\item[Die Verteilerplatine] mit den Komponenten:
 	\begin{itemize}
-		\item TWI-Spannungsübersetzung
-		\item ISP-Schnittstelle
-		\item Verkabelung, Stromversorgung
+		\item Bidirektionale \ac{TWI}-Spannungswandlung zwischen $3.3V$ (Raspberry Pi) und $5V$ (AVR-Mikrocontroller).
+		\item Die \ac{ISP}-Schnittstelle.
+		\item Verkabelung und Stromversorgung.
 	\end{itemize}
-	\item[Die Schnittstelle zwischen Controllern und Computer] bla
+	\item[Die Schnittstelle] zwischen Controllern und Computer:
 	\begin{itemize}
-		\item 
-		\item Das Protokoll, dass auf dem \ac{TWI} aufsetzt
+		\item Das Protokoll, dass auf dem \ac{TWI} aufsetzt.
+		\item Implementierung des Interfaces in der Firmware und auf dem Computer.
 	\end{itemize}
-	\item[Software für den Raspberry Pi] bla
+	\item[Die Software] für den Raspberry Pi:
 	\begin{itemize}
-		\item GUI
-		\item TWI/I2C schnittstelle
-		\item Ablauf und Timing der Messungen
+		\item Die grafische Oberfläche.
+		\item Ansteuerung der Platinen.
+		\item Ablauf und Timing der Messungen.
 	\end{itemize}
 \end{description}
 
 
 
 \section{Verwendete Tools}
-Für die Entwürfe der Schaltungen sind einige Programme zum Einsatz gekommen. Damit ließen sich die Funktionen überprüfen, Frequenzgänge berechnen und es konnten Platinen mit den fertigen Schaltplänen entworfen werden. Die wichtigsten Tools für dieses Projekt waren folgende:
+Für die Entwicklung der Schaltungen sind einige Programme zum Einsatz gekommen. Damit lassen sich die Funktionalität überprüfen, Frequenzgänge berechnen und es können Platinenentwürfe und Schaltpläne entworfen werden. Die wichtigsten Tools für dieses Projekt waren folgende:
 \begin{description}
-	\item[KiCAD] ist ein open-source Programm, mit dem modulare Schaltpläne gezeichnet werden können, woraus sich anschließend \ac{CAD}-Modelle einer Platine erstellen lassen. Das Programm wird maßgeblich am \ac{CERN} entwickelt und unterstützt viele zusätzliche Funktionen. So kann z.B. eine Netzliste für die \ac{SPICE}-Engine erstellt werden, mit der die Schaltungen simuliert werden können.\footnote{\url{http://www.kicad-pcb.org/}}
-	\item[LTspice] ist ein Tool von \textit{Linear Technology} um analoge und digitale Schaltungen zu simulieren, insbesondere mit den firmeneigenen Operationsverstärkern. Das Programm basiert auf dem Simulator \ac{SPICE} und besitzt einen eigenen Schaltungseditor.\footnote{\url{http://www.linear.com/designtools/software/\#LTspice}}
+	\item[KiCAD] ist ein open-source Programm, mit dem modulare Schaltpläne gezeichnet werden können, woraus sich anschließend \ac{CAD}-Modelle einer Platine erstellen lassen. Das Programm wird maßgeblich am \textit{CERN} entwickelt und unterstützt viele zusätzliche Funktionen. So kann z.B. eine Netzliste für die \textit{SPICE}-Engine erstellt werden, mit der die Schaltungen simuliert werden können.\footnote{\url{http://www.kicad-pcb.org/}}
+	\item[LTspice] ist ein Tool von \textit{Linear Technology} um analoge und digitale Schaltungen zu simulieren, insbesondere mit den firmeneigenen Operationsverstärkern. Das Programm basiert auf dem Simulator \textit{SPICE} und besitzt einen eigenen Schaltungseditor.\footnote{\url{http://www.linear.com/designtools/software/\#LTspice}}
 	\item[AktivFilter] ist ein Tool um Frequenzfilter mit Operationsverstärkern zu entwerfen. Aus einigen Vorgaben berechnet das Programm ein Bode-Diagramm, dimensioniert die Bauteile und stellt einen Schaltplan zur Verfügung.\footnote{\url{http://www.softwaredidaktik.de/filter/}}
 \end{description}
 
