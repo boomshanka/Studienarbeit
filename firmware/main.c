@@ -11,6 +11,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
+#include <util/atomic.h>
 
 #include <util/delay.h>
 #include <stdint.h>
@@ -33,9 +34,6 @@ void print_dis(void);
 uint8_t state_dis = 1;
 uint8_t connected = 0;
 uint8_t command = 0;
-
-//uint8_t data[4] = {0};
-//uint8_t data_length = 0;
 
 
 int main(void)
@@ -185,10 +183,18 @@ uint8_t slave_update()
 		if (temp_flag & (1<<TOF_SUCCESS))
 		{
 			uint16_t result = tof_getresult();
-			txbuffer[0] = PROT_MESSUCC;
-			txbuffer[1] = (uint8_t)(result>>16);	// Highbyte
-			txbuffer[2] = (uint8_t)result;			// Lowbyte
-			txlength = 3;
+			ATOMIC_BLOCK(ATOMIC_FORCEON)
+			{
+				txbuffer[0] = PROT_MESSUCC;
+				// ACHTUNG! Es wird nur um 7 Stellen (statt 8) geschoben,
+				// da das letzte Bit vom Raspberry PI abgeschnitten wird!
+				// Damit das letzte Bit vom Lowbyte gelesen werden kann,
+				// wird es im Highbyte mitgeschrieben
+				txbuffer[1] = (result>>7);	// Highbyte
+				txbuffer[2] = (uint8_t) result;			// Lowbyte
+				txlength = 3;
+				txpos = 0;
+			}
 			leds_on(1<<LEDS_GREEN);
 			
 			if (device_big())
@@ -196,8 +202,12 @@ uint8_t slave_update()
 		}
 		else if (temp_flag & (1<<TOF_TIMEOUT))
 		{
-			txbuffer[0] = PROT_MESFAIL;
-			txlength = 1;
+			ATOMIC_BLOCK(ATOMIC_FORCEON)
+			{
+				txbuffer[0] = PROT_MESFAIL;
+				txlength = 1;
+				txpos = 0;
+			}
 			leds_on(1<<LEDS_RED);
 						
 			if (device_big())

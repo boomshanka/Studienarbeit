@@ -20,6 +20,7 @@ volatile uint8_t rxbuffer[buffer_size];				// Der Empfangsbuffer, der vom Slave 
 volatile uint8_t rxlength;
 volatile uint8_t txbuffer[buffer_size];				// Der Sendebuffe, der vom Master ausgelesen werden kann.
 volatile uint8_t txlength;
+volatile uint8_t txpos;
 
 
 void	twis_init(uint8_t address);
