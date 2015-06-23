@@ -13,10 +13,12 @@ Clock Stretching: Gemäß ihrer Spezifikation können I2C-Slaves während einer 
 Der eigentliche Fehler besteht also darin, dass die SCL Taktleitung nur maskiert wird sobald ein I2C Slave die Taktleitung auf „low“ zieht. In der Folge stellt der Raspberry Pi allerdings nicht sicher, dass der folgende Takt die gleiche Länge besitzt. Es entstehen Spikes, die dann die Kommunikation mit dem I2C Gerät unmöglich machen, da diese zu kurz sein können um vom I2C Slave erkannt zu werden. Das kann zu einer Verschiebung des Taktzyklus führen, sodass Master und Slave nicht mehr synchron laufen. 
 Dadurch entsteht ein weiteres Problem: der Raspberry liest die Datenleitung zu früh ein (noch während der Slave die Leitung auf „low“ hält) und selbst sehr kurze clock stretches führen dazu, dass falsche Daten vom Raspberry gelesen werden.
 
-Es gibt mehrere Möglichkeiten dieses Problem zu umgehen. 
-1)	keine I2C Geräte nutzen, die clock stretching einsetzen
-2)	clock-stretching nur am Ende nach dem Lesen des ACK/NACK verwenden, und ihn dabei um mindestens 1/2 Takt-Periode verlängern
-3)	einen geringeren I2C-Takt wählen, so dass die I2C-Slaves schnell genug sind, und kein "clock-stretching" mehr benötigen
+Es gibt mehrere Möglichkeiten dieses Problem zu umgehen.
+\begin{itemize}
+	\item keine I2C Geräte nutzen, die clock stretching einsetzen
+	\item clock-stretching nur am Ende nach dem Lesen des ACK/NACK verwenden, und ihn dabei um mindestens 1/2 Takt-Periode verlängern
+	\item einen geringeren I2C-Takt wählen, so dass die I2C-Slaves schnell genug sind, und kein "clock-stretching" mehr benötigen
+\end{itemize}
 Im Rahmen dieser Arbeit wurde daher zunächst beschlossen, clock stretching durch den I2C Slave zu unterbinden, da diese ohnehin nicht benötigt werden. Möglich wird dies durch Anpassungen in der Firmware (diese arbeitet nun mit Interrupts und daher viel schneller) und eine verringerte Frequenz am Raspberry.
 
 

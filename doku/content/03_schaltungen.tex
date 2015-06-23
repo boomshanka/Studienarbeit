@@ -44,7 +44,7 @@ Die Spannungsverstärkung mit dem Operationsverstärker \textit{LM258} hat sich 
 Nach dieser Feststellung wurden Schaltungen mit Transistoren untersucht, da sie höhere Leistungen und schnellere Reaktionszeiten zulassen.
 
 
-\subsection{Zweite Schaltung: Verstärkung mit Transistor}
+\subsection{Zweite Schaltung: Verstärkung mit Transistor} \label{schaltung:transistor}
 %TODO Sollen Berechnungen von Strömen und Widerständen hier noch rein?
 Der Bipolartransistor ist ein stromgesteuertes Halbleiterbauelement, der als Verstärker und Schalter eingesetzt wird. Die Emitterschaltung eignet sich für hohe Spannungs- und Stromverstärkungen. Im übersteuerten Zustand lassen sich damit ohmsche Lasten elektronisch schalten. Gemeinsamer Bezugspunkt ist der Emitter - daher der Name der Schaltung. Der Strom von Basis zu Emitter steuert den maximalen Stromfluss der Schaltstrecke von Kollektor zu Emitter. Um ein digitales Signal zu verstärken, wird es über den Basiswiderstand auf den Transistor gegeben und ein weiterer Widerstand vor den Kollektor zur resultierenden Spannung geschaltet. Leitet der Transistor, fällt die Spannung am Widerstand ab. Sperrt er, fällt an ihm die Spannung ab und der Widerstand zieht das Potential vor dem Transistor auf den gewünschten Wert. Das resultierende Signal ist um $180^\circ$ phasenverdreht, d.h. es wird invertiert aber nicht verzögert. Der Transistor wird im übersteuerten Bereich betrieben, damit er sauber durchschalten kann und keine Verluste durch Spannungsabfall an ihm entstehen. \\
 
@@ -74,7 +74,7 @@ Die Emitterschaltung ist eine einfache Verstärkerschaltung und eignet sich herv
 \caption{RC-Ladekurven hinter einem Transistor (Oben Ansteuersignal)} \label{img:I4}
 \end{figure}
 
-\subsection{Dritte Schaltung: Gegentaktstufe}
+\subsection{Dritte Schaltung: Gegentaktstufe} \label{schaltung:gegentakt}
 Anstatt die Spannung über den Lastwiderstand am Kollektor eines Transistors auf den richtigen Wert zu ziehen, kann die Spannung über zwei Transistoren, die sich im Gegentakt öffnen und schließen, direkt erreicht werden. Die Vorteile dabei sind, dass der Sender über sehr kleine Widerstände schnell geladen werden kann und dennoch kein unnötiger Stromfluss entsteht. Das Prinzip der Gegentaktstufe wird in verschiedenen Bereichen angewendet: Von schnellen Logik-ICs über verschiedene Treiberbausteine bis hin zu Leistungsendstufen. Durch die Symmetrie und den geringen Eigenstromverbrauch lassen sich hohe Lasten sehr schnell An- und Abschalten. Allerdings ist eine Gegentaktstufe nicht linear, wodurch sie meist ungeeignet für analoge Anwendungen ist. In diesem Fall wird nur ein digitales Umschalten benötigt.
 
 
@@ -134,14 +134,16 @@ Das Nachschwingen kann allerdings zu einem Problem werden, wenn die Signale den 
 \section{Empfänger}
 Der Empfänger ist einer der wichtigsten Bausteine bei der Abstandsmessung mit Ultraschall. Nur durch eine zuverlässige Signalverarbeitung kann der Zeitpunkt exakt bestimmt werden, an dem das Signal eingetroffen ist. Im Prinzip gibt es zwei Möglichkeiten die Signalauswertung durchzuführen:
 \begin{description} % FIXME: Vielleicht in eigenen sections sinnvoll
-	\item[Signalauswertung per Software mit AD-Wandler:] Das empfangene Signal wird vorverstärkt und ständig von einem AD-Wandler ausgelesen. Die Auswertung kann über einfache Schwellwerte bis hin zu komplexen Filterfunktionen, z.B. mithilfe einer Fourier-Transformation, beliebig aufwendig gestaltet werden. Eine Signalvorverarbeitung ist auch denkbar, z.B. Gleichrichten und Glätten, wenn nur die Auslenkung betrachtet wird. Software kann sich auf die Umgebungsbedingungen anpassen, ist jedoch ungenauer und langsamer als die entsprechende Hardwarelösung. Eine genaue Frequenzauswertung erfordert eine hohe Abtastrate und komplexe Software, die dementsprechend auch Rechenleistung benötigt.
-	\item[Schwellwertschalter auf einem Interrupt-Eingang:] Hardware übernimmt die Signalverarbeitung mit Verstärkern und Frequenzfiltern. Anschließend schalten die Signalspitzen einen Transistor, der als Schwellwertschalter dient. Das binäre Signal kann ein Interrupt an einem Mikrocontroller auslösen, worauf dieser sofort reagiert. Auch mit leistungsschwachen Controllern können dadurch exakte Laufzeitmessungen durchgeführt werden. Die Signalverarbeitung durch die Hardware ist entscheidend für die Reichweite und Störunempfindlichkeit der Messungen.
+	\item[Signalauswertung per Software mit AD-Wandler:]\hspace{1pt}\\
+	Das empfangene Signal wird vorverstärkt und ständig von einem AD-Wandler ausgelesen. Die Auswertung kann über einfache Schwellwerte bis hin zu komplexen Filterfunktionen, z.B. mithilfe einer Fourier-Transformation, beliebig aufwendig gestaltet werden. Eine Signalvorverarbeitung ist auch denkbar, z.B. Gleichrichten und Glätten, wenn nur die Auslenkung betrachtet wird. Software kann sich auf die Umgebungsbedingungen anpassen, ist jedoch ungenauer und langsamer als die entsprechende Hardwarelösung. Eine genaue Frequenzauswertung erfordert eine hohe Abtastrate und komplexe Software, die dementsprechend auch Rechenleistung benötigt.
+	\item[Schwellwertschalter auf einem Interrupt-Eingang:]\hspace{1pt}\\
+	Hardware übernimmt die Signalverarbeitung mit Verstärkern und Frequenzfiltern. Anschließend schalten die Signalspitzen einen Transistor, der als Schwellwertschalter dient. Das binäre Signal kann ein Interrupt an einem Mikrocontroller auslösen, worauf dieser sofort reagiert. Auch mit leistungsschwachen Controllern können dadurch exakte Laufzeitmessungen durchgeführt werden. Die Signalverarbeitung durch die Hardware ist entscheidend für die Reichweite und Störunempfindlichkeit der Messungen.
 \end{description}
-In dieser Arbeit wird ein Transistor als Schwellwertschalter verwendet. Für die Signalvorverarbeitung wurden verschiedene Ansätze entwickelt und untersucht. Diese unterscheiden sich in Empfindlichkeit und Komplexität und wurden für die Anwendungsfälle entsprechend bewertet.
+In diesem Projekt wird ein Transistor als Schwellwertschalter verwendet. Für die Signalvorverarbeitung wurden verschiedene Ansätze entwickelt und untersucht. Diese unterscheiden sich in Empfindlichkeit und Komplexität und wurden für die Anwendungsfälle entsprechend bewertet.
 
 
 
-\subsection{Erster Entwurf: Frequenzfilterung und Pulsverstärkung}
+\subsection{Erster Entwurf: Frequenzfilterung und Pulsverstärkung} \label{schaltung:pulse}
 
 \subsubsection{Idee}
 In diesem Ansatz sollte das Eingangssignal so verstärkt werden, dass jede Periode einen binären Puls erzeugt, der jeweils vom Mikrocontroller detektiert werden kann. Der Vorteil dieser Methode ist, dass auch einfache Frequenzanalysen möglich sind. So kann z.B. durch das Zählen dieser Pulse über den Dopplereffekt eine Geschwindigkeit bestimmt werden. Auch ein einzelner Puls kann als Störung erkannt und ignoriert werden.\\
@@ -159,7 +161,7 @@ Störsignale hingegen spielen keine Rolle, die aktiven Frequenzfilter können de
 
 
 
-\subsection{Zweiter Entwurf: Schaltung mit Tiefpassfilter / Integrierverstärker}
+\subsection{Zweiter Entwurf: Schaltung mit Tiefpassfilter / Integrierverstärker} \label{schaltung:integrator}
 
 \subsubsection{Änderungen}
 Einige Erkenntnisse aus der ersten Schaltung führten zu der neuen Lösung. Die Anforderungen wurden geändert und auf den Zweck der Abstandsmessung optimiert. Das Signal wurde nach einem ersten Vorverstärker gleichgerichtet und mit einem Tiefpass geglättet, sodass die Probleme der hohen Frequenzen wegfielen. Eine Frequenzfilterung mit einem aktiven Bandpass findet nicht mehr statt, da einige Experimente bestätigten, dass der Ultraschallempfänger keine messbaren Störfrequenzen empfängt. Die Komplexität der Schaltung wurde deutlich minimiert, statt vier Operationsverstärker kommen nur noch zwei zum Einsatz und die Empfindlichkeit wird über ein einziges Potentiometer eingestellt, statt den ursprünglichen drei.

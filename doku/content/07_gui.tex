@@ -10,7 +10,7 @@ Für den Dialog wurde zuerst ein einfacher Dialog angelegt. Auf diesem wird mith
 	\item einer zum Lokalisieren der Sensoren
 	\item einer zum Starten der Messung.
 \end{itemize}
-Beim Klick auf den Lokalisierungs-Button wird ein Signal an die Sensoren gesendet welche dann den Abstand zueinander zurückgeben. Auf dieser Grundlage werden die jeweiligen Positionen ermittelt Dabei werden zwei der Sensoren auf bestimmte Koordinaten festgesetzt um die dritte Sensorposition besser bestimmen zu können. Die Abstände zwischen den Sensoren bilden die Seiten des Dreieck (Siehe \ref{img:gui1}), dadurch kann dann der Winkel Alpha berechnet werden. Mit diesem Winkel und der Seite b kann die Höhe h berechnet werden. Jetzt kann der Satz des Phytagoras angewendet werden um $c_2$ zu berechnen. Dann muss nur noch h auf die y-Koordinaten und $c_2$ auf die x-Koordinaten addiert werden.
+Beim Klick auf den Lokalisierungs-Button wird ein Signal an die Sensoren gesendet welche dann den Abstand zueinander zurückgeben. Auf dieser Grundlage werden die jeweiligen Positionen ermittelt Dabei werden zwei der Sensoren auf bestimmte Koordinaten festgesetzt um die dritte Sensorposition besser bestimmen zu können. Die Abstände zwischen den Sensoren bilden die Seiten des Dreieck (Siehe Abbildung \ref{img:gui1}), dadurch kann dann der Winkel Alpha berechnet werden. Mit diesem Winkel und der Seite b kann die Höhe h berechnet werden. Jetzt kann der Satz des Phytagoras angewendet werden um $c_2$ zu berechnen. Dann muss nur noch h auf die y-Koordinaten und $c_2$ auf die x-Koordinaten addiert werden.
 \begin{figure}
 	\centering
 	\includegraphics[scale=1]{images/gui/01.png}
