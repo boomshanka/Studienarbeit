@@ -5,17 +5,16 @@ Insgesamt wurden vier Platinen erstellt. Drei davon enthalten Sensoren, die vier
 
 
 \section{Prototyp-Platine}
-Die Prototyp-Platine war der erste Versuch ein voll-funktionsfähiges System aus den einzelnen Komponenten aufzubauen. Mit ihr sollten die Funktionen getestet, die Firmware für die Mikrocontroller entwickelt, sowie die Abstandsmessung in Reichweite, Genauigkeit und Zuverlässigkeit bewertet werden. Sie sollte im Standalone-Betrieb funktionieren, d.h. auch ohne einer Verbindung zu einem Computer selbstständig Messungen durchführen. Dafür bekam die Platine eine 7-Segment-Anzeige mit vier Ziffern, über die Messergebnisse ausgegeben werden können. Nachdem eine Verbindung mit dem Mikrocontroller hergestellt wurde, stoppt dieser die automatischen Messungen, sodass auch mit dieser Platine eine koordinierte Positionsbestimmung möglich ist.
+Die Prototyp-Platine war der erste Versuch ein voll-funktionsfähiges System aus den einzelnen Komponenten aufzubauen. Mit ihr sollten die Funktionen getestet, die Firmware für die Mikrocontroller entwickelt, sowie die Abstandsmessung in Reichweite, Genauigkeit und Zuverlässigkeit bewertet werden. Sie sollte im Stand-alone-Betrieb funktionieren, d.h. auch ohne einer Verbindung zu einem Computer selbstständig Messungen durchführen. Dafür bekam die Platine eine 7-Segment-Anzeige mit vier Ziffern, über die Messergebnisse ausgegeben werden können. Nachdem eine Verbindung mit dem Mikrocontroller hergestellt wurde, stoppt dieser die automatischen Messungen, sodass auch mit dieser Platine eine koordinierte Positionsbestimmung möglich ist.
 
-%TODO Bild von Platine mit Anzeige
 \begin{figure}[H]
 	\centering
-%	\includegraphics[width=(\textwidth)]{images/prototyp_2d.png}
+	\includegraphics[width=(0.6\textwidth)]{fotos/platine.jpg}
 	\caption{Prototyp-Platine mit Anzeige aus vier Ziffern} \label{img:prototype}
 \end{figure}
 
 \subsection{Aufbau}
-Die Platine enthält die Sende- und Empfängerschaltung, den Mikrocontroller mit Anzeige-LEDs und Reset-Knopf, sowie eine Pfostenstecker-Buchse zur Verbindung mit der Verteilerplatine. Die Anzeige wurde nachträglich hinzugefügt. Obwohl der Platinenentwurf sehr Platzsparend ist, wurde versucht die Schaltungen räumlich voneinander zu trennen. Dadurch können Wechselwirkungen verhindert werden.\\
+Die Platine enthält die Sende- und Empfängerschaltung, den Mikrocontroller mit Anzeige-LEDs und Reset-Knopf, sowie eine Pfostenstecker-Buchse zur Verbindung mit der Verteilerplatine. Die Anzeige wurde nachträglich hinzugefügt. Obwohl der Platinenentwurf sehr platzsparend ist, wurde versucht die Schaltungen räumlich voneinander zu trennen. Dadurch können Wechselwirkungen verhindert werden.\\
 Als Sendeschaltung ist die Gegentaktstufe (siehe \ref{schaltung:gegentakt}) zum Einsatz gekommen, da sie die leistungsfähigste Sendeschaltung ist und die höchste Reichweite verspricht. Die Empfangsschaltung wurde mit der Pulsverstärkung und Frequenzfilterung realisiert (\ref{schaltung:pulse}), da die Nachteile zu diesem Zeitpunkt noch nicht bekannt waren. Zudem sollte die Platine als Vorführobjekt auch Geschwindigkeiten über den Dopplereffekt messen können, dafür müssen die Pulse einzeln detektierbar sein.
 
 \begin{figure}[H]
@@ -25,7 +24,7 @@ Als Sendeschaltung ist die Gegentaktstufe (siehe \ref{schaltung:gegentakt}) zum 
 \end{figure}
 
 \subsection{Probleme}
-Das Löten des Platinenentwurfs stellte sich schwieriger heraus, als angenommen. Viele Komponenten wurden zu eng platziert, die Leiterbahnen waren zu verzweigt und es bestand die Gefahr eines Kurzschlusses. Außerdem wurden Sender und Empfänger zu nah aneinander platziert. Die Folge war, dass mechanische Schwingungen durch die Luft, aber auch über die Platine übertragen wurden. Abhilfe schaffte ein Stück Papier oder eine dünne Hartschaumplatte, die einen Großteil der Schwingungen reflektieren oder absorbieren lassen. Eine Totzeit zwischen Senden und Empfangen ließ sich dennoch nicht vermeiden, sodass die minimal messbare Distanz bei ca. $15cm$ liegt. Auch elektrische Wechselwirkungen wurden festgestellt. Zusätzliche Abblock-Kondensatoren direkt an der Stromversorgung der \acp{IC} konnten die Effekte eindämmen.
+Das Löten des Platinenentwurfs stellte sich schwieriger heraus, als angenommen. Viele Komponenten wurden zu eng platziert, die Leiterbahnen waren zu verzweigt und es bestand die Gefahr eines Kurzschlusses. Außerdem wurden Sender und Empfänger zu nah aneinander platziert. Die Folge war, dass mechanische Schwingungen durch die Luft, aber auch über die Platine übertragen wurden. Abhilfe schaffte ein Stück Papier oder eine dünne Hartschaumplatte, die einen Großteil der Schwingungen reflektieren oder absorbiert. Eine Totzeit zwischen Senden und Empfangen ließ sich dennoch nicht vermeiden, sodass die minimal messbare Distanz bei ca. $15cm$ liegt. Auch elektrische Wechselwirkungen wurden festgestellt. Zusätzliche Abblock-Kondensatoren direkt an der Stromversorgung der ICs konnten die Effekte eindämmen.
 
 
 \section{Sensorplatinen}
@@ -40,6 +39,12 @@ Die Sensorplatinen sind verkleinerte Versionen der Prototyp-Platine, wobei die S
 
 \subsection{Änderungen der Schaltungen}
 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[angle=270, width=(\textwidth)]{fotos/platine_klein2.jpg}
+	\caption{Fertige Sensorplatine} \label{img:endplatine_real}
+\end{figure}
 
 
 \section{Verteiler-Platine und Verkabelung}

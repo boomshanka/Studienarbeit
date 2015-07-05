@@ -111,7 +111,7 @@ Die Verstärkerschaltung setzt das Ansteuersignal von $0..5V$ auf $-8..+12V$ um,
 Die Gegentakt-Ausgangsstufe ist im Vergleich zu den bisherigen Schaltungen sehr aufwändig. Mit ihr lassen sich sehr große Lasten schalten, gleichzeitig ist sie sehr stromsparend. Sie ist leistungsmäßig für diesen Zweck jedoch überdimensioniert, die leistungsschwächere Ausgangsstufe von einem oder mehreren Logik-ICs hätten diesen Zweck auch erfüllen können.
 
 
-\subsection{Oberwellen und der Kampf gegen Windmühlen} %TODO Zeit!
+\subsection{Oberwellen und Schwingungen} %TODO Zeit!
 Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, waren die unbefriedigenden Signalverläufe am Ausgang der Sendeverstärkers. Die Pegel wurden nur teilweise erreicht und nicht gehalten. Der Fehler war, dass dafür die falschen Ursachen angenommen wurden. Schwingungen durch Oberwellen aus den steilen Flanken wurden zu Beginn aus mehreren Gründen ausgeschlossen:
 \begin{itemize}
 	\item Das Datenblatt empfiehlt die Ansteuerung der Sender mit Rechtecksignalen
@@ -129,7 +129,7 @@ Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass es auch zu Schw
 \end{figure}
 
 \subsubsection{Lösung}
-Um Oberwellen zu vermeiden, können die Sender statt mit Rechtecksignalen mit einem Sinus angesteuert werden. Die meisten hochfrequenten Anteile lassen sich auch schon mit einem Tiefpass entfernen, der die Flanken etwas abflacht. Der Versuch die Verstärker immer leistungsfähiger zu machen, führte vielmehr dazu, dass noch mehr hochfrequente Anteile entstehen konnten. Es wurde versucht die Kapazitäten zu bekämpfen, die jedoch - wie die Windmühlen aus Don Quijote\footnote{Roman von Miguel de Cervantes} - das echte Problem nicht darstellten.\\
+Um Oberwellen zu vermeiden, können die Sender statt mit Rechtecksignalen mit einem Sinus angesteuert werden. Die meisten hochfrequenten Anteile lassen sich auch schon mit einem Tiefpass entfernen, der die Flanken etwas abflacht. Der Versuch die Verstärker immer leistungsfähiger zu machen, führte vielmehr dazu, dass noch mehr hochfrequente Anteile entstehen konnten. Es wurde versucht die Kapazitäten zu bekämpfen, die jedoch das echte Problem nicht darstellten.\\
 Da im Datenblatt die Sender mit Rechtecksignalen angesteuert werden und die empfangenen Signale einem sauberen Sinus entsprechen, können die Oberwellen auch ignoriert werden. Der Grund hierfür ist, dass der Empfänger wiederum einen schmalen Frequenzbereich aufweist und das Signal filtert. Zudem ist es möglich, dass die Oberschwingungen nur auf der elektrischen Seite entstehen und die mechanischen Wellen davon unbeeinflusst bleiben. Ein Leistungsverlust der Nutzfrequenz durch die störenden Anteile kann jedoch nicht ausgeschlossen werden.\\
 Das Nachschwingen kann allerdings zu einem Problem werden, wenn die Signale den empfindlichen Empfänger beeinflussen, entweder durch mechanische oder elektrische Rückkopplung. Die mechanischen Schwingungen können reduziert werden, indem zwischen Sender und Empfänger eine größere Distanz eingehalten wird und durch Schaumstoff zwischen ihnen mögliche akustische Wellen gedämpft werden. Elektrische Störungen werden mit Abblock-Kondensatoren geschwächt. Sie befinden sich zwischen den Versorgungsspannungen und der Masse und schließen hochfrequente Anteile kurz. Ansonsten muss eine Totzeit berücksichtigt werden, bis der Empfänger das Nutzsignal ohne Störungen empfangen kann. Im Datenblatt wird eine minimale Distanz der Messungen von $20cm$ angegeben, wahrscheinlich genau aus den genannten Gründen.
 \begin{figure}[H]
@@ -141,7 +141,7 @@ Das Nachschwingen kann allerdings zu einem Problem werden, wenn die Signale den 
 
 % Section über Empfänger und Signalauswertung
 \section{Empfänger}
-Der Empfänger ist einer der wichtigsten Bausteine bei der Abstandsmessung mit Ultraschall. Nur durch eine zuverlässige Signalverarbeitung kann der Zeitpunkt exakt bestimmt werden, an dem das Signal eingetroffen ist. Im Prinzip gibt es zwei Möglichkeiten die Signalauswertung durchzuführen:
+Der Empfänger ist einer der wichtigsten Bausteine bei der Abstandsmessung mit Ultraschall. Nur durch eine zuverlässige Signalverarbeitung kann der Zeitpunkt exakt bestimmt werden, an dem das Signal eingetroffen ist. Im Prinzip gibt es zwei Möglichkeiten, die Signalauswertung durchzuführen:
 \begin{description} % FIXME: Vielleicht in eigenen sections sinnvoll
 	\item[Signalauswertung per Software mit AD-Wandler:]\hspace{1pt}\\
 	Das empfangene Signal wird vorverstärkt und ständig von einem AD-Wandler ausgelesen. Die Auswertung kann über einfache Schwellwerte bis hin zu komplexen Filterfunktionen, z.B. mithilfe einer Fourier-Transformation, beliebig aufwendig gestaltet werden. Eine Signalvorverarbeitung ist auch denkbar, z.B. Gleichrichten und Glätten, wenn nur die Auslenkung betrachtet wird. Software kann sich auf die Umgebungsbedingungen anpassen, ist jedoch ungenauer und langsamer als die entsprechende Hardwarelösung. Eine genaue Frequenzauswertung erfordert eine hohe Abtastrate und komplexe Software, die dementsprechend auch Rechenleistung benötigt.
@@ -198,7 +198,7 @@ Bei allen durchgeführten Experimenten wurden keinerlei Störsignale identifizie
 \end{figure}
 
 \subsubsection{Fazit}
-In bestimmten Anwendungsfällen macht es Sinn Perioden als einzelne Pulse zu verstärken. Für die Abstandsmessung ist diese Methode jedoch ungünstig, da sie exaktere Schaltungen benötigt und die Empfindlichkeit - und damit die Reichweite - eingeschränkt wird. Auch die verwendeten Operationsverstärker sind durch die geringe Slew-Rate ein Hindernis. Störsignale hingegen spielen keine Rolle, die aktiven Frequenzfilter können deshalb eingespart werden. Dadurch lassen sich auch potentielle Fehlerquellen und Seiteneffekte vermeiden.\\
+In bestimmten Anwendungsfällen macht es Sinn, Perioden als einzelne Pulse zu verstärken. Für die Abstandsmessung ist diese Methode jedoch ungünstig, da sie exaktere Schaltungen benötigt und die Empfindlichkeit - und damit die Reichweite - eingeschränkt wird. Auch die verwendeten Operationsverstärker sind durch die geringe Slew-Rate ein Hindernis. Störsignale hingegen spielen keine Rolle, die aktiven Frequenzfilter können deshalb eingespart werden. Dadurch lassen sich auch potentielle Fehlerquellen und Seiteneffekte vermeiden.\\
 Trotz den genannten Problemen, lassen sich mit dieser Schaltung sehr exakte Messungen in einer Spanne von $15cm$-$200cm$ durchführen. Die relative Genauigkeit befindet sich im Millimeter-Bereich, der absoluter Messfehler bewegt sich im Bereich von etwa $2cm$, abhängig von dem zu messenden Objekt.
 
 
@@ -206,7 +206,7 @@ Trotz den genannten Problemen, lassen sich mit dieser Schaltung sehr exakte Mess
 \subsection{Zweiter Entwurf: Schaltung mit Integrierverstärker} \label{schaltung:integrator}
 
 \subsubsection{Änderungen}
-Einige Erkenntnisse aus der ersten Schaltung führten zu der neuen Lösung. Die Anforderungen wurden geändert und auf den Zweck der Abstandsmessung optimiert. Das Signal wurde nach einem ersten Vorverstärker gleichgerichtet und mit einem Tiefpass geglättet, sodass die Probleme der hohen Frequenzen wegfielen. Eine Frequenzfilterung mit einem aktiven Bandpass findet nicht mehr statt. Die Komplexität der Schaltung wurde deutlich minimiert, statt vier Operationsverstärker kommen nur noch zwei zum Einsatz und die Empfindlichkeit wird über ein einziges Potentiometer eingestellt, statt den ursprünglichen drei.
+Einige Erkenntnisse aus der ersten Schaltung führten zu der neuen Lösung. Die Anforderungen wurden geändert und auf den Zweck der Abstandsmessung optimiert. Das Signal wurde nach einem ersten Vorverstärker gleichgerichtet und mit einem Tiefpass geglättet, sodass die Probleme der hohen Frequenzen wegfielen. Eine Frequenzfilterung mit einem aktiven Bandpass findet nicht mehr statt. Die Komplexität der Schaltung wurde deutlich minimiert, statt vier Operationsverstärkern kommen nur noch zwei zum Einsatz und die Empfindlichkeit wird über ein einziges Potentiometer eingestellt, statt über den ursprünglichen drei.
 
 \begin{landscape}
 	\begin{figure}
@@ -218,7 +218,11 @@ Einige Erkenntnisse aus der ersten Schaltung führten zu der neuen Lösung. Die 
 
 \subsubsection{Funktionsweise}
 Ein empfangener Impuls wird über den Kondensator \textit{C1} aufsummiert. Über den parallelen Widerstand \textit{R8} fließt ein geringer Strom wieder ab, sodass sich der Kondensator langsam entlädt. Werden mehrere Pulse empfangen, steigt die Spannung soweit an, dass der darauf folgende Verstärker eine hohe Ausgangsspannung erzeugt. Diese wird über den Koppelkondensator \textit{C2} und dem Potentiometer, das die Offsetspannung für die Transistoren vorgibt, auf eine \textit{Darlington-Stufe} geleitet, die dank der doppelten Verstärkung von zwei Transistoren auch auf geringe Steuerströme reagiert. Sie wurde gewählt, um die Schaltung noch empfindlicher zu machen. Durch die integrierende Wirkung des Tiefpasses können kleine Impulse zu hohen Spannungen aufsummiert werden, sodass auch geringe Signalstärken verarbeitet werden können. Allerdings kann es dabei zu Verzögerungen kommen, da ein gewisser Spannungspegel erreicht werden muss und sich dieser Vorgang über mehrere Perioden hinziehen kann.
-
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=(\textwidth), angle=0]{oszi/15-05-15/3.png}
+	\caption{Signalverlauf am Empfänger und am Integrierverstärker} \label{img:I12}
+\end{figure}
 
 
 \subsubsection{Fazit}

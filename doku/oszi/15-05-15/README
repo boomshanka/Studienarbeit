@@ -2,3 +2,6 @@
 
 1: Große Zeitspanne, kein Sender angeschlossen
 2: Kleine Zeitspanne, saubere Flanken aber kein Sender angeschlossen
+
+Empfängerschaltung:
+3: Signal am Empfänger + Tiefpass
