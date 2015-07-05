@@ -36,7 +36,8 @@ Tatsächlich wurde jedoch ein viel wichtigerer Wert im Datenblatt übersehen: Di
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{images/signalverlauf_opamps.png}
-\caption{Simulierter Signalverlauf von zwei Operationsverstärkern. Rot: Ansteuersignal. Grün: Slew-Rate $0.6V/\mu s$. Blau: Slew-Rate $20V/\mu s$.} \label{img:I2}
+\caption{Simulierter Signalverlauf von zwei Operationsverstärkern} \label{img:I2}
+Rot: Ansteuersignal. Grün: Slew-Rate $0.6V/\mu s$. Blau: Slew-Rate $20V/\mu s$.
 \end{figure}
 
 \subsubsection{Fazit}
@@ -52,10 +53,13 @@ Der Bipolartransistor ist ein stromgesteuertes Halbleiterbauelement, der als Ver
 \subsubsection{Spannungsbereich ausschöpfen}
 Als Spannungsversorgung stehen $+5V$, $+12V$ und $-12V$ zur Verfügung. Es gibt verschiedene Schaltungen, die unterschiedliche Spannungsbereiche bieten:
 \begin{description}
-	\item[NPN-Transistor:] Gebräuchliche Schaltung um einen Schalter mit einen Transistor zu realisieren. Die $5V$ werden auf $12V$ verstärkt.
+	\item[NPN-Transistor:]\hspace{1pt}\\
+		Gebräuchliche Schaltung um einen Schalter mit einen Transistor zu realisieren. Die $5V$ werden auf $12V$ verstärkt.
 	\item[PNP-Transistor:] Mit nur einem Transistor kann das Signal auf $-12$-$+5V$ umgesetzt werden. Die Spitze-Spitze-Spannung beträgt $17V$.
-	\item[Zwei Transistoren:] Kombiniert man beide Verstärker, kann das Signal auf $-12V$-$+12V$ verstärkt werden. Da die Spitze-Spitze-Spannung des Senders um $4V$ überstiegen wird, muss sie mit einer Z-Diode begrenzt werden. Sie wird in Reihe entgegen der Spannung geschaltet, sodass an ihr die nötige Spannung abfällt.
-	\item[Wechselsignal:] Der Sender ist nicht gegen Masse geschaltet, sondern erhält am anderen Pin das invertierte Signal. Dadurch lässt sich die Spitze-Spitze-Spannung verdoppeln. Es wird mindestens ein weiterer Transistor benötigt, um die zweite Seite zu beschalten. Dafür kann das Ausgangssignal des ersten Transistors genutzt werden, da es um $180^\circ$ phasenverdreht zum Eingangssignal ist. Der Vorteil dieser Schaltung ist, dass die Spannung halbiert werden kann, ohne Sendeleistung einzubüßen.
+	\item[Zwei Transistoren:]\hspace{1pt}\\
+		Kombiniert man beide Verstärker, kann das Signal auf $-12V$-$+12V$ verstärkt werden. Da die Spitze-Spitze-Spannung des Senders um $4V$ überstiegen wird, muss sie mit einer Z-Diode begrenzt werden. Sie wird in Reihe entgegen der Spannung geschaltet, sodass an ihr die nötige Spannung abfällt.
+	\item[Wechselsignal:]\hspace{1pt}\\
+		Der Sender ist nicht gegen Masse geschaltet, sondern erhält am anderen Pin das invertierte Signal. Dadurch lässt sich die Spitze-Spitze-Spannung verdoppeln. Es wird mindestens ein weiterer Transistor benötigt, um die zweite Seite zu beschalten. Dafür kann das Ausgangssignal des ersten Transistors genutzt werden, da es um $180^\circ$ phasenverdreht zum Eingangssignal ist. Der Vorteil dieser Schaltung ist, dass die Spannung halbiert werden kann, ohne Sendeleistung einzubüßen.
 \end{description}
 
 \begin{figure}[H]
@@ -65,7 +69,7 @@ Als Spannungsversorgung stehen $+5V$, $+12V$ und $-12V$ zur Verfügung. Es gibt 
 \end{figure}
 
 \subsubsection{Nachteile}
-Die Emitterschaltung ist eine einfache Verstärkerschaltung und eignet sich hervorragend um ohmsche Lasten zu schalten. Der Sender ist jedoch eine kapazitive Last, die zu jeder Flanke geladen oder entladen werden muss. Über den Lastwiderstand wird die Kapazität geladen, wenn der Transistor sperrt. Solange er leitend ist, fließt ein konstanter Strom über diesen Widerstand, der für den Sender nicht benötigt wird. Die Dimensionierung der Lastwiderstände ist deshalb ein Kompromiss aus unnötigen Stromfluss vermeiden und eine gewisse Flankensteilheit durch die RC-Ladekurve zu erreichen. Statt einem Ein- und Ausschalten wäre ein Umschalten zwischen zwei Spannungen sinnvoller. Diesen Ansatz verfolgt die nächste entworfene Schaltung.
+Die Emitterschaltung ist eine einfache Verstärkerschaltung und eignet sich hervorragend um ohmsche Lasten zu schalten. Der Sender ist jedoch eine kapazitive Last, die zu jeder Flanke geladen oder entladen werden muss. Über den Lastwiderstand wird die Kapazität geladen, wenn der Transistor sperrt. Solange er leitend ist, fließt ein konstanter Strom über diesen Widerstand, der für den Sender nicht benötigt wird. Bei der Dimensionierung der Lastwiderstände wird ein hoher Stromfluss in Kauf genommen, um die gewünschte Flankensteilheit, bedingt durch die RC-Ladekurve, zu erreichen. Statt einem Ein- und Ausschalten wäre ein Umschalten zwischen zwei Spannungen sinnvoller. Diesen Ansatz verfolgt die nächste entworfene Schaltung.
 
 %TODO Bild überarbeiten
 \begin{figure}[H]
@@ -91,15 +95,15 @@ Die Emitter zweier Transistoren, jeweils einer vom Typ NPN und PNP, werden zusam
 
 
 \subsubsection{Verzögerte Reaktionen der Transistoren}
-Dioden haben an den Übergängen der Dotierungen kapazitive Eigenschaften. Besonders bei hohen Spannungen wirken sie sich sehr negativ auf die Schaltgeschwindigkeit aus, da die Ladung erst abtransportiert werden muss, bevor sich der Zustand des Transistors ändert. Das führt dazu, dass sie zu spät schließen und die Signale verformt werden. Über mehrere Transistoren summiert sich dieser Effekt auf. Anfangs wurde versucht, die Steuerspannung mithilfe von in Reihe geschalteten Zener-Dioden zu begrenzen. Auch eine Diode von Basis zu Kollektor (NPN), bzw von Kollektor zur Basis (PNP) verringert die Schaltgeschwindigkeit. Überschüssige Ladungsträger fließen über die niederohmige Kollektor-Emitter-Strecke ab, wodurch ein Übersättigen des Transistors vermieden wird. Bei der Gegentaktstufe tritt jedoch der Fall ein, indem der Sender vollständig geladen ist und kein Strom mehr fließt. Ohne Stromfluss fällt an den Z-Dioden keine Spannung ab und die Transistoren übersättigen erneut.\\ %TODO Warum schlechtes Wort?!
-Eine akzeptable Lösung wurde gefunden, indem die Arbeitspunkte der Transistoren über Widerstandsverhältnisse (R13 und R14 sowie R15 und R16, siehe \ref{img:I5}) angepasst wurden. Mithilfe von Schaltungssimulationen konnten die Verhältnisse genau bestimmt werden, bei denen die Transistoren noch sauber schalten und gleichzeitig vor dem Schließen kaum Ladungsträger abtransportiert werden müssen. Die Simulationen waren so genau, dass mit nur geringfügigen Änderungen der Widerstandswerte auch in der Realität optimale Ergebnisse erzielt wurden.
+Dioden haben an den Übergängen der Dotierungen kapazitive Eigenschaften. Besonders bei hohen Spannungen wirken sie sich sehr negativ auf die Schaltgeschwindigkeit aus, da die Ladung erst abtransportiert werden muss, bevor sich der Zustand des Transistors ändert. Das führt dazu, dass sie zu spät schließen und die Signale verformt werden. Über mehrere Transistoren summiert sich dieser Effekt auf. Anfangs wurde versucht, die Steuerspannung mithilfe von in Reihe geschalteten \textit{Zener-Dioden} zu begrenzen. Auch eine Diode von Basis zu Kollektor (NPN), bzw. von Kollektor zur Basis (PNP) verringert die Schaltgeschwindigkeit. Überschüssige Ladungsträger fließen über die niederohmige Kollektor-Emitter-Strecke ab, wodurch ein Übersättigen des Transistors vermieden wird. Bei der Gegentaktstufe tritt jedoch der Fall ein, bei dem der Sender vollständig geladen ist und kein Strom mehr fließt. Ohne Stromfluss fällt an den Z-Dioden keine Spannung ab und die Transistoren übersättigen erneut.\\ %TODO Warum schlechtes Wort?!
+Eine akzeptable Lösung wurde gefunden, indem die Arbeitspunkte der Transistoren über Widerstandsverhältnisse (R13 und R14 sowie R15 und R16, siehe Abbildung \ref{img:I5}) angepasst wurden. Mithilfe von Schaltungssimulationen konnten die Verhältnisse genau bestimmt werden, bei denen die Transistoren noch sauber schalten und gleichzeitig vor dem Schließen kaum Ladungsträger abtransportiert werden müssen. Die Simulationen waren so genau, dass mit nur geringfügigen Änderungen der Widerstandswerte auch in der Realität optimale Ergebnisse erzielt wurden.
 
 \subsubsection{Aufbau und Funktionsweise}
 Die Verstärkerschaltung setzt das Ansteuersignal von $0..5V$ auf $-8..+12V$ um, sodass der Ultraschallsender mit $20V$ Spannungsdifferenz angesteuert wird. Die vier Volt Differenz von der Spannungsquelle mit $-12V$ werden mithilfe einer Zener-Diode erreicht, damit der Sender nicht durch Überspannung beschädigt wird. Die Umsetzung wird mit drei Schritten erreicht: In den ersten zwei Stufen (mit T4 und T3, siehe \ref{img:I5}) wird das Signal auf $-12..+12V$ verstärkt (Prinzip der dritten Schaltung aus \ref{img:I3}), die letzte Stufe ist die eigentliche Gegentakt-Ausgangsstufe, wo das Umschalten der beiden Ausgangsspannungen stattfindet.
 
 
 \subsubsection{Fazit}
-Die Gegentakt-Ausgangsstufe ist im Vergleich zu den bisherigen Schaltungen sehr aufwendig. Mit ihr lassen sich sehr große Lasten schalten, gleichzeitig ist sie sehr Stromsparend. Sie ist leistungsmäßig für diesen Zweck jedoch überdimensioniert, die leistungsschwächere Ausgangsstufe von einem oder mehreren Logik-ICs hätten diesen Zweck auch erfüllen können.
+Die Gegentakt-Ausgangsstufe ist im Vergleich zu den bisherigen Schaltungen sehr aufwändig. Mit ihr lassen sich sehr große Lasten schalten, gleichzeitig ist sie sehr stromsparend. Sie ist leistungsmäßig für diesen Zweck jedoch überdimensioniert, die leistungsschwächere Ausgangsstufe von einem oder mehreren Logik-ICs hätten diesen Zweck auch erfüllen können.
 
 
 \subsection{Oberwellen und der Kampf gegen Windmühlen} %TODO Zeit!
@@ -111,7 +115,7 @@ Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, war
 	\item Der Signalverlauf am Empfänger war wie erwartet ein sauberes Sinus-Signal
 \end{itemize}
 Es wurde vermutet, dass die Ströme nicht ausreichend sind, um die Kapazitäten in den geringen Pulszeiten zu versorgen. Allerdings erbrachte der Gegentaktverstärker trotz den hohen Strömen auch nicht das erhoffte Ergebnis. Wieder wurden die Pegel nicht sauber gehalten, nur die Flankensteilheit wurde verbessert.\\
-Ein Hinweis auf das Problem gab es jedoch: Die Ausgangsspannung schwingt auch weiter, nachdem das Steuersignal keine Pulse mehr sendet. Dieses Verhalten tritt nicht auf, wenn der Ultraschallsender nicht angeschlossen ist. Tatsächlich stammen die Schwingungen vom Sender. In ihm wird die elektrische Schwingung in eine mechanische umgesetzt. Das schwingende Element, dass die Schallwellen erzeugt, besitzt eine Trägheit, die es mechanisch nachschwingen lässt und dadurch auch elektrische Signale rückkoppelt.\\ %TODO: Rückkoppeln? Besseres Wort?
+Ein Hinweis auf das Problem gab es jedoch: Die Ausgangsspannung schwingt auch weiter, nachdem das Steuersignal keine Pulse mehr sendet. Dieses Verhalten tritt nicht auf, wenn der Ultraschallsender nicht angeschlossen ist. Tatsächlich stammen die Schwingungen vom Sender. In ihm wird die elektrische Schwingung in eine mechanische umgesetzt. Das schwingende Element, dass die Schallwellen erzeugt, besitzt eine Trägheit, die es mechanisch nach-schwingen lässt und dadurch auch elektrische Signale rückkoppelt.\\ %TODO: Rückkoppeln? Besseres Wort?
 Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass es auch zu Schwingungen mit höheren Frequenzen kommt. Dabei handelt es sich hauptsächlich um harmonische Oberschwingungen, d.h. Schwingungen mit der n-Fachen Frequenz der Resonanzschwingung von $40 kHz$. %TODO ob das auch stimmt?
 \begin{figure}[H]
 \centering
