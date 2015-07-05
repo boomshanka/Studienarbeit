@@ -55,7 +55,8 @@ Als Spannungsversorgung stehen $+5V$, $+12V$ und $-12V$ zur Verfügung. Es gibt 
 \begin{description}
 	\item[NPN-Transistor:]\hspace{1pt}\\
 		Gebräuchliche Schaltung um einen Schalter mit einen Transistor zu realisieren. Die $5V$ werden auf $12V$ verstärkt.
-	\item[PNP-Transistor:] Mit nur einem Transistor kann das Signal auf $-12$-$+5V$ umgesetzt werden. Die Spitze-Spitze-Spannung beträgt $17V$.
+	\item[PNP-Transistor:]\hspace{1pt}\\
+		Mit nur einem Transistor kann das Signal auf $-12$-$+5V$ umgesetzt werden. Die Spitze-Spitze-Spannung beträgt $17V$.
 	\item[Zwei Transistoren:]\hspace{1pt}\\
 		Kombiniert man beide Verstärker, kann das Signal auf $-12V$-$+12V$ verstärkt werden. Da die Spitze-Spitze-Spannung des Senders um $4V$ überstiegen wird, muss sie mit einer Z-Diode begrenzt werden. Sie wird in Reihe entgegen der Spannung geschaltet, sodass an ihr die nötige Spannung abfällt.
 	\item[Wechselsignal:]\hspace{1pt}\\
@@ -99,15 +100,19 @@ Dioden haben an den Übergängen der Dotierungen kapazitive Eigenschaften. Beson
 Eine akzeptable Lösung wurde gefunden, indem die Arbeitspunkte der Transistoren über Widerstandsverhältnisse (R13 und R14 sowie R15 und R16, siehe Abbildung \ref{img:I5}) angepasst wurden. Mithilfe von Schaltungssimulationen konnten die Verhältnisse genau bestimmt werden, bei denen die Transistoren noch sauber schalten und gleichzeitig vor dem Schließen kaum Ladungsträger abtransportiert werden müssen. Die Simulationen waren so genau, dass mit nur geringfügigen Änderungen der Widerstandswerte auch in der Realität optimale Ergebnisse erzielt wurden.
 
 \subsubsection{Aufbau und Funktionsweise}
-Die Verstärkerschaltung setzt das Ansteuersignal von $0..5V$ auf $-8..+12V$ um, sodass der Ultraschallsender mit $20V$ Spannungsdifferenz angesteuert wird. Die vier Volt Differenz von der Spannungsquelle mit $-12V$ werden mithilfe einer Zener-Diode erreicht, damit der Sender nicht durch Überspannung beschädigt wird. Die Umsetzung wird mit drei Schritten erreicht: In den ersten zwei Stufen (mit T4 und T3, siehe \ref{img:I5}) wird das Signal auf $-12..+12V$ verstärkt (Prinzip der dritten Schaltung aus \ref{img:I3}), die letzte Stufe ist die eigentliche Gegentakt-Ausgangsstufe, wo das Umschalten der beiden Ausgangsspannungen stattfindet.
-
+Die Verstärkerschaltung setzt das Ansteuersignal von $0..5V$ auf $-8..+12V$ um, sodass der Ultraschallsender mit $20V$ Spannungsdifferenz angesteuert wird. Die vier Volt Differenz von der Spannungsquelle mit $-12V$ werden mithilfe einer Zener-Diode erreicht, damit der Sender nicht durch Überspannung beschädigt wird. Die Umsetzung wird mit drei Schritten erreicht: In den ersten zwei Stufen (mit T4 und T3, siehe Abbildung \ref{img:I5}) wird das Signal auf $-12..+12V$ verstärkt (Prinzip der dritten Schaltung aus Abbildung \ref{img:I3}), die letzte Stufe ist die eigentliche Gegentakt-Ausgangsstufe, wo das Umschalten der beiden Ausgangsspannungen stattfindet.
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{oszi/15-04-30/1.png}
+\caption{Ausgangssignal der Gegentaktstufe mit angeschlossenen Sender} \label{img:I8}
+\end{figure}
 
 \subsubsection{Fazit}
 Die Gegentakt-Ausgangsstufe ist im Vergleich zu den bisherigen Schaltungen sehr aufwändig. Mit ihr lassen sich sehr große Lasten schalten, gleichzeitig ist sie sehr stromsparend. Sie ist leistungsmäßig für diesen Zweck jedoch überdimensioniert, die leistungsschwächere Ausgangsstufe von einem oder mehreren Logik-ICs hätten diesen Zweck auch erfüllen können.
 
 
 \subsection{Oberwellen und der Kampf gegen Windmühlen} %TODO Zeit!
-Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, waren die unbefriedigenden Signalverläufe am Ausgang der Sendeverstärker. Die Pegel wurden nur teilweise erreicht und nicht gehalten. Der Fehler war, dass dafür die falschen Ursachen angenommen wurden. Schwingungen durch Oberwellen wurden zu Beginn aus mehreren Gründen ausgeschlossen:
+Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, waren die unbefriedigenden Signalverläufe am Ausgang der Sendeverstärkers. Die Pegel wurden nur teilweise erreicht und nicht gehalten. Der Fehler war, dass dafür die falschen Ursachen angenommen wurden. Schwingungen durch Oberwellen aus den steilen Flanken wurden zu Beginn aus mehreren Gründen ausgeschlossen:
 \begin{itemize}
 	\item Das Datenblatt empfiehlt die Ansteuerung der Sender mit Rechtecksignalen
 	\item Das Frequenzband des Senders ist sehr schmal, andere Frequenzen werden stark gedämpft
@@ -115,22 +120,22 @@ Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, war
 	\item Der Signalverlauf am Empfänger war wie erwartet ein sauberes Sinus-Signal
 \end{itemize}
 Es wurde vermutet, dass die Ströme nicht ausreichend sind, um die Kapazitäten in den geringen Pulszeiten zu versorgen. Allerdings erbrachte der Gegentaktverstärker trotz den hohen Strömen auch nicht das erhoffte Ergebnis. Wieder wurden die Pegel nicht sauber gehalten, nur die Flankensteilheit wurde verbessert.\\
-Ein Hinweis auf das Problem gab es jedoch: Die Ausgangsspannung schwingt auch weiter, nachdem das Steuersignal keine Pulse mehr sendet. Dieses Verhalten tritt nicht auf, wenn der Ultraschallsender nicht angeschlossen ist. Tatsächlich stammen die Schwingungen vom Sender. In ihm wird die elektrische Schwingung in eine mechanische umgesetzt. Das schwingende Element, dass die Schallwellen erzeugt, besitzt eine Trägheit, die es mechanisch nach-schwingen lässt und dadurch auch elektrische Signale rückkoppelt.\\ %TODO: Rückkoppeln? Besseres Wort?
-Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass es auch zu Schwingungen mit höheren Frequenzen kommt. Dabei handelt es sich hauptsächlich um harmonische Oberschwingungen, d.h. Schwingungen mit der n-Fachen Frequenz der Resonanzschwingung von $40 kHz$. %TODO ob das auch stimmt?
+Ein Hinweis auf das Problem gab es jedoch: Die Ausgangsspannung schwingt auch weiter, nachdem das Steuersignal keine Pulse mehr sendet. Dieses Verhalten tritt nicht auf, wenn der Ultraschallsender nicht angeschlossen ist. Tatsächlich stammen die Schwingungen vom Sender. In ihm wird die elektrische Schwingung in eine mechanische umgesetzt. Das schwingende Element, dass die Schallwellen erzeugt, besitzt eine Trägheit, die es mechanisch nachschwingen lässt und dadurch auch elektrische Signale rückkoppelt.\\ %TODO: Rückkoppeln? Besseres Wort?
+Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass es auch zu Schwingungen mit höheren Frequenzen kommt. Sie sind in den steilen Flanken enthalten und regen das mechanische Piezoelement an. Dabei kann es sich auch um harmonische Oberschwingungen handeln, d.h. Schwingungen mit der n-Fachen Frequenz der Resonanzschwingung von $40 kHz$, die weniger stark gedämpft werden.
 \begin{figure}[H]
 \centering
-\includegraphics[width=(\textwidth), angle=0]{oszi/15-04-23/2_01.png} %TODO Anderes Bild mit vollem Spannungsbereich
-\caption{Schwingungen der Ausgangsstufe (unten) und Rückkopplung am Empfänger} \label{img:I6}
+\includegraphics[width=(\textwidth), angle=0]{oszi/15-04-01/4.png}
+\caption{Oberwellen und Schwingungen der Ausgangsstufe (oben)} \label{img:I7}
 \end{figure}
 
 \subsubsection{Lösung}
 Um Oberwellen zu vermeiden, können die Sender statt mit Rechtecksignalen mit einem Sinus angesteuert werden. Die meisten hochfrequenten Anteile lassen sich auch schon mit einem Tiefpass entfernen, der die Flanken etwas abflacht. Der Versuch die Verstärker immer leistungsfähiger zu machen, führte vielmehr dazu, dass noch mehr hochfrequente Anteile entstehen konnten. Es wurde versucht die Kapazitäten zu bekämpfen, die jedoch - wie die Windmühlen aus Don Quijote\footnote{Roman von Miguel de Cervantes} - das echte Problem nicht darstellten.\\
-Da im Datenblatt die Sender mit Rechtecksignalen angesteuert werden und die empfangenen Signale einem sauberen Sinus entsprechen, können die Oberwellen auch ignoriert werden. Der Grund hierfür ist, dass der Empfänger wiederum einen schmalen Frequenzbereich aufweist und das Signal filtert. Zudem ist es möglich, dass die Oberschwingungen nur auf der elektrischen Seite entstehen und die mechanischen Wellen davon unbeeinflusst bleiben. Ein Leistungsverlust der Nutzfrequenz durch die störenden Anteile ist jedoch möglich.\\
+Da im Datenblatt die Sender mit Rechtecksignalen angesteuert werden und die empfangenen Signale einem sauberen Sinus entsprechen, können die Oberwellen auch ignoriert werden. Der Grund hierfür ist, dass der Empfänger wiederum einen schmalen Frequenzbereich aufweist und das Signal filtert. Zudem ist es möglich, dass die Oberschwingungen nur auf der elektrischen Seite entstehen und die mechanischen Wellen davon unbeeinflusst bleiben. Ein Leistungsverlust der Nutzfrequenz durch die störenden Anteile kann jedoch nicht ausgeschlossen werden.\\
 Das Nachschwingen kann allerdings zu einem Problem werden, wenn die Signale den empfindlichen Empfänger beeinflussen, entweder durch mechanische oder elektrische Rückkopplung. Die mechanischen Schwingungen können reduziert werden, indem zwischen Sender und Empfänger eine größere Distanz eingehalten wird und durch Schaumstoff zwischen ihnen mögliche akustische Wellen gedämpft werden. Elektrische Störungen werden mit Abblock-Kondensatoren geschwächt. Sie befinden sich zwischen den Versorgungsspannungen und der Masse und schließen hochfrequente Anteile kurz. Ansonsten muss eine Totzeit berücksichtigt werden, bis der Empfänger das Nutzsignal ohne Störungen empfangen kann. Im Datenblatt wird eine minimale Distanz der Messungen von $20cm$ angegeben, wahrscheinlich genau aus den genannten Gründen.
 \begin{figure}[H]
 \centering
-\includegraphics[width=(\textwidth)]{oszi/15-04-16/1.png}
-\caption{Rückkopplung von Sender (unten) und Empfänger bei einer Laufzeitmessung} \label{img:I7}
+\includegraphics[width=(\textwidth), angle=0]{oszi/15-04-23/2_01.png}
+\caption{Schwingungen der Ausgangsstufe (unten) und Rückkopplung am Empfänger} \label{img:I6}
 \end{figure}
 
 
@@ -150,25 +155,58 @@ In diesem Projekt wird ein Transistor als Schwellwertschalter verwendet. Für di
 \subsection{Erster Entwurf: Frequenzfilterung und Pulsverstärkung} \label{schaltung:pulse}
 
 \subsubsection{Idee}
-In diesem Ansatz sollte das Eingangssignal so verstärkt werden, dass jede Periode einen binären Puls erzeugt, der jeweils vom Mikrocontroller detektiert werden kann. Der Vorteil dieser Methode ist, dass auch einfache Frequenzanalysen möglich sind. So kann z.B. durch das Zählen dieser Pulse über den Dopplereffekt eine Geschwindigkeit bestimmt werden. Auch ein einzelner Puls kann als Störung erkannt und ignoriert werden.\\
-Um eine möglichst hohe Reichweite zu erzielen, sollte die Verstärkung der Signale sehr hoch gewählt werden. Allerdings werden damit auch Störsignale verstärkt, die fälschlicherweise als Ultraschallsignale interpretiert werden können. Um das zu vermeiden, sollte das Eingangssignal mithilfe eines Bandpasses gefiltert werden.
+In diesem Ansatz wird das Eingangssignal so verstärkt werden, damit jede Periode einen binären Puls erzeugt, der jeweils vom Mikrocontroller detektiert werden kann. Der Vorteil dieser Methode ist, dass auch einfache Frequenzanalysen möglich sind. So kann z.B. durch das Zählen dieser Pulse über den Dopplereffekt eine Geschwindigkeit bestimmt werden. Ein einzelner Puls kann auch als Störung erkannt und ignoriert werden.\\
+\begin{figure}[H]
+\centering
+\includegraphics[width=(\textwidth), angle=0]{oszi/15-04-23/4_03.png}
+\caption{Pulsverstärkung bei einer Laufzeitmessung} \label{img:I11}
+Oben: Eingangssignal am Empfänger; Unten: Ausgangs-Pulse der Empfängerschaltung. Zu Beginn der Messung werden die Signale bereits vom Sender Rückgekoppelt, die Pulse auf der Rechten Seite stammen von der Reflektion.
+\end{figure}
+Um eine möglichst hohe Reichweite zu erzielen, sollte die Verstärkung der Signale sehr hoch gewählt werden. Allerdings werden damit auch Störsignale verstärkt, die fälschlicherweise als Ultraschallsignale interpretiert werden können. Um das zu vermeiden, wird das Eingangssignal mithilfe eines Bandpasses gefiltert.
+
 
 \subsubsection{Umsetzung}
-
+Der Bandpass wurde mithilfe eines aktiven Tiefpasses 2. Ordnung und zwei passive CR-Hochpässen realisiert, woraus ein Bandpassfilter 2. Ordnung resultiert. Der aktive Filter verstärkt das Signal zusätzlich. Auch die Signale oberhalb der Grenzfrequenz erfahren eine Dämpfung, die dadurch ausgeglichen werden kann. Das Signal wird vor und nach dem Tiefpass mit Operationsverstärkern verstärkt, anschließend wird eine Offsetspannung hinzu addiert. Das resultierende Signal wird auf die Basis eines Transistors gegeben, der bei kleinsten Impulsen bereits durchschaltet und einen binären Puls erzeugt. Verstärkungen und Offsetspannung können über Potentiometer exakt eingestellt werden.
+\begin{figure}[H]
+\centering
+\includegraphics[width=(\textwidth), angle=0]{sim/verstaerker_offset.jpg}
+\caption{Simulation der Pulsverstärkung} \label{img:Sim1}
+Rot: Eingangssignal; Blau: Verstärktes Signal mit Offset; Grün: Binäre Pulse
+\end{figure}
+Der aktive Tiefpass wurde als \textit{Sallen-Key-Tiefpass} 2. Ordnung mit einem Operationsverstärker realisiert. Seine Verstärkung beträgt $3dB$. 
+\begin{figure}[H]
+\centering
+%\includegraphics[width=(\textwidth), angle=0]{sim/}
+\caption{Bode-Diagramm des aktiven Frequenzfilters} \label{img:bode}
+\end{figure}
+%TODO: Diagramm einfügen
 
 \subsubsection{Probleme}
-Die Verstärkung wird auf einen gewissen Pegel reduziert und die Signalformen verfälscht, wodurch auch das Frequenzspektrum geändert wird.\\
+Die Operationsverstärker können eine Verstärkung von maximal 100 erreichen, bei höheren Werten bleibt der Ausgangspegel am Maximum oder Minimum hängen. Durch die serielle Verschaltung mehrerer Verstärker können dennoch höhere Faktoren erreicht werden. Allerdings besteht die Gefahr, dass dadurch mehr Störsignale eingekoppelt werden. Ein weiteres Problem der Operationsverstärker ist die geringe Slew-Rate. Ein periodisches Signal kann nur auf einen gewissen Pegel verstärkt werden, da das Signal ansonsten zu steil werden würde. Wenn das geschieht, wird die Signalform abgeflacht und verfälscht, wodurch auch andere Frequenzanteile entstehen, die von den Filtern wieder entfernt werden. Die maximale Verstärkung ist deshalb sehr eingeschränkt, jedoch sollte sie möglichst hoch sein, um den Transistor bei jedem Puls sauber durchzuschalten.\\
+Der Verstärkungsfaktor bei aktiven Filtern muss kleiner als drei sein, ansonsten fängt der Filter an, in seiner Resonanzfrequenz zu schwingen. Auch kleinere Faktoren können bereits ein längeres Nachschwingen bewirken, das unter Umständen weitere Messungen verfälscht.
+\begin{figure}[H]
+\centering
+\includegraphics[width=(\textwidth), angle=0]{sim/schwingen_bei_verstaerkung.png}
+\caption{Signal eines schwingenden aktiven Frequenzfilters} \label{img:Sim2}
+Verstärkungsfaktor: $1.7$; Rot: Ansteuersignal; Grün: Verstärktes Signal; Blau: Schwingender Ausgang des Filters
+\end{figure}
+Bei allen durchgeführten Experimenten wurden keinerlei Störsignale identifiziert, die vom Ultraschall-Empfänger aufgenommen und durch die Filter beseitigt wurden. Die Filter erhöhten die Komplexität der Schaltung und schränkten die Möglichkeiten ein, das Signal zu verarbeiten. Aus diesem Grund wurde entschieden, die Frequenzfilterung in den nachfolgenden Schaltungen nicht zu verwenden.
+\begin{figure}[H]
+\centering
+\includegraphics[width=(\textwidth), angle=0]{oszi/15-04-23/3_01.png}
+\caption{Signal vor (unten) und nach der Filterung} \label{img:I10}
+\end{figure}
 
 \subsubsection{Fazit}
-In bestimmten Anwendungsfällen macht es Sinn Perioden als einzelne Pulse zu verstärken. Für die Abstandsmessung ist diese Methode jedoch ungünstig, da sie exaktere Schaltungen benötigt und die Empfindlichkeit - und damit die Reichweite - eingeschränkt wird. Auch die verwendeten Operationsverstärker sind durch die geringe Slew-Rate ein Hindernis.\\
-Störsignale hingegen spielen keine Rolle, die aktiven Frequenzfilter können deshalb eingespart werden. Dadurch lassen sich auch potentielle Fehlerquellen und Seiteneffekte vermeiden.
+In bestimmten Anwendungsfällen macht es Sinn Perioden als einzelne Pulse zu verstärken. Für die Abstandsmessung ist diese Methode jedoch ungünstig, da sie exaktere Schaltungen benötigt und die Empfindlichkeit - und damit die Reichweite - eingeschränkt wird. Auch die verwendeten Operationsverstärker sind durch die geringe Slew-Rate ein Hindernis. Störsignale hingegen spielen keine Rolle, die aktiven Frequenzfilter können deshalb eingespart werden. Dadurch lassen sich auch potentielle Fehlerquellen und Seiteneffekte vermeiden.\\
+Trotz den genannten Problemen, lassen sich mit dieser Schaltung sehr exakte Messungen in einer Spanne von $15cm$-$200cm$ durchführen. Die relative Genauigkeit befindet sich im Millimeter-Bereich, der absoluter Messfehler bewegt sich im Bereich von etwa $2cm$, abhängig von dem zu messenden Objekt.
 
 
 
-\subsection{Zweiter Entwurf: Schaltung mit Tiefpassfilter / Integrierverstärker} \label{schaltung:integrator}
+\subsection{Zweiter Entwurf: Schaltung mit Integrierverstärker} \label{schaltung:integrator}
 
 \subsubsection{Änderungen}
-Einige Erkenntnisse aus der ersten Schaltung führten zu der neuen Lösung. Die Anforderungen wurden geändert und auf den Zweck der Abstandsmessung optimiert. Das Signal wurde nach einem ersten Vorverstärker gleichgerichtet und mit einem Tiefpass geglättet, sodass die Probleme der hohen Frequenzen wegfielen. Eine Frequenzfilterung mit einem aktiven Bandpass findet nicht mehr statt, da einige Experimente bestätigten, dass der Ultraschallempfänger keine messbaren Störfrequenzen empfängt. Die Komplexität der Schaltung wurde deutlich minimiert, statt vier Operationsverstärker kommen nur noch zwei zum Einsatz und die Empfindlichkeit wird über ein einziges Potentiometer eingestellt, statt den ursprünglichen drei.
+Einige Erkenntnisse aus der ersten Schaltung führten zu der neuen Lösung. Die Anforderungen wurden geändert und auf den Zweck der Abstandsmessung optimiert. Das Signal wurde nach einem ersten Vorverstärker gleichgerichtet und mit einem Tiefpass geglättet, sodass die Probleme der hohen Frequenzen wegfielen. Eine Frequenzfilterung mit einem aktiven Bandpass findet nicht mehr statt. Die Komplexität der Schaltung wurde deutlich minimiert, statt vier Operationsverstärker kommen nur noch zwei zum Einsatz und die Empfindlichkeit wird über ein einziges Potentiometer eingestellt, statt den ursprünglichen drei.
 
 \begin{landscape}
 	\begin{figure}
@@ -179,9 +217,10 @@ Einige Erkenntnisse aus der ersten Schaltung führten zu der neuen Lösung. Die 
 \end{landscape}
 
 \subsubsection{Funktionsweise}
+Ein empfangener Impuls wird über den Kondensator \textit{C1} aufsummiert. Über den parallelen Widerstand \textit{R8} fließt ein geringer Strom wieder ab, sodass sich der Kondensator langsam entlädt. Werden mehrere Pulse empfangen, steigt die Spannung soweit an, dass der darauf folgende Verstärker eine hohe Ausgangsspannung erzeugt. Diese wird über den Koppelkondensator \textit{C2} und dem Potentiometer, das die Offsetspannung für die Transistoren vorgibt, auf eine \textit{Darlington-Stufe} geleitet, die dank der doppelten Verstärkung von zwei Transistoren auch auf geringe Steuerströme reagiert. Sie wurde gewählt, um die Schaltung noch empfindlicher zu machen. Durch die integrierende Wirkung des Tiefpasses können kleine Impulse zu hohen Spannungen aufsummiert werden, sodass auch geringe Signalstärken verarbeitet werden können. Allerdings kann es dabei zu Verzögerungen kommen, da ein gewisser Spannungspegel erreicht werden muss und sich dieser Vorgang über mehrere Perioden hinziehen kann.
 
 
 
-\subsubsection{Funktionstest und Bewertung}
-
+\subsubsection{Fazit}
+Die Schaltung erzielt ähnlich gute Ergebnisse, wie der erste Entwurf, benötigt dafür jedoch viel weniger Bauelemente. Die Komplexität konnte gesenkt werden und die Störempfindlichkeit durch die geringeren Frequenzen und Verstärkungsfaktoren, die nicht mehr so hoch gewählt werden müssen, konnte verbessert werden.
 

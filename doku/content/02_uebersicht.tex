@@ -100,7 +100,7 @@ Die Mikrocontroller auf den Sensorplatinen erfüllen folgende Zwecke:
 	\item Ansteuerung der Ultraschallsender
 	\item Signal am Empfänger detektieren
 	\item Laufzeitmessung durchführen
-	\item Status über \ac{LED}s anzeigen
+	\item Status über LEDs anzeigen
 	\item Schnittstelle nach außen über das \ac{TWI} bereitstellen
 \end{itemize}
 Verwendet wird dafür der AVR-Mikrocontroller \textit{ATmega8} von Atmel. Die Controller aus der AVR-Familie sind weit verbreitet und besitzen eine 8-Bit Architektur mit einem \ac{RISC}-Befehlssatz. Sie sind günstig, einfach zu handhaben, besitzen eine übersichtliche innere Struktur und es gibt eine Vielzahl an Software und Tools, um mit ihnen zu arbeiten. Die Mikrocontroller bieten neben einfachen digitalen Input-/Output-Pins auch zusätzliche Hardwarefunktionen, wie z.B. Analog-Digital-Wandler, \ac{TWI}- und andere serielle Schnittstellen, Timer, verschiedenste Hardware-Interrupts und vieles mehr. Das Programm für die oben genannten Funktionen läuft als Firmware direkt auf der Hardware und ist in C geschrieben.
