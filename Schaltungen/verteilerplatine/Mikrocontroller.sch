@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 3
 Title ""
-Date "22 feb 2015"
+Date "6 jul 2015"
 Rev ""
 Comp ""
 Comment1 ""
@@ -262,4 +262,13 @@ $EndComp
 Wire Wire Line
 	3500 3500 3650 3500
 Connection ~ 3550 3500
+Wire Wire Line
+	3700 800  3550 800 
+Wire Wire Line
+	3550 800  3550 2400
+Wire Wire Line
+	3550 1600 3700 1600
+Wire Wire Line
+	3550 2400 3700 2400
+Connection ~ 3550 1600
 $EndSCHEMATC
