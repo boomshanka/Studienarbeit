@@ -69,7 +69,15 @@
 % TIKZ für Grafiken
 \usepackage{tikz}
 \usepackage{circuitikz}
+
 \usetikzlibrary{calc}
+\usetikzlibrary{shapes.geometric, arrows}
+
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=4.5cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} =		[trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=4.5cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{process} =	[rectangle, minimum width=4.5cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} =	[diamond, minimum width=4.5cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} =		[thick,->,>=stealth]
 
 
 %%%%%% Configuration %%%%%
@@ -119,7 +127,7 @@
 	bibwarn=true,
 	bibencoding=utf8,	% wenn .bib in utf8, sonst ascii
 	sortlocale=de_DE,
-	style=authortitle	%Zitierstil. Siehe http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf
+	style=numeric-comp	%Zitierstil. Siehe http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf
 ]{biblatex}
 }
 

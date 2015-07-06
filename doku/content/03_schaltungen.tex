@@ -6,7 +6,7 @@ Für jede Aufgabe wurden verschiedene Schaltungen entwickelt und auf ihre Funkti
 
 % Section über Sender-Schaltung, Signalerzeugung
 \section{Sender}
-Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Bei voller Ausnutzung der Ansteuerspannung können Schallpegel bis zu $120dB$ erreicht werden, das entspricht in etwa der Lautstärke eines startenden Düsenflugzeugs. Allerdings lässt der Schalldruck mit steigendem Abstand schnell nach und ist für das menschliche Gehör weder wahrnehmbar, noch schädlich. Der hohe Abstrahlwinkel hat auch zur Folge, dass nur ein Bruchteil der Schallwelle am Objekt auftrifft und reflektiert werden kann.\\
+Der Ultraschallsender wird durch ein $40 kHz$-Signal angeregt und erzeugt einen Schallkegel mit etwa $80^\circ$ Abstrahlwinkel. Der Schallpegel sollte möglichst hoch sein, um die erfolgreiche Signalauswertung des reflektierten Signals auch über weite Distanzen und geringen Reflexionsfaktoren zu ermöglichen. Bei voller Ausnutzung der Ansteuerspannung können Schallpegel bis zu $120dB$ erreicht werden, das entspricht in etwa der Lautstärke eines startenden Düsenflugzeugs. Allerdings lässt der Schalldruck mit steigendem Abstand schnell nach und ist für das menschliche Gehör weder wahrnehmbar, noch schädlich. Der hohe Abstrahlwinkel hat auch zur Folge, dass nur ein Bruchteil der Schallwelle am Objekt auftrifft und reflektiert werden kann. \cite{datasheet:ultraschall}\\
 Im Datenblatt wird empfohlen, den Sender mit einem Rechtecksignal anzusteuern. Durch sein schmales Frequenzband schwingt er dennoch Sinus-förmig. Der Sender besteht aus einem Piezoelement, dessen vereinfachtes Ersatzschaltbild ein Kondensator ist. Laut Datenblatt besitzt er eine Kapazität von $2.55nF$.\\
 
 
@@ -47,7 +47,7 @@ Nach dieser Feststellung wurden Schaltungen mit Transistoren untersucht, da sie 
 
 \subsection{Zweite Schaltung: Verstärkung mit Transistor} \label{schaltung:transistor}
 %TODO Sollen Berechnungen von Strömen und Widerständen hier noch rein?
-Der Bipolartransistor ist ein stromgesteuertes Halbleiterbauelement, der als Verstärker und Schalter eingesetzt wird. Die Emitterschaltung eignet sich für hohe Spannungs- und Stromverstärkungen. Im übersteuerten Zustand lassen sich damit ohmsche Lasten elektronisch schalten. Gemeinsamer Bezugspunkt ist der Emitter - daher der Name der Schaltung. Der Strom von Basis zu Emitter steuert den maximalen Stromfluss der Schaltstrecke von Kollektor zu Emitter. Um ein digitales Signal zu verstärken, wird es über den Basiswiderstand auf den Transistor gegeben und ein weiterer Widerstand vor den Kollektor zur resultierenden Spannung geschaltet. Leitet der Transistor, fällt die Spannung am Widerstand ab. Sperrt er, fällt an ihm die Spannung ab und der Widerstand zieht das Potential vor dem Transistor auf den gewünschten Wert. Das resultierende Signal ist um $180^\circ$ phasenverdreht, d.h. es wird invertiert aber nicht verzögert. Der Transistor wird im übersteuerten Bereich betrieben, damit er sauber durchschalten kann und keine Verluste durch Spannungsabfall an ihm entstehen. \\
+Der Bipolartransistor ist ein stromgesteuertes Halbleiterbauelement, der als Verstärker und Schalter eingesetzt wird. Die Emitterschaltung eignet sich für hohe Spannungs- und Stromverstärkungen. Im übersteuerten Zustand lassen sich damit ohmsche Lasten elektronisch schalten. Gemeinsamer Bezugspunkt ist der Emitter - daher der Name der Schaltung. Der Strom von Basis zu Emitter steuert den maximalen Stromfluss der Schaltstrecke von Kollektor zu Emitter. Um ein digitales Signal zu verstärken, wird es über den Basiswiderstand auf den Transistor gegeben und ein weiterer Widerstand vor den Kollektor zur resultierenden Spannung geschaltet. Leitet der Transistor, fällt die Spannung am Widerstand ab. Sperrt er, fällt an ihm die Spannung ab und der Widerstand zieht das Potential vor dem Transistor auf den gewünschten Wert. Das resultierende Signal ist um $180^\circ$ phasenverdreht, d.h. es wird invertiert aber nicht verzögert. Der Transistor wird im übersteuerten Bereich betrieben, damit er sauber durchschalten kann und keine Verluste durch Spannungsabfall an ihm entstehen. \cite{web:transe}\\
 
 
 \subsubsection{Spannungsbereich ausschöpfen}
@@ -72,7 +72,6 @@ Als Spannungsversorgung stehen $+5V$, $+12V$ und $-12V$ zur Verfügung. Es gibt 
 \subsubsection{Nachteile}
 Die Emitterschaltung ist eine einfache Verstärkerschaltung und eignet sich hervorragend um ohmsche Lasten zu schalten. Der Sender ist jedoch eine kapazitive Last, die zu jeder Flanke geladen oder entladen werden muss. Über den Lastwiderstand wird die Kapazität geladen, wenn der Transistor sperrt. Solange er leitend ist, fließt ein konstanter Strom über diesen Widerstand, der für den Sender nicht benötigt wird. Bei der Dimensionierung der Lastwiderstände wird ein hoher Stromfluss in Kauf genommen, um die gewünschte Flankensteilheit, bedingt durch die RC-Ladekurve, zu erreichen. Statt einem Ein- und Ausschalten wäre ein Umschalten zwischen zwei Spannungen sinnvoller. Diesen Ansatz verfolgt die nächste entworfene Schaltung.
 
-%TODO Bild überarbeiten
 \begin{figure}[H]
 \centering
 \includegraphics[width=(\textwidth)]{oszi/15-04-01/2.png}
@@ -80,8 +79,7 @@ Die Emitterschaltung ist eine einfache Verstärkerschaltung und eignet sich herv
 \end{figure}
 
 \subsection{Dritte Schaltung: Gegentaktstufe} \label{schaltung:gegentakt}
-Anstatt die Spannung über den Lastwiderstand am Kollektor eines Transistors auf den richtigen Wert zu ziehen, kann die Spannung über zwei Transistoren, die sich im Gegentakt öffnen und schließen, direkt erreicht werden. Die Vorteile dabei sind, dass der Sender über sehr kleine Widerstände schnell geladen werden kann und dennoch kein unnötiger Stromfluss entsteht. Das Prinzip der Gegentaktstufe wird in verschiedenen Bereichen angewendet: Von schnellen Logik-ICs über verschiedene Treiberbausteine bis hin zu Leistungsendstufen. Durch die Symmetrie und den geringen Eigenstromverbrauch lassen sich hohe Lasten sehr schnell An- und Abschalten. Allerdings ist eine Gegentaktstufe nicht linear, wodurch sie meist ungeeignet für analoge Anwendungen ist. In diesem Fall wird nur ein digitales Umschalten benötigt.
-
+Anstatt die Spannung über den Lastwiderstand am Kollektor eines Transistors auf den richtigen Wert zu ziehen, kann die Spannung über zwei Transistoren, die sich im Gegentakt öffnen und schließen, direkt erreicht werden. Die Vorteile dabei sind, dass der Sender über sehr kleine Widerstände schnell geladen werden kann und dennoch kein unnötiger Stromfluss entsteht. Das Prinzip der Gegentaktstufe wird in verschiedenen Bereichen angewendet: Von schnellen Logik-ICs über verschiedene Treiberbausteine bis hin zu Leistungsendstufen. Durch die Symmetrie und den geringen Eigenstromverbrauch lassen sich hohe Lasten sehr schnell An- und Abschalten. Allerdings ist eine Gegentaktstufe nicht linear, wodurch sie meist ungeeignet für analoge Anwendungen ist. In diesem Fall wird nur ein digitales Umschalten benötigt. \cite{web:ausgang}
 
 
 \subsubsection{Gleichzeitiges Öffnen der Transistoren}
@@ -96,7 +94,7 @@ Die Emitter zweier Transistoren, jeweils einer vom Typ NPN und PNP, werden zusam
 
 
 \subsubsection{Verzögerte Reaktionen der Transistoren}
-Dioden haben an den Übergängen der Dotierungen kapazitive Eigenschaften. Besonders bei hohen Spannungen wirken sie sich sehr negativ auf die Schaltgeschwindigkeit aus, da die Ladung erst abtransportiert werden muss, bevor sich der Zustand des Transistors ändert. Das führt dazu, dass sie zu spät schließen und die Signale verformt werden. Über mehrere Transistoren summiert sich dieser Effekt auf. Anfangs wurde versucht, die Steuerspannung mithilfe von in Reihe geschalteten \textit{Zener-Dioden} zu begrenzen. Auch eine Diode von Basis zu Kollektor (NPN), bzw. von Kollektor zur Basis (PNP) verringert die Schaltgeschwindigkeit. Überschüssige Ladungsträger fließen über die niederohmige Kollektor-Emitter-Strecke ab, wodurch ein Übersättigen des Transistors vermieden wird. Bei der Gegentaktstufe tritt jedoch der Fall ein, bei dem der Sender vollständig geladen ist und kein Strom mehr fließt. Ohne Stromfluss fällt an den Z-Dioden keine Spannung ab und die Transistoren übersättigen erneut.\\ %TODO Warum schlechtes Wort?!
+Dioden haben an den Übergängen der Dotierungen kapazitive Eigenschaften. Besonders bei hohen Spannungen wirken sie sich sehr negativ auf die Schaltgeschwindigkeit aus, da die Ladung erst abtransportiert werden muss, bevor sich der Zustand des Transistors ändert. Das führt dazu, dass sie zu spät schließen und die Signale verformt werden. Über mehrere Transistoren summiert sich dieser Effekt auf. Anfangs wurde versucht, die Steuerspannung mithilfe von in Reihe geschalteten \textit{Zener-Dioden} zu begrenzen. Auch eine Diode von Basis zu Kollektor (NPN), bzw. von Kollektor zur Basis (PNP) verringert die Schaltgeschwindigkeit. Überschüssige Ladungsträger fließen über die niederohmige Kollektor-Emitter-Strecke ab, wodurch ein Übersättigen des Transistors vermieden wird. Bei der Gegentaktstufe tritt jedoch der Fall ein, bei dem der Sender vollständig geladen ist und kein Strom mehr fließt. Ohne Stromfluss fällt an den Z-Dioden keine Spannung ab und die Transistoren übersättigen erneut.\\
 Eine akzeptable Lösung wurde gefunden, indem die Arbeitspunkte der Transistoren über Widerstandsverhältnisse (R13 und R14 sowie R15 und R16, siehe Abbildung \ref{img:I5}) angepasst wurden. Mithilfe von Schaltungssimulationen konnten die Verhältnisse genau bestimmt werden, bei denen die Transistoren noch sauber schalten und gleichzeitig vor dem Schließen kaum Ladungsträger abtransportiert werden müssen. Die Simulationen waren so genau, dass mit nur geringfügigen Änderungen der Widerstandswerte auch in der Realität optimale Ergebnisse erzielt wurden.
 
 \subsubsection{Aufbau und Funktionsweise}
@@ -120,7 +118,7 @@ Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, war
 	\item Der Signalverlauf am Empfänger war wie erwartet ein sauberes Sinus-Signal
 \end{itemize}
 Es wurde vermutet, dass die Ströme nicht ausreichend sind, um die Kapazitäten in den geringen Pulszeiten zu versorgen. Allerdings erbrachte der Gegentaktverstärker trotz den hohen Strömen auch nicht das erhoffte Ergebnis. Wieder wurden die Pegel nicht sauber gehalten, nur die Flankensteilheit wurde verbessert.\\
-Ein Hinweis auf das Problem gab es jedoch: Die Ausgangsspannung schwingt auch weiter, nachdem das Steuersignal keine Pulse mehr sendet. Dieses Verhalten tritt nicht auf, wenn der Ultraschallsender nicht angeschlossen ist. Tatsächlich stammen die Schwingungen vom Sender. In ihm wird die elektrische Schwingung in eine mechanische umgesetzt. Das schwingende Element, dass die Schallwellen erzeugt, besitzt eine Trägheit, die es mechanisch nachschwingen lässt und dadurch auch elektrische Signale rückkoppelt.\\ %TODO: Rückkoppeln? Besseres Wort?
+Ein Hinweis auf das Problem gab es jedoch: Die Ausgangsspannung schwingt auch weiter, nachdem das Steuersignal keine Pulse mehr sendet. Dieses Verhalten tritt nicht auf, wenn der Ultraschallsender nicht angeschlossen ist. Tatsächlich stammen die Schwingungen vom Sender. In ihm wird die elektrische Schwingung in eine mechanische umgesetzt. Das schwingende Element, dass die Schallwellen erzeugt, besitzt eine Trägheit, die es mechanisch nachschwingen lässt und dadurch auch elektrische Signale rückkoppelt.\\
 Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass es auch zu Schwingungen mit höheren Frequenzen kommt. Sie sind in den steilen Flanken enthalten und regen das mechanische Piezoelement an. Dabei kann es sich auch um harmonische Oberschwingungen handeln, d.h. Schwingungen mit der n-Fachen Frequenz der Resonanzschwingung von $40 kHz$, die weniger stark gedämpft werden.
 \begin{figure}[H]
 \centering
@@ -173,13 +171,13 @@ Der Bandpass wurde mithilfe eines aktiven Tiefpasses 2. Ordnung und zwei passive
 \caption{Simulation der Pulsverstärkung} \label{img:Sim1}
 Rot: Eingangssignal; Blau: Verstärktes Signal mit Offset; Grün: Binäre Pulse
 \end{figure}
-Der aktive Tiefpass wurde als \textit{Sallen-Key-Tiefpass} 2. Ordnung mit einem Operationsverstärker realisiert. Seine Verstärkung beträgt $3dB$. 
+Der aktive Tiefpass wurde als \textit{Sallen-Key-Tiefpass} 2. Ordnung mit einem Operationsverstärker realisiert. Seine Verstärkung beträgt $3dB$. \cite{opamp}
 \begin{figure}[H]
 \centering
-%\includegraphics[width=(\textwidth), angle=0]{sim/}
+\includegraphics[width=(\textwidth), angle=0]{images/bode.png}
 \caption{Bode-Diagramm des aktiven Frequenzfilters} \label{img:bode}
 \end{figure}
-%TODO: Diagramm einfügen
+
 
 \subsubsection{Probleme}
 Die Operationsverstärker können eine Verstärkung von maximal 100 erreichen, bei höheren Werten bleibt der Ausgangspegel am Maximum oder Minimum hängen. Durch die serielle Verschaltung mehrerer Verstärker können dennoch höhere Faktoren erreicht werden. Allerdings besteht die Gefahr, dass dadurch mehr Störsignale eingekoppelt werden. Ein weiteres Problem der Operationsverstärker ist die geringe Slew-Rate. Ein periodisches Signal kann nur auf einen gewissen Pegel verstärkt werden, da das Signal ansonsten zu steil werden würde. Wenn das geschieht, wird die Signalform abgeflacht und verfälscht, wodurch auch andere Frequenzanteile entstehen, die von den Filtern wieder entfernt werden. Die maximale Verstärkung ist deshalb sehr eingeschränkt, jedoch sollte sie möglichst hoch sein, um den Transistor bei jedem Puls sauber durchzuschalten.\\

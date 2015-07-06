@@ -7,33 +7,88 @@
 \chapter{Firmware}
 Als Firmware wird die Software bezeichnet, welche auf dem Mikrocontroller ausgeführt wird. Sie läuft ohne Betriebssystem direkt auf der Hardware und kann in Assembler, C oder anderen hardwarenahen Programmiersprachen geschrieben werden. In diesem Fall wurde sie mit C und den dazugehörigen Bibliotheken für die AVR-Mikrocontroller entwickelt.\\
 Die Firmware hat die Aufgabe, die Hardware des Controllers zu steuern. Sie ist in Module aufgeteilt, die jeweils für eine Hardwarekomponente zuständig sind:
-\begin{description} %TODO Eigene Überschriften statt description?
-	\item[LED-Statusanzeige:] \hfill \\Die LEDs werden über die \ac{GPIO}-Pins des AVR angesteuert. Per Software-\ac{PWM} lassen sich auch sanft pulsierende Signale realisieren. Damit kann der Controller mitteilen, in welchem Zustand er sich befindet und dass die Firmware nicht hängen geblieben ist.
-	\item[7-Segment-Anzeige:] Die Platine mit den vier 7-Segment-Ziffern zur Anzeige von Messergebnissen benötigt ein extra Modul, um diese anzusteuern. Das geschieht über eine serielle Verbindung zu vier hintereinander geschalteten Schieberegistern. Die Werte werden per \textit{Bit-Banging} über die \ac{GPIO}-Pins in die Register geschoben, diese haben parallele Ausgänge, die mit den Ziffern verbunden sind.
-	\item[Signalerzeugung mit \ac{PWM}:] Das $40kHz$-Signal für den Ultraschallsender wird von der Mikrocontroller-Hardware erzeugt. Dazu wird ein Zähler benötigt, der bei einem Vergleichswert und beim Überlauf den Pegel eines Ausgangspins setzt. Die Firmware initialisiert und startet den Timer, die Erzeugung des Signals wird ausschließlich von der Hardware erledigt. Dadurch wird das Signal sehr präzise und die Rechenleistung des Mikrocontrollers steht für andere Zwecke zur Verfügung.
-	\item[Laufzeitmessung:] Für eine präzise Zeitmessung wird ein weiterer Hardwarezähler verwendet. Er wird in einer konstanten Frequenz inkrementiert, bis das Signal eingetroffen ist. Wenn das Zählerregister zu klein ist, kann bei einem Überlauf ein weiteres Register inkrementiert werden, damit die Messgenauigkeit und Reichweite nicht durch die Software eingeschränkt werden müssen.
-	\item[Signalerkennung:] Empfängt der Ultraschallempfänger ein Signal, so erhält der Mikrocontroller einen digitalen Puls. Auf einem Interrupt-Eingang löst die Flanke dieses Signals einen Sprung in der Firmware aus, sodass der Hardwarezähler sofort gestoppt werden kann. Ein Interrupt erhöht die Präzision der Messungen, da die Software alleine nur sequentiell den Signalpegel abfragen könnte und die Zeitpunkte ungenau werden. Zudem können die Flanken nicht aufgrund anderer Rechenaufwänden verpasst werden.
-	\item[\ac{TWI}-Kommunikation:] Die serielle Schnittstelle wird verwendet, um mit dem Raspberry Pi zu kommunizieren. Als Slave muss der Controller auf Anfragen reagieren, es können Messungen angefordert und Ergebnisse ausgelesen werden. Die AVR-Mikrontroller besitzen eine \ac{TWI}-Hardware, die von der Firmware genutzt wird.
+\begin{description}
+	\item[LED-Statusanzeige:] \hfill \\
+		Die LEDs werden über die \ac{GPIO}-Pins des AVR angesteuert. Per Software-\ac{PWM} lassen sich auch sanft pulsierende Signale realisieren. Damit kann der Controller mitteilen, in welchem Zustand er sich befindet und dass die Firmware nicht hängen geblieben ist.
+	\item[7-Segment-Anzeige:] \hfill \\
+		Die Platine mit den vier 7-Segment-Ziffern zur Anzeige von Messergebnissen benötigt ein extra Modul, um diese anzusteuern. Das geschieht über eine serielle Verbindung zu vier hintereinander geschalteten Schieberegistern. Die Werte werden per \textit{Bit-Banging}\footnote{Hardwareschnittstelle wird mit Software emuliert, indem Pegel sequentiell auf I/O-Ports geschrieben oder gelesen werden} über die \ac{GPIO}-Pins in die Register geschoben, diese haben parallele Ausgänge, die mit den Ziffern verbunden sind.
+	\item[Signalerzeugung mit \ac{PWM}:] \hfill \\
+		Das $40kHz$-Signal für den Ultraschallsender wird von der Mikrocontroller-Hardware erzeugt. Dazu wird ein Zähler benötigt, der bei einem Vergleichswert und beim Überlauf den Pegel eines Ausgangspins setzt. Die Firmware initialisiert und startet den Timer, die Erzeugung des Signals wird ausschließlich von der Hardware erledigt. Dadurch wird das Signal sehr präzise und die Rechenleistung des Mikrocontrollers steht für andere Zwecke zur Verfügung.\newpage
+	\item[Laufzeitmessung:] \hfill \\
+		Für eine präzise Zeitmessung wird ein weiterer Hardwarezähler verwendet. Er wird in einer konstanten Frequenz inkrementiert, bis das Signal eingetroffen ist. Wenn das Zählerregister zu klein ist, kann bei einem Überlauf ein weiteres Register inkrementiert werden, damit die Messgenauigkeit und Reichweite nicht durch die Software eingeschränkt werden müssen. Bei einem Überlauf wird eine Interrupt-Routine aufgerufen, die das Inkrementieren des zweiten Registers ausführt.
+	\item[Signalerkennung:] \hfill \\
+		Empfängt der Ultraschallempfänger ein Signal, so erhält der Mikrocontroller einen digitalen Puls. Auf einem Interrupt-Eingang löst die Flanke dieses Signals einen Sprung in der Firmware aus, sodass der Hardwarezähler sofort gestoppt werden kann. Ein Interrupt erhöht die Präzision der Messungen, da die Software alleine nur sequentiell den Signalpegel abfragen könnte und die Zeitpunkte ungenau werden. Außerdem kann die Hardware die Flanken nicht aufgrund anderer Rechenaufwänden verpassen.
+	\item[\ac{TWI}-Kommunikation:] \hfill \\
+		Die serielle Schnittstelle wird verwendet, um mit dem Raspberry Pi zu kommunizieren. Als Slave muss der Controller auf Anfragen reagieren. Es können Messungen angefordert und Ergebnisse ausgelesen werden. Die AVR-Mikrontroller besitzen eine \ac{TWI}-Hardware, die von der Firmware genutzt wird. Die Reaktion auf Anfragen erfolgt durch eine Interrupt-Routine. Dadurch wird die Latenzzeit minimiert, was aufgrund des Clock-Stretching-Bugs des Raspberry Pi (siehe \ref{clockstretching}) notwendig ist. Ergebnisse von Messungen werden gepuffert und können nach einer kurzen Wartezeit (bis das Signal der Messung ausgewertet wurde) ausgelesen werden.
+	\item[Platinenerkennung:] \hfill \\
+		Die Aufgaben und der Ablauf der Firmware unterscheiden sich je nach Platinentyp. Nur die Prototyp-Platine muss das Anzeigen-Modul laden, außerdem benötigt jede Platine eine individuelle \ac{TWI}-Adresse. Aus diesem Grund wurden Pinpaare miteinander verbunden, sodass die Firmware prüfen kann, auf welcher Platine sie geladen wurde. Der Programmablauf wird entsprechend angepasst, die Firmware ist dennoch auf jeder Platine identisch.
 \end{description}
 
 
 \section{Genauigkeit und Reichweite der Messungen}
-Die Messgenauigkeit und maximale Reichweite ist durch den Takt des Zählers, sowie die Bitbreite des Messwertes abhängig. Die Firmware taktet den Zähler mit $1MHz$ und speichert die Daten in einem 16-Bit Register. Daraus ergeben sich folgende Werte:\\
-Schrittlänge:
-\begin{equation} %TODO Schallgeschwindigkeit zw 20-25° 344-245 m/s, Außerdem: Pro gemessene Strecke wird doppelte Schallstrecke benötigt
-\Delta s = \frac{u}{f} = \frac{0.5 * 343m/s}{1*10^6 1/s} = 0.172 mm
-\end{equation}
-Maximale Distanz:
+Die Messgenauigkeit und maximale Reichweite ist durch den Takt des Zählers, sowie der Bitbreite des Messwertes abhängig. Die Firmware taktet den Zähler mit $1MHz$ und speichert die Daten in einem 16-Bit Register. Der Schall muss durch die Reflektion die doppelte Strecke zurücklegen. Daraus ergibt sich folgender Wert für die Schrittlänge:
 \begin{equation}
-dist = 2^{16} * \Delta s = 11.24 m
+\Delta s = \frac{u}{f} = \frac{0.5 * 344/s}{1*10^6 1/s} = 0.172 mm
 \end{equation}
-
-Der Wert bezieht sich auf die relative Genauigkeit. Offsetfehler, die durch Latenzzeiten entstehen, können in einem gewissen Umfang experimentell bestimmt und herausgerechnet werden. Die relative Genauigkeit hängt allerdings von der Toleranz des internen Taktes ab, dieser wird vor allem bei Temperaturänderungen ungenauer. Bei starken Abweichungen kann der Mikrocontroller über einen genaueren externen Quarz getaktet werden.
-
-\section{Erkennung der Platine durch die Firmware}
+Die minimale Auflösung der Distanz findet nur intern statt. Sowohl über das \ac{TWI}, als auch über die Anzeige, werden Distanzen im Millimeter-Bereich ausgegeben. Die interne Auflösung ist aus diesem Grund ca. sechs mal höher als das ausgegebene Messergebnis. Dadurch werden Quantisierungsfehler und unruhige Ergebnisse (springende Ziffern) vermieden.\\
+Die maximale Distanz, die durch zwei 8-Bit Register, die während der Messung inkrementiert werden, bestimmt ist, ergibt sich zu:
+\begin{equation}
+dist = 2^{16} * \Delta s = 11.27 m
+\end{equation}
+Dieser Wert ist deutlich größer, als die maximale Reichweite der Schaltungen, die durch die Signalstärken der reflektierten Signale begrenzt ist. Somit gibt es keine Einschränkungen auf Seiten der Software.\\
+Der Wert der minimalen Auflösung bezieht sich auf die relative Genauigkeit. Offset-Fehler, die durch Latenzzeiten entstehen, können in einem gewissen Umfang experimentell bestimmt und herausgerechnet werden. Die relative Genauigkeit hängt allerdings von der Toleranz des internen Taktes ab, dieser wird vor allem bei Temperaturänderungen ungenauer. Bei starken Abweichungen kann der Mikrocontroller über einen genaueren externen Quarz getaktet werden, wodurch die Ergebnisse deutlich exakter werden.
 
 
 \section{Laufzeitmessung zwischen den Platinen}
+Die Kalibrierung der Positionsbestimmung benötigt die Distanzen zwischen den Sensorplatinen. Durch die drei Abstände kann das Dreieck, in dem das Objekt detektiert werden soll, eindeutig konstruiert werden. Anders, als bei den bisherigen Messungen, geschieht die Distanzmessung nicht über ein reflektiertes Signal, sondern über den direkten Signalweg eines Senders von einer anderen Platine. Um den exakten Zeitpunkt des Sendevorgangs an der zweiten Platine zu bestimmen, wird beim aktivieren des $40kHz$-Signals ein Trigger-Impuls über eine Leitung gesendet. Die Signallaufzeit in Kupfer (ca $\frac{2}{3}c$) ist vernachlässigbar gering im Vergleich zur Schallgeschwindigkeit, somit ist eine exakte Laufzeitmessung an den empfangenden Platinen möglich. Da die Signale nur die einfache Wegstrecke zurücklegen, anstatt der doppelten bei einer Reflektion, steigt die interne Auflösung um das doppelte an. Die Werte müssen deshalb anders verrechnet werden, damit die Abstände in Millimeter ausgegeben werden können.
+
+\section{Programmfluss}
+Im folgenden Diagramm ist der Ablauf der Firmware skizziert. Sie startet, sobald die Spannungsversorgung am Mikrocontroller anliegt und beginnt eine Endlosschleife, in der alle Vorgänge abgehandelt werden. Einige Ereignisse werden über Interrupts abgearbeitet, da sie besonders zeitkritisch sind und eine sofortige Reaktion benötigen.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2cm]
+\node (start) [startstop] {Firmware Start};
+\node (p1) [process, below of=start, xshift=0cm] {Mikrocontroller initialisieren};
+\draw [arrow] (start) -- (p1);
+
+\node (p2) [process, below of=p1] {Interrupts aktivieren};
+\draw [arrow] (p1) -- (p2);
+
+\node (loop) [startstop, below of=p2, xshift=0cm] {Start Hauptschleife};
+\draw [arrow] (p2) -- (loop);
+
+\node (int) [decision, below of=loop, yshift=-1.5cm, text width=3cm] {Messung läuft?};
+\draw [arrow] (loop) -- (int);
+
+\node (p4) [decision, right of=int, xshift=3.4cm] {Signal empfangen?};
+\draw [arrow] (int) -- node[anchor=south] {Ja} (p4);
+
+\node (p5) [io, right of=p4, text width=4cm, xshift=3.4cm] {Ergebnis in Puffer schreiben};
+\draw [arrow] (p4) -- node[anchor=south] {Ja} (p5);
+
+\node (com) [decision, below of=int, yshift=-3.3cm, text width=3cm] {Messung angefordert?};
+\draw [arrow] (int) -- node[anchor=east] {Nein} (com);
+%\draw [arrow] (p5) -| (com);
 
 
-%TODO: Ablaufdiagramm
+\node (p6) [process, right of=com, xshift=8cm] {Signal senden};
+\draw [arrow] (com) -- node[anchor=south] {Ja} (p6);
+
+\node (p7) [process, below of=p6, text width=3cm, xshift=0cm] {Interrupt aktivieren};
+\draw [arrow] (p6) -- (p7);
+
+\node (wd) [process, below of=com, yshift=-2cm] {LED-Anzeige updaten};
+\draw [arrow] (com) -- node[anchor=east] {Nein} (wd);
+%\draw [arrow] (p7) |- (wd);
+\draw [arrow, bend angle=40, bend left, yscale=4, xscale=10]  (p7) to (wd);
+\draw [arrow, bend angle=10, bend left, yscale=4, xscale=10]  (p5) to (wd);
+\draw [arrow, bend angle=7, bend left, yscale=4, xscale=10]  (p4) to node[anchor=north] {\hspace{24pt}Nein} (wd);
+
+\node (end) [startstop, below of=wd] {Ende Hauptschleife};
+\draw [arrow] (wd) -- (end);
+
+\draw [arrow, bend angle=90, bend left, yscale=4]  (end) to (loop);
+\end{tikzpicture}
+\caption{Programmablaufplan der Firmware} \label{fig:M2}
+\end{figure}
