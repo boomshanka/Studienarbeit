@@ -119,7 +119,7 @@ Der Grund, der zur Entwicklung von leistungsstärkeren Verstärkern führte, war
 \end{itemize}
 Es wurde vermutet, dass die Ströme nicht ausreichend sind, um die Kapazitäten in den geringen Pulszeiten zu versorgen. Allerdings erbrachte der Gegentaktverstärker trotz den hohen Strömen auch nicht das erhoffte Ergebnis. Wieder wurden die Pegel nicht sauber gehalten, nur die Flankensteilheit wurde verbessert.\\
 Ein Hinweis auf das Problem gab es jedoch: Die Ausgangsspannung schwingt auch weiter, nachdem das Steuersignal keine Pulse mehr sendet. Dieses Verhalten tritt nicht auf, wenn der Ultraschallsender nicht angeschlossen ist. Tatsächlich stammen die Schwingungen vom Sender. In ihm wird die elektrische Schwingung in eine mechanische umgesetzt. Das schwingende Element, dass die Schallwellen erzeugt, besitzt eine Trägheit, die es mechanisch nachschwingen lässt und dadurch auch elektrische Signale rückkoppelt.\\
-Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass es auch zu Schwingungen mit höheren Frequenzen kommt. Sie sind in den steilen Flanken enthalten und regen das mechanische Piezoelement an. Dabei kann es sich auch um harmonische Oberschwingungen handeln, d.h. Schwingungen mit der n-Fachen Frequenz der Resonanzschwingung von $40 kHz$, die weniger stark gedämpft werden.
+Die unsauberen Pegel innerhalb der Pulse deuten darauf hin, dass es auch zu Schwingungen mit höheren Frequenzen kommt. Sie sind in den steilen Flanken enthalten und regen das mechanische Piezoelement an. Dabei kann es sich auch um harmonische Oberschwingungen handeln, d.h. Schwingungen mit der n-fachen Frequenz der Resonanzschwingung von $40 kHz$, die weniger stark gedämpft werden.
 \begin{figure}[H]
 \centering
 \includegraphics[width=(\textwidth), angle=0]{oszi/15-04-01/4.png}
@@ -158,13 +158,13 @@ In diesem Ansatz wird das Eingangssignal so verstärkt werden, damit jede Period
 \centering
 \includegraphics[width=(\textwidth), angle=0]{oszi/15-04-23/4_03.png}
 \caption{Pulsverstärkung bei einer Laufzeitmessung} \label{img:I11}
-Oben: Eingangssignal am Empfänger; Unten: Ausgangs-Pulse der Empfängerschaltung. Zu Beginn der Messung werden die Signale bereits vom Sender Rückgekoppelt, die Pulse auf der Rechten Seite stammen von der Reflektion.
+Oben: Eingangssignal am Empfänger; Unten: Ausgangs-Pulse der Empfängerschaltung. Zu Beginn der Messung werden die Signale bereits vom Sender Rückgekoppelt, die Pulse auf der rechten Seite stammen von der Reflektion.
 \end{figure}
 Um eine möglichst hohe Reichweite zu erzielen, sollte die Verstärkung der Signale sehr hoch gewählt werden. Allerdings werden damit auch Störsignale verstärkt, die fälschlicherweise als Ultraschallsignale interpretiert werden können. Um das zu vermeiden, wird das Eingangssignal mithilfe eines Bandpasses gefiltert.
 
 
 \subsubsection{Umsetzung}
-Der Bandpass wurde mithilfe eines aktiven Tiefpasses 2. Ordnung und zwei passive CR-Hochpässen realisiert, woraus ein Bandpassfilter 2. Ordnung resultiert. Der aktive Filter verstärkt das Signal zusätzlich. Auch die Signale oberhalb der Grenzfrequenz erfahren eine Dämpfung, die dadurch ausgeglichen werden kann. Das Signal wird vor und nach dem Tiefpass mit Operationsverstärkern verstärkt, anschließend wird eine Offsetspannung hinzu addiert. Das resultierende Signal wird auf die Basis eines Transistors gegeben, der bei kleinsten Impulsen bereits durchschaltet und einen binären Puls erzeugt. Verstärkungen und Offsetspannung können über Potentiometer exakt eingestellt werden.
+Der Bandpass wurde mithilfe eines aktiven Tiefpasses 2. Ordnung und zwei passiven CR-Hochpässen realisiert, woraus ein Bandpassfilter 2. Ordnung resultiert. Der aktive Filter verstärkt das Signal zusätzlich. Auch die Signale oberhalb der Grenzfrequenz erfahren eine Dämpfung, die dadurch ausgeglichen werden kann. Das Signal wird vor und nach dem Tiefpass mit Operationsverstärkern verstärkt, anschließend wird eine Offsetspannung hinzu addiert. Das resultierende Signal wird auf die Basis eines Transistors gegeben, der bei kleinsten Impulsen bereits durchschaltet und einen binären Puls erzeugt. Verstärkungen und Offsetspannung können über Potentiometer exakt eingestellt werden.
 \begin{figure}[H]
 \centering
 \includegraphics[width=(\textwidth), angle=0]{sim/verstaerker_offset.jpg}
@@ -192,12 +192,12 @@ Bei allen durchgeführten Experimenten wurden keinerlei Störsignale identifizie
 \begin{figure}[H]
 \centering
 \includegraphics[width=(\textwidth), angle=0]{oszi/15-04-23/3_01.png}
-\caption{Signal vor (unten) und nach der Filterung} \label{img:I10}
+\caption{Signal vor (oben) und nach der Filterung} \label{img:I10}
 \end{figure}
 
 \subsubsection{Fazit}
 In bestimmten Anwendungsfällen macht es Sinn, Perioden als einzelne Pulse zu verstärken. Für die Abstandsmessung ist diese Methode jedoch ungünstig, da sie exaktere Schaltungen benötigt und die Empfindlichkeit - und damit die Reichweite - eingeschränkt wird. Auch die verwendeten Operationsverstärker sind durch die geringe Slew-Rate ein Hindernis. Störsignale hingegen spielen keine Rolle, die aktiven Frequenzfilter können deshalb eingespart werden. Dadurch lassen sich auch potentielle Fehlerquellen und Seiteneffekte vermeiden.\\
-Trotz den genannten Problemen, lassen sich mit dieser Schaltung sehr exakte Messungen in einer Spanne von $15cm$-$200cm$ durchführen. Die relative Genauigkeit befindet sich im Millimeter-Bereich, der absoluter Messfehler bewegt sich im Bereich von etwa $2cm$, abhängig von dem zu messenden Objekt.
+Trotz den genannten Problemen, lassen sich mit dieser Schaltung sehr exakte Messungen in einer Spanne von $15cm$-$200cm$ durchführen. Die relative Genauigkeit befindet sich im Millimeter-Bereich, der absoluter Messfehler bewegt sich im Bereich von etwa $2cm$, abhängig von den Objekten, die detektiert werden sollen.
 
 
 

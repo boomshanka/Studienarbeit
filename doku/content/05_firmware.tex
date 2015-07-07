@@ -28,7 +28,7 @@ Die Firmware hat die Aufgabe, die Hardware des Controllers zu steuern. Sie ist i
 \section{Genauigkeit und Reichweite der Messungen}
 Die Messgenauigkeit und maximale Reichweite ist durch den Takt des Zählers, sowie der Bitbreite des Messwertes abhängig. Die Firmware taktet den Zähler mit $1MHz$ und speichert die Daten in einem 16-Bit Register. Der Schall muss durch die Reflektion die doppelte Strecke zurücklegen. Daraus ergibt sich folgender Wert für die Schrittlänge:
 \begin{equation}
-\Delta s = \frac{u}{f} = \frac{0.5 * 344/s}{1*10^6 1/s} = 0.172 mm
+\Delta s = 0.5*\frac{c}{f} = 0.5 * \frac{344\frac{m}{s}}{10^6 \frac{1}{s}} = 0.172 mm
 \end{equation}
 Die minimale Auflösung der Distanz findet nur intern statt. Sowohl über das \ac{TWI}, als auch über die Anzeige, werden Distanzen im Millimeter-Bereich ausgegeben. Die interne Auflösung ist aus diesem Grund ca. sechs mal höher als das ausgegebene Messergebnis. Dadurch werden Quantisierungsfehler und unruhige Ergebnisse (springende Ziffern) vermieden.\\
 Die maximale Distanz, die durch zwei 8-Bit Register, die während der Messung inkrementiert werden, bestimmt ist, ergibt sich zu:
